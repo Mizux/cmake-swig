@@ -12,15 +12,15 @@ else()
  set(BUILD_SHARED_LIBS OFF)
 endif()
 
-add_subdirectory(Foo)
-add_subdirectory(Bar)
-add_subdirectory(FooBar)
-
 # Setup Python
 # Specify python version
 set(Python_ADDITIONAL_VERSIONS "3.6;3.5;2.7")
 find_package(PythonInterp REQUIRED)
 set(Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
+
+add_subdirectory(Foo)
+add_subdirectory(Bar)
+add_subdirectory(FooBar)
 
 configure_file(__init__.py.in Foo/__init__.py COPYONLY)
 configure_file(__init__.py.in Bar/__init__.py COPYONLY)
