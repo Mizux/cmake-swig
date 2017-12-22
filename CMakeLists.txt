@@ -20,6 +20,7 @@ add_subdirectory(FooBar)
 # Specify python version
 set(Python_ADDITIONAL_VERSIONS "3.6;3.5;2.7")
 find_package(PythonInterp REQUIRED)
+set(Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
 
 configure_file(__init__.py.in Foo/__init__.py COPYONLY)
 configure_file(__init__.py.in Bar/__init__.py COPYONLY)
