@@ -26,4 +26,7 @@ script:
   - cmake --version
   - cmake -H. -Bbuild
   - cmake --build build --target all
+  
+after_script:  
+  - cmake --build build --target testenv
   - cmake --build build --target test
