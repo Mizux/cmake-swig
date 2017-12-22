@@ -22,7 +22,13 @@ swig_add_library(pyFooBar
 	SOURCES	foobar.i)
 
 # ${SWIG_MODULE_py${PROJECT_NAME}_REAL_NAME} will resolve to _pyFooBar.so TARGET
-target_link_libraries(${SWIG_MODULE_pyFooBar_REAL_NAME} PRIVATE
-	FooBar)
 target_include_directories(${SWIG_MODULE_pyFooBar_REAL_NAME} PRIVATE
 	${PYTHON_INCLUDE_DIRS})
+target_link_libraries(${SWIG_MODULE_pyFooBar_REAL_NAME} PRIVATE
+	FooBar)
+if(APPLE)
+	set_target_properties(${SWIG_MODULE_pyFooBar_REAL_NAME} PROPERTIES
+		SUFFIX ".so")
+	set_property(TARGET ${SWIG_MODULE_pyFooBar_REAL_NAME} APPEND PROPERTY
+		LINK_FLAGS "-flat_namespace -undefined suppress")
+endif()

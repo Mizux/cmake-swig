@@ -23,7 +23,13 @@ swig_add_library(pyBar
 	SOURCES	bar.i)
 
 # ${SWIG_MODULE_pyBar_REAL_NAME} will resolve to _pyBar.so TARGET
-target_link_libraries(${SWIG_MODULE_pyBar_REAL_NAME} PRIVATE
-	Bar)
 target_include_directories(${SWIG_MODULE_pyBar_REAL_NAME} PRIVATE
 	${PYTHON_INCLUDE_DIRS})
+target_link_libraries(${SWIG_MODULE_pyBar_REAL_NAME} PRIVATE
+	Bar)
+if(APPLE)
+	set_target_properties(${SWIG_MODULE_pyBar_REAL_NAME} PROPERTIES
+		SUFFIX ".so")
+	set_property(TARGET ${SWIG_MODULE_pyBar_REAL_NAME} APPEND PROPERTY
+		LINK_FLAGS "-flat_namespace -undefined suppress")
+endif()

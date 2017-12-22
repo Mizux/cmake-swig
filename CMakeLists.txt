@@ -1,12 +1,9 @@
 # This file is just an orchestration
 cmake_minimum_required(VERSION 3.8.2)
-set(CMAKE_PREFIX_PATH "/prefix")
-set(as_subproject "Foo;Bar")
-
 project(swig_template VERSION 1.0 LANGUAGES NONE)
 
 macro(find_package)
-	if(NOT "${ARGV0}" IN_LIST as_subproject)
+	if(NOT TARGET "${ARGV0}")
 		_find_package(${ARGV})
 	endif()
 endmacro()
@@ -14,10 +11,14 @@ endmacro()
 include(CTest)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 if(UNIX)
-	cmake_policy(SET CMP0068 NEW)
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-  option(BUILD_SHARED_LIBS "Build shared libraries(.so)." ON)
+	if(APPLE)
+		# Don't modify install_name when touching RPATH.
+		cmake_policy(SET CMP0068 NEW)
+	endif()
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+	option(BUILD_SHARED_LIBS "Build shared libraries(.so)." ON)
 else()
+	# Windows only support static build.
  set(BUILD_SHARED_LIBS OFF)
 endif()
 
@@ -26,12 +27,14 @@ set(Python_ADDITIONAL_VERSIONS "3.6;3.5;2.7" CACHE STRING "Supported python")
 enable_language(CXX)
 find_package(PythonInterp REQUIRED)
 set(Python_ADDITIONAL_VERSIONS "${PYTHON_VERSION_STRING}")
+# PythonLibs require enable_language(CXX)
 find_package(PythonLibs REQUIRED)
 
 add_subdirectory(Foo)
 add_subdirectory(Bar)
 add_subdirectory(FooBar)
 
+# Python Packaging
 configure_file(__init__.py.in Foo/__init__.py COPYONLY)
 configure_file(__init__.py.in Bar/__init__.py COPYONLY)
 configure_file(__init__.py.in FooBar/__init__.py COPYONLY)

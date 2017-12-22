@@ -22,7 +22,13 @@ swig_add_library(pyFoo
 	SOURCES	foo.i)
 
 # ${SWIG_MODULE_pyFoo_REAL_NAME} will resolve to _pyFoo.so TARGET
-target_link_libraries(${SWIG_MODULE_pyFoo_REAL_NAME} PRIVATE
-	Foo)
 target_include_directories(${SWIG_MODULE_pyFoo_REAL_NAME} PRIVATE
 	${PYTHON_INCLUDE_DIRS})
+target_link_libraries(${SWIG_MODULE_pyFoo_REAL_NAME} PRIVATE
+	Foo)
+if(APPLE)
+	set_target_properties(${SWIG_MODULE_pyFoo_REAL_NAME} PROPERTIES
+		SUFFIX ".so")
+	set_property(TARGET ${SWIG_MODULE_pyFoo_REAL_NAME} APPEND PROPERTY
+		LINK_FLAGS "-flat_namespace -undefined suppress")
+endif()
