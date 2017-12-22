@@ -27,9 +27,15 @@ target_include_directories(${SWIG_MODULE_pyBar_REAL_NAME} PRIVATE
 	${PYTHON_INCLUDE_DIRS})
 target_link_libraries(${SWIG_MODULE_pyBar_REAL_NAME} PRIVATE
 	Bar)
-if(APPLE)
-	set_target_properties(${SWIG_MODULE_pyBar_REAL_NAME} PROPERTIES
-		SUFFIX ".so")
-	set_property(TARGET ${SWIG_MODULE_pyBar_REAL_NAME} APPEND PROPERTY
-		LINK_FLAGS "-flat_namespace -undefined suppress")
+if(UNIX)
+	if(NOT APPLE)
+		set_target_properties(${SWIG_MODULE_pyBar_REAL_NAME} PROPERTIES
+			INSTALL_RPATH	"$ORIGIN")
+	else()
+		set_target_properties(${SWIG_MODULE_pyBar_REAL_NAME} PROPERTIES
+			SUFFIX ".so"
+			INSTALL_RPATH	"@loader_path")
+		set_property(TARGET ${SWIG_MODULE_pyBar_REAL_NAME} APPEND PROPERTY
+			LINK_FLAGS "-flat_namespace -undefined suppress")
+	endif()
 endif()
