@@ -17,12 +17,15 @@ before_install:
   - eval "${MATRIX_EVAL}"
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get -qq update; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get -y install swig; fi
-  # Avoid bug on CI with OSX, see https://github.com/travis-ci/travis-ci/issues/8552
+    # work around https://github.com/travis-ci/travis-ci/issues/8363
+  - if [ $TRAVIS_OS_NAME == linux ]; then pyenv global system 3.6; fi
+  
   - if [ $TRAVIS_OS_NAME == osx ]; then sudo chown -R $(whoami) /usr/local; fi
+    # work around https://github.com/travis-ci/travis-ci/issues/8552
   - if [ $TRAVIS_OS_NAME == osx ]; then brew update; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then brew install swig; fi
-  # work around https://github.com/travis-ci/travis-ci/issues/8363
-  - if [ $TRAVIS_OS_NAME == linux ]; then pyenv global system 3.6; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew install python3; fi
+
 
 script:
   - cmake --version
