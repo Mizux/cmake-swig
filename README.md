@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/Mizux/swig-template.svg?branch=master)](https://travis-ci.org/Mizux/swig-template)
+[![Build status](https://ci.appveyor.com/api/projects/status/a8pir5oh0gpt2q5u?svg=true)](https://ci.appveyor.com/project/Mizux/cmake-swig)
+
 
 # Introduction
 
