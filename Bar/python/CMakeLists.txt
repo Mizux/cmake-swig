@@ -5,8 +5,6 @@ find_package(SWIG REQUIRED)
 include(UseSWIG)
 
 # Setup Python
-# Specify python version
-set(Python_ADDITIONAL_VERSIONS "3.6;3.5;2.7")
 find_package(PythonInterp REQUIRED)
 find_package(PythonLibs REQUIRED)
 

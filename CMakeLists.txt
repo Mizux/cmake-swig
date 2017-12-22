@@ -1,6 +1,15 @@
 # This file is just an orchestration
 cmake_minimum_required(VERSION 3.8.2)
+set(CMAKE_PREFIX_PATH "/prefix")
+set(as_subproject "Foo;Bar")
+
 project(swig_template VERSION 1.0 LANGUAGES NONE)
+
+macro(find_package)
+	if(NOT "${ARGV0}" IN_LIST as_subproject)
+		_find_package(${ARGV})
+	endif()
+endmacro()
 
 include(CTest)
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -13,10 +22,11 @@ else()
 endif()
 
 # Setup Python
-# Specify python version
-set(Python_ADDITIONAL_VERSIONS "3.6;3.5;2.7")
+set(Python_ADDITIONAL_VERSIONS "3.6;3.5;2.7" CACHE STRING "Supported python")
+enable_language(CXX)
 find_package(PythonInterp REQUIRED)
-set(Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
+set(Python_ADDITIONAL_VERSIONS "${PYTHON_VERSION_STRING}")
+find_package(PythonLibs REQUIRED)
 
 add_subdirectory(Foo)
 add_subdirectory(Bar)

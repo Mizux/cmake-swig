@@ -1,13 +1,8 @@
 cmake_minimum_required(VERSION 3.8.2)
 project(FooBar VERSION 1.0.0 LANGUAGES CXX)
 
-if(NOT TARGET Foo::Foo)
-	find_package(Foo CONFIG REQUIRED) # target Foo::Foo
-endif()
-if(NOT TARGET Bar::Bar)
-	find_package(Bar CONFIG REQUIRED) # target Bar::Bar
-endif()
-
+find_package(Foo REQUIRED)
+find_package(Bar REQUIRED)
 
 #add_executable(FooBar src/main.cpp src/FooBar.cpp)
 add_library(FooBar src/FooBar.cpp)
