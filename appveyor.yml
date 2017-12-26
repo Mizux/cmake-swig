@@ -2,7 +2,7 @@ version: '{build}'
 shallow_clone: true
 
 platform: x64
-configuration: Debug
+configuration: Release
 
 environment:
   MSBUILD_FLAGS: /verbosity:minimal /maxcpucount
@@ -20,8 +20,8 @@ before_build:
   - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%"
 
 build_script:
-  - cmake --build build --target ALL_BUILD -- %MSBUILD_FLAGS%
+  - cmake --build build --config Release --target ALL_BUILD -- %MSBUILD_FLAGS%
 
 test_script:
-  - cmake --build build --target RUN_TESTS -- %MSBUILD_FLAGS%
+  - cmake --build build --config Release --target RUN_TESTS -- %MSBUILD_FLAGS%
 
