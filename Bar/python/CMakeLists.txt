@@ -26,7 +26,7 @@ swig_add_library(pyBar
 target_include_directories(${SWIG_MODULE_pyBar_REAL_NAME} PRIVATE
 	${PYTHON_INCLUDE_DIRS})
 target_link_libraries(${SWIG_MODULE_pyBar_REAL_NAME} PRIVATE
-	Bar)
+	Bar ${PYTHON_LIBRARY})
 if(UNIX)
 	if(NOT APPLE)
 		set_target_properties(${SWIG_MODULE_pyBar_REAL_NAME} PROPERTIES

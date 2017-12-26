@@ -25,7 +25,7 @@ swig_add_library(pyFooBar
 target_include_directories(${SWIG_MODULE_pyFooBar_REAL_NAME} PRIVATE
 	${PYTHON_INCLUDE_DIRS})
 target_link_libraries(${SWIG_MODULE_pyFooBar_REAL_NAME} PRIVATE
-	FooBar)
+	FooBar ${PYTHON_LIBRARY})
 if(UNIX)
 	if(NOT APPLE)
 		set_target_properties(${SWIG_MODULE_pyFooBar_REAL_NAME} PROPERTIES
