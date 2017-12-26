@@ -29,6 +29,8 @@ before_install:
 
 
 script:
+  - python --version
+  - python -m pip --version
   - cmake --version
   - cmake -H. -Bbuild
   - cmake --build build --target all
