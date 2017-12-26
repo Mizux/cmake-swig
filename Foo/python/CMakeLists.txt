@@ -25,7 +25,7 @@ swig_add_library(pyFoo
 target_include_directories(${SWIG_MODULE_pyFoo_REAL_NAME} PRIVATE
 	${PYTHON_INCLUDE_DIRS})
 target_link_libraries(${SWIG_MODULE_pyFoo_REAL_NAME} PRIVATE
-	Foo ${PYTHON_LIBRARY})
+	Foo ${PYTHON_LIBRARIES})
 if(UNIX)
 	if(NOT APPLE)
 		set_target_properties(${SWIG_MODULE_pyFoo_REAL_NAME} PROPERTIES
