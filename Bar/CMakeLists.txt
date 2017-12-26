@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.8.2)
 project(Bar VERSION 1.0.0 LANGUAGES CXX)
 
 file(GLOB _HDRS "include/bar/*.hpp" "include/bar/*.hxx")

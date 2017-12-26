@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.8.2)
-
 # Setup SWIG
 find_package(SWIG REQUIRED)
 include(UseSWIG)
