@@ -16,6 +16,9 @@ matrix:
   fast_finish: true
 
 before_build:
+  - set PATH=C:\Python36-x64;%PATH%
+  - bash -c "which python"
+  - bash -c "python -V"
   - cmake --version
   - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%"
 
