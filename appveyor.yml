@@ -2,10 +2,10 @@ version: '{build}'
 shallow_clone: true
 
 platform: x64
-configuration: Release
 
 environment:
-  MSBUILD_FLAGS: /verbosity:minimal /maxcpucount
+  MSBUILD_FLAGS:
+  #MSBUILD_FLAGS: /verbosity:minimal /maxcpucount
   matrix:
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
