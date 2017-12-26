@@ -1,20 +1,23 @@
 cmake_minimum_required(VERSION 3.8.2)
-project(Bar)
+project(Bar VERSION 1.0.0 LANGUAGES CXX)
 
-add_library(Bar src/Bar.cpp)
-target_include_directories(Bar PUBLIC
+file(GLOB _HDRS "include/bar/*.hpp" "include/bar/*.hxx")
+file(GLOB _SRCS "src/*.[hc]pp")
+
+add_library(${PROJECT_NAME} ${_HDRS} ${_SRCS})
+target_include_directories(${PROJECT_NAME} PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:include>)
-set_target_properties(Bar PROPERTIES PUBLIC_HEADER "include/bar/Bar.hpp")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER ${_HDRS})
 #target_link_libraries(${PROJECT_NAME} PUBLIC ...)
-add_library(Bar::Bar ALIAS Bar)
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 # Python Wrapper
 add_subdirectory(python)
 
-# install rules
+# Install
 include(GNUInstallDirs)
-install(TARGETS Bar
+install(TARGETS ${PROJECT_NAME}
 	EXPORT ${PROJECT_NAME}Targets
 	INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/bar
@@ -22,6 +25,7 @@ install(TARGETS Bar
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	#RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	)
-install(EXPORT BarTargets
-	NAMESPACE Bar::
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Bar)
+install(EXPORT ${PROJECT_NAME}Targets
+	NAMESPACE ${PROJECT_NAME}::
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+	)

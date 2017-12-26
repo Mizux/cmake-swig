@@ -2,19 +2,21 @@
 cmake_minimum_required(VERSION 3.8.2)
 project(swig_template VERSION 1.0 LANGUAGES NONE)
 
+# Use find_package everywhere, no-op if it's a target
 macro(find_package)
 	if(NOT TARGET "${ARGV0}")
 		_find_package(${ARGV})
 	endif()
 endmacro()
 
+if(POLICY CMP0068)
+	# Don't modify install_name when touching RPATH.
+	cmake_policy(SET CMP0068 NEW)
+endif()
+
 include(CTest)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 if(UNIX)
-	if(APPLE)
-		# Don't modify install_name when touching RPATH.
-		cmake_policy(SET CMP0068 NEW)
-	endif()
 	set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 	option(BUILD_SHARED_LIBS "Build shared libraries(.so)." ON)
 else()
@@ -23,9 +25,10 @@ else()
 endif()
 
 # Setup Python
-set(Python_ADDITIONAL_VERSIONS "3.6;3.5;2.7" CACHE STRING "Supported python")
+set(Python_ADDITIONAL_VERSIONS "3.6;3.5;2.7" CACHE STRING "Python to use for binding")
 enable_language(CXX)
 find_package(PythonInterp REQUIRED)
+# Force PythonLibs to find the same version than the python interpreter.
 set(Python_ADDITIONAL_VERSIONS "${PYTHON_VERSION_STRING}")
 # PythonLibs require enable_language(CXX)
 find_package(PythonLibs REQUIRED)
@@ -34,7 +37,9 @@ add_subdirectory(Foo)
 add_subdirectory(Bar)
 add_subdirectory(FooBar)
 
-# Python Packaging
+#######################
+## Python Packaging  ##
+#######################
 configure_file(__init__.py.in Foo/__init__.py COPYONLY)
 configure_file(__init__.py.in Bar/__init__.py COPYONLY)
 configure_file(__init__.py.in FooBar/__init__.py COPYONLY)
