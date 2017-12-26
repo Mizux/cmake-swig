@@ -93,13 +93,7 @@ add_custom_target(bdist
 # TEST
 # Testing using a vitual environment
 if (BUILD_TESTING)
-	find_program(VENV_EXECUTABLE virtualenv)
-	if (NOT VENV_EXECUTABLE)
-		message(FATAL_ERROR "Could not find virtualenv")
-	else()
-		message(STATUS "Found virtualenv: ${VENV_EXECUTABLE}")
-	endif()
-
+	set(VENV_EXECUTABLE "${PYTHON_EXECUTABLE} -m virtualenv")
 	set(VENV_DIR ${CMAKE_BINARY_DIR}/venv)
 	if (WIN32)
 		set(VENV_BIN_DIR ${VENV_DIR}/Scripts)
