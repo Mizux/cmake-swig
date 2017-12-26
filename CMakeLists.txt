@@ -93,7 +93,7 @@ add_custom_target(bdist
 # TEST
 # Testing using a vitual environment
 if (BUILD_TESTING)
-	set(VENV_EXECUTABLE "${PYTHON_EXECUTABLE} -m virtualenv")
+	set(VENV_EXECUTABLE ${PYTHON_EXECUTABLE} -m virtualenv)
 	set(VENV_DIR ${CMAKE_BINARY_DIR}/venv)
 	if (WIN32)
 		set(VENV_BIN_DIR ${VENV_DIR}/Scripts)
@@ -132,5 +132,5 @@ if (BUILD_TESTING)
     add_test(pytest	${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test.py)
 		set_tests_properties(pytest PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}")
 		# A test can only depends on another test not a target...
-		set_tests_properties(pytest_venv PROPERTIES DEPENDS pyAll)
+		set_tests_properties(pytest PROPERTIES DEPENDS pyAll)
 endif()
