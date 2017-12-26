@@ -1,5 +1,6 @@
 # This file is just an orchestration
 cmake_minimum_required(VERSION 3.8.2)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 project(swig_template VERSION 1.0 LANGUAGES NONE)
 
 # Use find_package everywhere, no-op if it's a target
@@ -22,6 +23,7 @@ if(UNIX)
 else()
 	# Windows only support static build.
  set(BUILD_SHARED_LIBS OFF)
+ include(swig)
 endif()
 
 # Setup Python
