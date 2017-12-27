@@ -1,25 +1,29 @@
 # This file is just an orchestration
 cmake_minimum_required(VERSION 3.9)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-project(swig_template VERSION 1.0 LANGUAGES NONE)
-
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING
+		"Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
+		FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
 # Use find_package everywhere, no-op if it's a target
 macro(find_package)
 	if(NOT TARGET "${ARGV0}")
 		_find_package(${ARGV})
 	endif()
 endmacro()
-
+# Apple: Don't modify install_name when touching RPATH.
 if(POLICY CMP0068)
-	# Don't modify install_name when touching RPATH.
 	cmake_policy(SET CMP0068 NEW)
 endif()
+
+project(swig_template VERSION 1.0 LANGUAGES NONE)
 
 include(CTest)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 if(UNIX)
 	set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-	option(BUILD_SHARED_LIBS "Build shared libraries(.so)." ON)
+	option(BUILD_SHARED_LIBS "Build shared libraries(.so or .dyld)." ON)
 else()
 	# Windows only support static build.
  set(BUILD_SHARED_LIBS OFF)
