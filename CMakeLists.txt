@@ -32,11 +32,11 @@ endif()
 
 # Setup Python
 set(Python_ADDITIONAL_VERSIONS "3.6;3.5;2.7" CACHE STRING "Python to use for binding")
-enable_language(CXX)
 find_package(PythonInterp REQUIRED)
 # Force PythonLibs to find the same version than the python interpreter.
 set(Python_ADDITIONAL_VERSIONS "${PYTHON_VERSION_STRING}")
 # PythonLibs require enable_language(CXX)
+enable_language(CXX)
 find_package(PythonLibs REQUIRED)
 
 add_subdirectory(Foo)
@@ -92,11 +92,12 @@ add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
 add_custom_target(bdist ALL
 	DEPENDS setup.py
   COMMAND ${PYTHON_EXECUTABLE} setup.py bdist
+  COMMAND ${PYTHON_EXECUTABLE} setup.py bdist_wheel
 	)
 
-# TEST
-# Testing using a vitual environment
-if (BUILD_TESTING)
+# Test
+if(BUILD_TESTING)
+  # Testing using a vitual environment
 	set(VENV_EXECUTABLE ${PYTHON_EXECUTABLE} -m virtualenv)
 	set(VENV_DIR ${CMAKE_BINARY_DIR}/venv)
 	if (WIN32)
