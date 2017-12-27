@@ -65,9 +65,9 @@ add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
 	COMMAND ${CMAKE_COMMAND} -E echo "  distclass=BinaryDistribution," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "  packages=find_packages()," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "  package_data={" >> setup.py
-	COMMAND ${CMAKE_COMMAND} -E echo "  'Foo':['$<TARGET_FILE:Foo>','$<TARGET_FILE:_pyFoo>']," >> setup.py
-	COMMAND ${CMAKE_COMMAND} -E echo "  'Bar':['$<TARGET_FILE:Bar>','$<TARGET_FILE:_pyBar>']," >> setup.py
-	COMMAND ${CMAKE_COMMAND} -E echo "  'FooBar':['$<TARGET_FILE:FooBar>','$<TARGET_FILE:_pyFooBar>']," >> setup.py
+	COMMAND ${CMAKE_COMMAND} -E echo "  'Foo':['$<TARGET_FILE_NAME:Foo>','$<TARGET_FILE_NAME:_pyFoo>']," >> setup.py
+	COMMAND ${CMAKE_COMMAND} -E echo "  'Bar':['$<TARGET_FILE_NAME:Bar>','$<TARGET_FILE_NAME:_pyBar>']," >> setup.py
+	COMMAND ${CMAKE_COMMAND} -E echo "  'FooBar':['$<TARGET_FILE_NAME:FooBar>','$<TARGET_FILE_NAME:_pyFooBar>']," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "  }," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "  include_package_data=True," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "  classifiers=[" >> setup.py
