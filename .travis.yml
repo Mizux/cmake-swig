@@ -20,7 +20,7 @@ before_install:
     # work around https://github.com/travis-ci/travis-ci/issues/8363
   - if [ $TRAVIS_OS_NAME == linux ]; then pyenv global system 3.6; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then python3.6 --version; python3.6 -m pip --version; fi
-  - if [ $TRAVIS_OS_NAME == linux ]; then python3.6 -m pip install virtualenv; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then python3.6 -m pip install virtualenv wheel; fi
 
   - if [ $TRAVIS_OS_NAME == osx ]; then sudo chown -R $(whoami) /usr/local; fi
     # work around https://github.com/travis-ci/travis-ci/issues/8552
