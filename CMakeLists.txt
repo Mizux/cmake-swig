@@ -112,6 +112,7 @@ if (BUILD_TESTING)
 		# Let wrap this target in a test (see below)
 		add_test(build_venv "${CMAKE_COMMAND}"
 			--build ${CMAKE_BINARY_DIR}
+			--config $<CONFIG>
 			--target testenv)
 
     # run the tests within the virtualenv
