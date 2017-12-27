@@ -28,7 +28,7 @@ before_install:
   - if [ $TRAVIS_OS_NAME == osx ]; then brew install swig; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then brew install python3; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then python3 --version; python3 -m pip --version; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then python3 -m pip install virtualenv; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then python3 -m pip install virtualenv wheel; fi
 
 
 script:
