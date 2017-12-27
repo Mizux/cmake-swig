@@ -35,5 +35,4 @@ script:
   - cmake --version
   - cmake -H. -Bbuild
   - cmake --build build --target all
-  - cd build && ctest -V --output-on-failure
-    #  - cmake --build build --target test
+  - cmake --build build --target test

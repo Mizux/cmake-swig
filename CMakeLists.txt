@@ -85,7 +85,7 @@ add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
 	COMMAND ${CMAKE_COMMAND} -E echo ")" >> setup.py
 	VERBATIM)
 
-add_custom_target(bdist
+add_custom_target(bdist ALL
 	DEPENDS setup.py
   COMMAND ${PYTHON_EXECUTABLE} setup.py bdist
 	)
@@ -96,42 +96,19 @@ if (BUILD_TESTING)
 	set(VENV_EXECUTABLE ${PYTHON_EXECUTABLE} -m virtualenv)
 	set(VENV_DIR ${CMAKE_BINARY_DIR}/venv)
 	if (WIN32)
-		set(VENV_BIN_DIR ${VENV_DIR}/Scripts)
-    else()
-			set(VENV_BIN_DIR ${VENV_DIR}/bin)
-    endif()
+		set(VENV_BIN_DIR "${VENV_DIR}\\Scripts")
+	else()
+		set(VENV_BIN_DIR ${VENV_DIR}/bin)
+	endif()
+	# make a virtualenv to install our python package in it
+	add_custom_command(TARGET bdist POST_BUILD
+		COMMAND ${VENV_EXECUTABLE} -p ${PYTHON_EXECUTABLE} ${VENV_DIR}
+		COMMAND ${VENV_BIN_DIR}/python setup.py install
+		WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	# run the tests within the virtualenv
+	add_test(pytest_venv ${VENV_BIN_DIR}/python ${CMAKE_CURRENT_SOURCE_DIR}/test.py)
 
-    # make a virtualenv to install our python package in it
-		add_custom_command(
-			OUTPUT ${VENV_DIR}
-			DEPENDS bdist
-			COMMAND ${VENV_EXECUTABLE} -p ${PYTHON_EXECUTABLE} ${VENV_DIR}
-			COMMAND ${VENV_BIN_DIR}/python setup.py install
-			WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-		add_custom_target(testenv DEPENDS ${VENV_DIR})
-		# Let wrap this target in a test (see below)
-		add_test(build_venv "${CMAKE_COMMAND}"
-			--build ${CMAKE_BINARY_DIR}
-			--config $<CONFIG>
-			--target testenv)
-
-    # run the tests within the virtualenv
-    add_test(pytest_venv	${VENV_BIN_DIR}/python ${CMAKE_CURRENT_SOURCE_DIR}/test.py)
-		# A test can only depends on another test not a target...
-		set_tests_properties(pytest_venv PROPERTIES DEPENDS build_venv)
-endif()
-
-# Testing using CMAKE_BINARY_DIR
-if (BUILD_TESTING)
-	add_custom_target(pyAll DEPENDS _pyFoo _pyBar _pyFooBar)
-		# Let wrap this target in a test (see below)
-		add_test(pyAll "${CMAKE_COMMAND}"
-			--build ${CMAKE_BINARY_DIR}
-			--target pyAll )
-
-    # run the tests within the virtualenv
-    add_test(pytest	${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test.py)
-		set_tests_properties(pytest PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}")
-		# A test can only depends on another test not a target...
-		set_tests_properties(pytest PROPERTIES DEPENDS pyAll)
+	# Testing using CMAKE_BINARY_DIR
+	add_test(pytest	${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test.py)
+	set_tests_properties(pytest PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}")
 endif()
