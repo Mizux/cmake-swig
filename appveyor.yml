@@ -19,7 +19,7 @@ before_build:
   - set PATH=C:\Python36-x64;%PATH%
   - bash -c "which python"
   - bash -c "python -V"
-  - bash -c "python -m pip install virtualenv"
+  - bash -c "python -m pip install virtualenv wheel"
   - cmake --version
   - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%"
 
