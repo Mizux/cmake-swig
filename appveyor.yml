@@ -19,6 +19,7 @@ before_build:
   - set PATH=C:\Python36-x64;%PATH%
   - bash -c "which python"
   - bash -c "python -V"
+  - bash -c "python -m pip install virtualenv"
   - cmake --version
   - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%"
 
@@ -26,5 +27,5 @@ build_script:
   - cmake --build build --config Release --target ALL_BUILD -- %MSBUILD_FLAGS%
 
 test_script:
-  - cmake --build build --config Release --target RUN_TESTS -- %MSBUILD_FLAGS%
+  - cd build && ctest -C Release --output-on-failure
 
