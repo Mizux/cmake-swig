@@ -1,5 +1,15 @@
 project(Bar VERSION 1.0.0 LANGUAGES CXX)
 
+if(MSVC)
+# Second, for multi-config builds (e.g. msvc)
+foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+    string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR})
+endforeach()
+endif()
+
 file(GLOB _HDRS "include/bar/*.hpp" "include/bar/*.hxx")
 file(GLOB _SRCS "src/*.[hc]pp")
 
