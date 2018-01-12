@@ -25,7 +25,7 @@ before_install:
       ./configure --prefix $HOME/swig/;
       make;
       make install;
-      export PATH=${HOME}/swig/bin:${PATH}
+      export PATH=${HOME}/swig/bin:${PATH};
       cd $TRAVIS_BUILD_DIR;
     fi
     # work around https://github.com/travis-ci/travis-ci/issues/8363
