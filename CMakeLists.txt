@@ -112,23 +112,31 @@ add_custom_target(bdist ALL
 
 # Test
 if(BUILD_TESTING)
-  # Testing using a vitual environment
-	set(VENV_EXECUTABLE ${PYTHON_EXECUTABLE} -m virtualenv)
-	set(VENV_DIR ${CMAKE_BINARY_DIR}/venv)
-	if (WIN32)
-		set(VENV_BIN_DIR "${VENV_DIR}\\Scripts")
+	# Look for python module virtualenv
+	execute_process(
+		COMMAND ${PYTHON_EXECUTABLE} "-c" "import virtualenv"
+		RESULT_VARIABLE _RESULT
+		ERROR_QUIET
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+		)
+	if(${_RESULT} STREQUAL "0")
+		message(STATUS "Found python module: virtualenv")
+		# Testing using a vitual environment
+		set(VENV_EXECUTABLE ${PYTHON_EXECUTABLE} -m virtualenv)
+		set(VENV_DIR ${CMAKE_BINARY_DIR}/venv)
+		if (WIN32)
+			set(VENV_BIN_DIR "${VENV_DIR}\\Scripts")
+		else()
+			set(VENV_BIN_DIR ${VENV_DIR}/bin)
+		endif()
+		# make a virtualenv to install our python package in it
+		add_custom_command(TARGET bdist POST_BUILD
+			COMMAND ${VENV_EXECUTABLE} -p ${PYTHON_EXECUTABLE} ${VENV_DIR}
+			COMMAND ${VENV_BIN_DIR}/python setup.py install
+			WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+		# run the tests within the virtualenv
+		add_test(pytest_venv ${VENV_BIN_DIR}/python ${CMAKE_CURRENT_SOURCE_DIR}/test.py)
 	else()
-		set(VENV_BIN_DIR ${VENV_DIR}/bin)
+		message(WARNING "Can't find python module: virtualenv")
 	endif()
-	# make a virtualenv to install our python package in it
-	add_custom_command(TARGET bdist POST_BUILD
-		COMMAND ${VENV_EXECUTABLE} -p ${PYTHON_EXECUTABLE} ${VENV_DIR}
-		COMMAND ${VENV_BIN_DIR}/python setup.py install
-		WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-	# run the tests within the virtualenv
-	add_test(pytest_venv ${VENV_BIN_DIR}/python ${CMAKE_CURRENT_SOURCE_DIR}/test.py)
-
-	# Testing using CMAKE_BINARY_DIR
-	add_test(pytest	${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test.py)
-	set_tests_properties(pytest PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}")
 endif()
