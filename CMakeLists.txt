@@ -6,12 +6,24 @@ if(NOT CMAKE_BUILD_TYPE)
 		"Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
 		FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
+
 # Use find_package everywhere, no-op if it's a target
 macro(find_package)
-	if(NOT TARGET "${ARGV0}")
+	if(NOT TARGET ${ARGV0} AND NOT TARGET ${ARGV0}::${ARGV0})
 		_find_package(${ARGV})
+	else()
+		if(TARGET ${ARGV0})
+			get_target_property(TGT_VER ${ARGV0} VERSION)
+			set(TGT ${ARGV0})
+		else()
+			get_target_property(TGT_VER ${ARGV0}::${ARGV0} VERSION)
+			set(TGT ${ARGV0}::${ARGV0})
+		endif()
+		message(STATUS "Found ${ARGV0}: CMake Target ${TGT} (found version \"${TGT_VER}\")")
+		set(${ARGV0}_FOUND TRUE)
 	endif()
 endmacro()
+
 # Apple: Don't modify install_name when touching RPATH.
 if(POLICY CMP0068)
 	cmake_policy(SET CMP0068 NEW)
