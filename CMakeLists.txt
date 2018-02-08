@@ -58,9 +58,9 @@ add_subdirectory(FooBar)
 #######################
 ## Python Packaging  ##
 #######################
-configure_file(__init__.py.in Foo/__init__.py COPYONLY)
-configure_file(__init__.py.in Bar/__init__.py COPYONLY)
-configure_file(__init__.py.in FooBar/__init__.py COPYONLY)
+configure_file(cmake/__init__.py.in Foo/__init__.py COPYONLY)
+configure_file(cmake/__init__.py.in Bar/__init__.py COPYONLY)
+configure_file(cmake/__init__.py.in FooBar/__init__.py COPYONLY)
 
 # To use a cmake generator expression (aka $<>), it must be processed at build time
 # i.e. inside a add_custom_command()
@@ -147,5 +147,5 @@ if(BUILD_TESTING)
 		COMMAND ${VENV_BIN_DIR}/python setup.py install
 		WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 	# run the tests within the virtualenv
-	add_test(pytest_venv ${VENV_BIN_DIR}/python ${CMAKE_CURRENT_SOURCE_DIR}/test.py)
+	add_test(pytest_venv ${VENV_BIN_DIR}/python ${CMAKE_CURRENT_SOURCE_DIR}/cmake/test.py)
 endif()
