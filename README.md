@@ -11,17 +11,17 @@ This project should run on GNU/Linux, MacOS and Windows.
 # Wrapper/Package Status
 ## Python
 - [x] GNU/Linux wrapper
-- [x] macOS wrapper
+- [x] MacOS wrapper
 - [x] Windows wrapper
 
 ## Dotnet
 - [ ] GNU/Linux wrapper
-- [ ] macOS wrapper
+- [ ] MacOS wrapper
 - [ ] Windows wrapper
 
 ## Java
 - [ ] GNU/Linux wrapper
-- [ ] macOS wrapper
+- [ ] MacOS wrapper
 - [ ] Windows wrapper
 
 # CMake Dependencies Tree
