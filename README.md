@@ -4,23 +4,23 @@
 # Introduction
 
 This is an example of how to create a Modern [CMake](https://cmake.org/) C++ Project
-with the [SWIG](http://www.swig.org) code generator.  
+with the [SWIG](http://www.swig.org) code generator to generate package for Python, .Net and Java.  
 
 This project should run on Linux, Mac and Windows.
 
-# Wrapper Status
+# Wrapper/Package Status
 ## Python
-- [x] GNU/Linux Python wrapper
+- [x] GNU/Linux wrapper
 - [x] macOS wrapper
 - [x] Windows wrapper
 
 ## Dotnet
-- [ ] GNU/Linux Python wrapper
+- [ ] GNU/Linux wrapper
 - [ ] macOS wrapper
 - [ ] Windows wrapper
 
 ## Java
-- [ ] GNU/Linux Python wrapper
+- [ ] GNU/Linux wrapper
 - [ ] macOS wrapper
 - [ ] Windows wrapper
 
