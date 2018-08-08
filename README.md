@@ -8,9 +8,21 @@ with the [SWIG](http://www.swig.org) code generator.
 
 This project should run on Linux, Mac and Windows.
 
-note: Currently, only Python wrapper is tested (under Linux).  
+# Wrapper Status
+## Python
+- [x] GNU/Linux Python wrapper
+- [x] macOS wrapper
+- [x] Windows wrapper
 
-roadmap: add java and csharp SWIG and test under Mac and Windows also.
+## Dotnet
+- [ ] GNU/Linux Python wrapper
+- [ ] macOS wrapper
+- [ ] Windows wrapper
+
+## Java
+- [ ] GNU/Linux Python wrapper
+- [ ] macOS wrapper
+- [ ] Windows wrapper
 
 # CMake Dependencies Tree
 To complexify a little, the CMake project is composed of three libraries (Foo, Bar and FooBar)
