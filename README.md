@@ -6,7 +6,7 @@
 This is an example of how to create a Modern [CMake](https://cmake.org/) C++ Project
 with the [SWIG](http://www.swig.org) code generator to generate package for Python, .Net and Java.  
 
-This project should run on Linux, Mac and Windows.
+This project should run on GNU/Linux, MacOS and Windows.
 
 # Wrapper/Package Status
 ## Python
