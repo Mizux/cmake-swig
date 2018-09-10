@@ -10,17 +10,17 @@ endif()
 # Force default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
-		"Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
+    "Choose the type of build, options are: Debug, Release (default), RelWithDebInfo and MinSizeRel."
 		FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
 
-# Usage find_target(TARGET_NAME TARGET_PACKAGE [PACKAGE OPTIONS]).
-# e.g.: find_target(protobuf::libprotobuf Protobuf REQUIRED)
-macro(find_target TARGET_NAME TARGET_PACKAGE)
-	if(TARGET ${TARGET_NAME})
-		get_target_property(TGT_VERSION ${TARGET_NAME} VERSION)
-		message(STATUS "Found Target: ${TARGET_NAME} (found version \"${TGT_VERSION}\")")
-		set(${TARGET_PACKAGE}_FOUND TRUE)
+# Usage find_package(TARGET_PACKAGE [PACKAGE OPTIONS]).
+# e.g.: find_target(Protobuf REQUIRED)
+macro(find_package TARGET_PACKAGE)
+  if(TARGET CMakeSwig::${TARGET_PACKAGE})
+		get_target_property(TGT_VERSION CMakeSwig::${TARGET_PACKAGE} VERSION)
+		message(STATUS "Found Target: CMakeSwig::${TARGET_PACKAGE} (found version \"${TGT_VERSION}\")")
+    set(${TARGET_PACKAGE}_FOUND TRUE PARENT_SCOPE)
 	else()
 		find_package(${TARGET_PACKAGE} ${ARGN})
 	endif()
@@ -34,8 +34,10 @@ if(UNIX)
 	set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 	option(BUILD_SHARED_LIBS "Build shared libraries(.so or .dyld)." ON)
 else()
-	# Only support static build.for windows
+	# Only support static build for windows
+  # ToDo: Play with dll import/export
  set(BUILD_SHARED_LIBS OFF)
+ # build swig
  include(swig)
 endif()
 

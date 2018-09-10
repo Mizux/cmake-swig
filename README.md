@@ -9,7 +9,12 @@ with the [SWIG](http://www.swig.org) code generator to generate package for Pyth
 This project should run on GNU/Linux, MacOS and Windows.
 
 # Wrapper/Package Status
-## Python
+## Python2
+- [x] GNU/Linux wrapper
+- [x] MacOS wrapper
+- [x] Windows wrapper
+
+## Python3
 - [x] GNU/Linux wrapper
 - [x] MacOS wrapper
 - [x] Windows wrapper
@@ -30,7 +35,7 @@ with the following dependencies:
 ```sh
 Foo:
 Bar:
-FooBar: PRIVATE Foo Bar
+FooBar: PUBLIC Foo PRIVATE Bar
 ```
 ## Project directory layout
 Thus the project layout is as follow:

@@ -10,8 +10,8 @@ foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
 endforeach()
 endif()
 
-find_target(CMakeSwig::Foo CMakeSwig REQUIRED)
-find_target(CMakeSwig::Bar CMakeSwig REQUIRED)
+find_package(Foo CONFIG REQUIRED)
+find_package(Bar CONFIG REQUIRED)
 
 file(GLOB _HDRS "include/foobar/*.hpp" "include/foobar/*.hxx")
 file(GLOB _SRCS "src/*.[hc]pp")
