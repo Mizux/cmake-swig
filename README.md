@@ -4,7 +4,7 @@
 # Introduction
 
 This is an example of how to create a Modern [CMake](https://cmake.org/) C++ Project
-with the [SWIG](http://www.swig.org) code generator to generate package for Python, .Net and Java.  
+with the [SWIG](http://www.swig.org) code generator to generate wrapper and package for Python, .Net and Java.  
 
 This project should run on GNU/Linux, MacOS and Windows.
 
@@ -40,13 +40,20 @@ FooBar: PUBLIC Foo PRIVATE Bar
 ## Project directory layout
 Thus the project layout is as follow:
 ```sh
- CMakeLists.txt // meta CMake doing the orchestration and python packaging
+ CMakeLists.txt // Meta CMake file doing the orchestration
+ cmake // Subsidiary CMake files
  Foo
  ├── CMakeLists.txt
  ├── include
  │   └── foo
  │       └── Foo.hpp
  ├── python
+ │   ├── CMakeLists.txt
+ │   └── foo.i
+ ├── dotnet
+ │   ├── CMakeLists.txt
+ │   └── foo.i
+ ├── java
  │   ├── CMakeLists.txt
  │   └── foo.i
  └── src
@@ -57,8 +64,14 @@ Thus the project layout is as follow:
  │   └── bar
  │       └── Bar.hpp
  ├── python
- │   ├── bar.i
- │   └── CMakeLists.txt
+ │   ├── CMakeLists.txt
+ │   └── bar.i
+ ├── dotnet
+ │   ├── CMakeLists.txt
+ │   └── bar.i
+ ├── java
+ │   ├── CMakeLists.txt
+ │   └── bar.i
  └── src
      └── Bar.cpp
  FooBar
@@ -69,6 +82,12 @@ Thus the project layout is as follow:
  ├── python
  │   ├── CMakeLists.txt
  │   └── foobar.i
+ ├── dotnet
+ │   ├── CMakeLists.txt
+ │   └── foobar.i
+ ├── java
+ │   ├── CMakeLists.txt
+ │   └── foobar.i
  └── src
      ├── FooBar.cpp
      └── main.cpp
@@ -77,34 +96,13 @@ Thus the project layout is as follow:
 # C++ Project Build
 To build the C++ project, as usual:
 ```sh
-mkdir build && cd build
-cmake ..
-make
+cmake -H. -Bbuild
+cmake --build build --target all
 ```
 note: SWIG automatically put its target(s) in `all`, thus `make` will also call
 swig and generate `_module.so`.
 
-# Python
-## Build directory layout
-Since we want to use the [CMAKE_BINARY_DIR](https://cmake.org/cmake/help/latest/variable/CMAKE_BINARY_DIR.html) to generate the python binary package.  
-We want this layout (tree build --prune -P "*.py|*.so"):
-```sh
- Bar
- ├── __init__.py
- ├── libBar.so
- ├── pyBar.py
- └── _pyBar.so
- Foo
- ├── __init__.py
- ├── libFoo.so
- ├── pyFoo.py
- └── _pyFoo.so
- FooBar
- ├── __init__.py
- ├── libFooBar.so
- ├── pyFooBar.py
- └── _pyFooBar.so
-```
+# SWIG Wrapper Generation
 
 ## Build the Binary Package
 To build the python package, simply run:
