@@ -2,8 +2,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/a8pir5oh0gpt2q5u/branch/master?svg=true)](https://ci.appveyor.com/project/Mizux/cmake-swig/branch/master)
 
 # Introduction
-
-This is an example of how to create a Modern [CMake](https://cmake.org/) C++ Project
+This is a complete example of how to create a Modern [CMake](https://cmake.org/) C++ Project
 with the [SWIG](http://www.swig.org) code generator to generate wrapper and package for Python, .Net and Java.  
 
 This project should run on GNU/Linux, MacOS and Windows.
@@ -95,7 +94,7 @@ Thus the project layout is as follow:
 
 # C++ Project Build
 To build the C++ project, as usual:
-```sh
+```shell
 cmake -H. -Bbuild
 cmake --build build --target all
 ```
@@ -103,15 +102,7 @@ note: SWIG automatically put its target(s) in `all`, thus `make` will also call
 swig and generate `_module.so`.
 
 # SWIG Wrapper Generation
-
-## Build the Binary Package
-To build the python package, simply run:
-```sh
-make bdist
-```
-
-## Tips
-While running swig to generate Python wrapper it's easy thanks to
+Using swig to generate wrapper it's easy thanks to
 [UseSWIG](https://cmake.org/cmake/help/latest/module/UseSWIG.html) module.  
 
 Creating a Python binary package containing all `.py` and `.so` (with good rpath) is not so easy... 
@@ -144,12 +135,12 @@ And have a finely tailored rpath for each library.
 
 For Foo/CMakeLists.txt (which depend on nothing):
 ```cmake
-set(CMAKE_INSTALL_RPATH "$ORIGIN/")
+set(CMAKE_INSTALL_RPATH "$ORIGIN")
 ```
 
 For FooBar/CMakeLists.txt (which depend on Foo & Bar):
 ```cmake
-set(CMAKE_INSTALL_RPATH "$ORIGIN/../Foo:$ORIGIN/../Bar:$ORIGIN/")
+set(CMAKE_INSTALL_RPATH "$ORIGIN:$ORIGIN/../Foo:$ORIGIN/../Bar")
 ```
 
 note: you allways need `$ORIGIN/` since `_pyFoo.so` will depend on `libFoo.so`

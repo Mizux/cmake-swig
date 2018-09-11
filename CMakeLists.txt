@@ -14,22 +14,10 @@ if(NOT CMAKE_BUILD_TYPE)
 		FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
 
-# Usage find_package(TARGET_PACKAGE [PACKAGE OPTIONS]).
-# e.g.: find_target(Protobuf REQUIRED)
-macro(find_package TARGET_PACKAGE)
-  if(TARGET CMakeSwig::${TARGET_PACKAGE})
-		get_target_property(TGT_VERSION CMakeSwig::${TARGET_PACKAGE} VERSION)
-		message(STATUS "Found Target: CMakeSwig::${TARGET_PACKAGE} (found version \"${TGT_VERSION}\")")
-    set(${TARGET_PACKAGE}_FOUND TRUE PARENT_SCOPE)
-	else()
-		find_package(${TARGET_PACKAGE} ${ARGN})
-	endif()
-endmacro()
+project(CMakeSwig VERSION 1.0 LANGUAGES NONE)
 
-project(meta VERSION 1.0 LANGUAGES NONE)
-
-include(CTest)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+include(util)
+option(CMAKE_VERBOSE_MAKEFILE ON)
 if(UNIX)
 	set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 	option(BUILD_SHARED_LIBS "Build shared libraries(.so or .dyld)." ON)
@@ -37,19 +25,15 @@ else()
 	# Only support static build for windows
   # ToDo: Play with dll import/export
  set(BUILD_SHARED_LIBS OFF)
- # build swig
  include(swig)
 endif()
 
-# Setup Python
-set(Python_ADDITIONAL_VERSIONS "3.7;3.6;3.5;2.7" CACHE STRING "Python to use for binding")
-find_package(PythonInterp REQUIRED)
-# Force PythonLibs to find the same version than the python interpreter.
-set(Python_ADDITIONAL_VERSIONS "${PYTHON_VERSION_STRING}")
-# PythonLibs require enable_language(CXX)
-enable_language(CXX)
-find_package(PythonLibs REQUIRED)
+option(BUILD_PYTHON "Build Python Package" ON)
+if(BUILD_PYTHON)
+  include(python)
+endif()
 
+include(CTest)
 add_subdirectory(Foo)
 add_subdirectory(Bar)
 add_subdirectory(FooBar)
@@ -99,25 +83,6 @@ add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
 	COMMAND ${CMAKE_COMMAND} -E echo "  ]," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo ")" >> setup.py
 	VERBATIM)
-
-function(search_python_module MODULE_NAME)
-	execute_process(
-		COMMAND ${PYTHON_EXECUTABLE} -c "import ${MODULE_NAME}; print(${MODULE_NAME}.__version__)"
-		RESULT_VARIABLE _RESULT
-		OUTPUT_VARIABLE MODULE_VERSION
-		ERROR_QUIET
-		OUTPUT_STRIP_TRAILING_WHITESPACE
-		)
-	if(${_RESULT} STREQUAL "0")
-		message(STATUS "Found python module: ${MODULE_NAME} (found version \"${MODULE_VERSION}\")")
-	else()
-		message(WARNING "Can't find python module \"${MODULE_NAME}\", install it using pip...")
-		execute_process(
-			COMMAND ${PYTHON_EXECUTABLE} -m pip install ${MODULE_NAME}
-			OUTPUT_STRIP_TRAILING_WHITESPACE
-			)
-	endif()
-endfunction()
 
 # Look for python module wheel
 search_python_module(wheel)
