@@ -23,7 +23,6 @@ matrix:
       dist: trusty
       compiler: gcc
       env: LANGUAGE=java
-
 # OSX
     - os: osx
       compiler: clang
@@ -46,7 +45,7 @@ before_install:
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get -qq update; fi
     # apt-get only have swig 2.0.11
   - if [ $TRAVIS_OS_NAME == linux ]; then
-    cd /tmp/;
+      cd /tmp/;
       curl -s -J -O -k -L 'https://sourceforge.net/projects/swig/files/swig/swig-3.0.12/swig-3.0.12.tar.gz/download';
       tar zxf swig-3.0.12.tar.gz;
       cd swig-3.0.12;
@@ -57,47 +56,46 @@ before_install:
       cd $TRAVIS_BUILD_DIR;
     fi
   - if [[ $TRAVIS_OS_NAME == linux && $LANGUAGE == python2 ]]; then
-    # work around https://github.com/travis-ci/travis-ci/issues/8363
-    pyenv global system 2.7;
-    python2.7 --version;
-    python2.7 -m pip --version;
-    python2.7 -m pip install virtualenv wheel six;
+      # work around https://github.com/travis-ci/travis-ci/issues/8363
+      pyenv global system 2.7;
+      python2.7 --version;
+      python2.7 -m pip --version;
+      python2.7 -m pip install virtualenv wheel six;
     fi
   - if [[ $TRAVIS_OS_NAME == linux && $LANGUAGE == python3 ]]; then
-    # work around https://github.com/travis-ci/travis-ci/issues/8363
-    pyenv global system 3.6;
-    python3.6 --version;
-    python3.6 -m pip --version;
-    python3.6 -m pip install virtualenv wheel six;
+      # work around https://github.com/travis-ci/travis-ci/issues/8363
+      pyenv global system 3.6;
+      python3.6 --version;
+      python3.6 -m pip --version;
+      python3.6 -m pip install virtualenv wheel six;
     fi
-
   - if [ $TRAVIS_OS_NAME == osx ]; then
-    sudo chown -R $(whoami) /usr/local;
-    # work around https://github.com/travis-ci/travis-ci/issues/8552
-    brew update;
-    brew install swig;
+      sudo chown -R $(whoami) /usr/local;
+      # work around https://github.com/travis-ci/travis-ci/issues/8552
+      brew update;
+      brew install swig;
     fi
   - if [[ $TRAVIS_OS_NAME == osx && $LANGUAGE == python2 ]]; then
-    brew install python@2;
-    python2 --version;
-    python2 -m pip --version;
-    python2 -m pip install virtualenv wheel;
+      brew install python@2;
+      python2 --version;
+      python2 -m pip --version;
+      python2 -m pip install virtualenv wheel;
     fi
   - if [[ $TRAVIS_OS_NAME == osx && $LANGUAGE == python3 ]]; then
-    brew upgrade python;
-    python3 --version;
-    python3 -m pip --version;
-    python3 -m pip install virtualenv wheel;
+      brew upgrade python;
+      python3 --version;
+      python3 -m pip --version;
+      python3 -m pip install virtualenv wheel;
     fi
 
 script:
   - cmake --version
   - swig -version
   - if [[ $LANGUAGE == python2 || $LANGUAGE == python3 ]]; then
-    python --version
+      python --version;
     fi
   - if [[ $LANGUAGE == dotnet ]]; then
-    dotnet --info
+      dotnet --info;
     fi
   - cmake -H. -Bbuild
   - cmake --build build --target all
