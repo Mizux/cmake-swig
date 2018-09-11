@@ -2,7 +2,6 @@ sudo: required
 language: cpp
 matrix:
   include:
-# GNU/Linux
     - os: linux
       dist: trusty
       compiler: gcc
@@ -23,7 +22,6 @@ matrix:
       dist: trusty
       compiler: gcc
       env: LANGUAGE=java
-# OSX
     - os: osx
       compiler: clang
       env: LANGUAGE=cpp
@@ -55,23 +53,23 @@ before_install:
       export PATH=${HOME}/swig/bin:${PATH};
       cd $TRAVIS_BUILD_DIR;
     fi
+    # work around https://github.com/travis-ci/travis-ci/issues/8363
   - if [[ $TRAVIS_OS_NAME == linux && $LANGUAGE == python2 ]]; then
-      # work around https://github.com/travis-ci/travis-ci/issues/8363
       pyenv global system 2.7;
       python2.7 --version;
       python2.7 -m pip --version;
       python2.7 -m pip install virtualenv wheel six;
     fi
+    # work around https://github.com/travis-ci/travis-ci/issues/8363
   - if [[ $TRAVIS_OS_NAME == linux && $LANGUAGE == python3 ]]; then
-      # work around https://github.com/travis-ci/travis-ci/issues/8363
       pyenv global system 3.6;
       python3.6 --version;
       python3.6 -m pip --version;
       python3.6 -m pip install virtualenv wheel six;
     fi
+    # work around https://github.com/travis-ci/travis-ci/issues/8552
   - if [ $TRAVIS_OS_NAME == osx ]; then
       sudo chown -R $(whoami) /usr/local;
-      # work around https://github.com/travis-ci/travis-ci/issues/8552
       brew update;
       brew install swig;
     fi
