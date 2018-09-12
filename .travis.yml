@@ -41,7 +41,7 @@ matrix:
 before_install:
   - eval "${MATRIX_EVAL}"
     # apt-get only have swig 2.0.11
-  - if [ $TRAVIS_OS_NAME == linux ]; then
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       sudo apt-get -qq update;
       cd /tmp/;
       curl -s -J -O -k -L 'https://sourceforge.net/projects/swig/files/swig/swig-3.0.12/swig-3.0.12.tar.gz/download';
@@ -54,20 +54,20 @@ before_install:
       cd $TRAVIS_BUILD_DIR;
     fi
     # work around https://github.com/travis-ci/travis-ci/issues/8363
-  - if [[ $TRAVIS_OS_NAME == linux && $LANGUAGE == python2 ]]; then
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$LANGUAGE" == "python2" ]]; then
       pyenv global system 2.7;
       python2.7 --version;
       python2.7 -m pip --version;
       python2.7 -m pip install virtualenv wheel six;
     fi
     # work around https://github.com/travis-ci/travis-ci/issues/8363
-  - if [[ $TRAVIS_OS_NAME == linux && $LANGUAGE == python3 ]]; then
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$LANGUAGE" == "python3" ]]; then
       pyenv global system 3.6;
       python3.6 --version;
       python3.6 -m pip --version;
       python3.6 -m pip install virtualenv wheel six;
     fi
-  - if [[ $TRAVIS_OS_NAME == linux && $LANGUAGE == dotnet ]]; then
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$LANGUAGE" == "dotnet" ]]; then
       sudo apt-get install -yq apt-transport-https;
       curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg;
       sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg;
@@ -76,41 +76,53 @@ before_install:
       sudo apt-get -qq update;
       sudo apt-get install -yq dotnet-sdk-2.1;
     fi
-  - if [[ $TRAVIS_OS_NAME == linux && $LANGUAGE == java ]]; then
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$LANGUAGE" == "java" ]]; then
       java -version;
     fi
 
     # work around https://github.com/travis-ci/travis-ci/issues/8552
-  - if [ $TRAVIS_OS_NAME == osx ]; then
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
       sudo chown -R $(whoami) /usr/local;
       brew update;
       brew install swig;
     fi
-  - if [[ $TRAVIS_OS_NAME == osx && $LANGUAGE == python2 ]]; then
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$LANGUAGE" == "python2" ]]; then
       brew install python@2;
       python2 --version;
       python2 -m pip --version;
       python2 -m pip install virtualenv wheel;
     fi
-  - if [[ $TRAVIS_OS_NAME == osx && $LANGUAGE == python3 ]]; then
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$LANGUAGE" == "python3" ]]; then
       brew upgrade python;
       python3 --version;
       python3 -m pip --version;
       python3 -m pip install virtualenv wheel;
     fi
-  - if [[ $TRAVIS_OS_NAME == osx && $LANGUAGE == dotnet ]]; then
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$LANGUAGE" == "dotnet" ]]; then
       brew cask install dotnet-sdk;
     fi
-  - if [[ $TRAVIS_OS_NAME == osx && $LANGUAGE == java ]]; then
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$LANGUAGE" == "java" ]]; then
       brew cask install java;
     fi
 
 script:
   - cmake --version
-  - if [[ "$LANGUAGE" == "cpp" ]]; then cmake -H. -Bbuild; fi
-  - if [[ "$LANGUAGE" != "cpp" ]]; then swig -version; fi
-  - if [[ $LANGUAGE == python2 || $LANGUAGE == python3 ]]; then python --version; cmake -H. -Bbuild -DENABLE_PYTHON=ON; fi
-  - if [[ $LANGUAGE == dotnet ]]; then dotnet --info; cmake -H. -Bbuild -DENABLE_DOTNET=ON; fi
-  - if [[ $LANGUAGE == java ]]; then java -version; cmake -H. -Bbuild -DENABLE_JAVA=ON; fi
+  - if [[ "$LANGUAGE" == "cpp" ]]; then
+      cmake -H. -Bbuild;
+    else
+      swig -version;
+    fi
+  - if [[ "$LANGUAGE" == "python2" || "$LANGUAGE" == "python3" ]]; then
+      python --version;
+      cmake -H. -Bbuild -DENABLE_PYTHON=ON;
+    fi
+  - if [[ "$LANGUAGE" == "dotnet" ]]; then
+      dotnet --info;
+      cmake -H. -Bbuild -DENABLE_DOTNET=ON;
+    fi
+  - if [[ "$LANGUAGE" == "java" ]]; then
+      java -version;
+      cmake -H. -Bbuild -DENABLE_JAVA=ON;
+    fi
   - cmake --build build --target all
   - cmake --build build --target test
