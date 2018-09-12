@@ -56,6 +56,7 @@ before_install:
     # work around https://github.com/travis-ci/travis-ci/issues/8363
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$LANGUAGE" == "python2" ]]; then
       pyenv global system 2.7;
+      python --version;
       python2.7 --version;
       python2.7 -m pip --version;
       python2.7 -m pip install virtualenv wheel six;
@@ -63,6 +64,7 @@ before_install:
     # work around https://github.com/travis-ci/travis-ci/issues/8363
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$LANGUAGE" == "python3" ]]; then
       pyenv global system 3.6;
+      python --version;
       python3.6 --version;
       python3.6 -m pip --version;
       python3.6 -m pip install virtualenv wheel six;
