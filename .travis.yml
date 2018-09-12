@@ -40,14 +40,14 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}"
-  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get -qq update; fi
     # apt-get only have swig 2.0.11
   - if [ $TRAVIS_OS_NAME == linux ]; then
+      sudo apt-get -qq update;
       cd /tmp/;
       curl -s -J -O -k -L 'https://sourceforge.net/projects/swig/files/swig/swig-3.0.12/swig-3.0.12.tar.gz/download';
       tar zxf swig-3.0.12.tar.gz;
       cd swig-3.0.12;
-      ./configure --prefix $HOME/swig/;
+      ./configure --prefix ${HOME}/swig/;
       make;
       make install;
       export PATH=${HOME}/swig/bin:${PATH};
@@ -67,6 +67,16 @@ before_install:
       python3.6 -m pip --version;
       python3.6 -m pip install virtualenv wheel six;
     fi
+  - if [[ $TRAVIS_OS_NAME == linux && $LANGUAGE == dotnet ]]; then
+      sudo apt-get install -yq apt-transport-https;
+      curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg;
+      sudo apt-get -qq update;
+      sudo apt-get install -yq dotnet-sdk-2.1;
+    fi
+  - if [[ $TRAVIS_OS_NAME == linux && $LANGUAGE == java ]]; then
+      java -version;
+    fi
+
     # work around https://github.com/travis-ci/travis-ci/issues/8552
   - if [ $TRAVIS_OS_NAME == osx ]; then
       sudo chown -R $(whoami) /usr/local;
@@ -85,16 +95,19 @@ before_install:
       python3 -m pip --version;
       python3 -m pip install virtualenv wheel;
     fi
+  - if [[ $TRAVIS_OS_NAME == osx && $LANGUAGE == dotnet ]]; then
+      brew cask install dotnet-sdk;
+    fi
+  - if [[ $TRAVIS_OS_NAME == osx && $LANGUAGE == java ]]; then
+      brew cask install java;
+    fi
 
 script:
   - cmake --version
-  - swig -version
-  - if [[ $LANGUAGE == python2 || $LANGUAGE == python3 ]]; then
-      python --version;
-    fi
-  - if [[ $LANGUAGE == dotnet ]]; then
-      dotnet --info;
-    fi
-  - cmake -H. -Bbuild
+  - if [[ "$LANGUAGE" == "cpp" ]]; then cmake -H. -Bbuild; fi
+  - if [[ "$LANGUAGE" != "cpp" ]]; then swig -version; fi
+  - if [[ $LANGUAGE == python2 || $LANGUAGE == python3 ]]; then python --version; cmake -H. -Bbuild -DENABLE_PYTHON=ON; fi
+  - if [[ $LANGUAGE == dotnet ]]; then dotnet --info; cmake -H. -Bbuild -DENABLE_DOTNET=ON; fi
+  - if [[ $LANGUAGE == java ]]; then java -version; cmake -H. -Bbuild -DENABLE_JAVA=ON; fi
   - cmake --build build --target all
   - cmake --build build --target test
