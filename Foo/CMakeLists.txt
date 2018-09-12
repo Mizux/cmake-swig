@@ -21,7 +21,17 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 add_library(CMakeSwig::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 # Python Wrapper
-add_subdirectory(python)
+if(BUILD_PYTHON)
+  add_subdirectory(python)
+endif()
+# .Net Wrapper
+if(BUILD_DOTNET)
+  add_subdirectory(dotnet)
+endif()
+# Java Wrapper
+if(BUILD_JAVA)
+  add_subdirectory(java)
+endif()
 
 # Install
 include(GNUInstallDirs)

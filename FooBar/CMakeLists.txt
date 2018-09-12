@@ -16,9 +16,8 @@ find_package(Bar CONFIG REQUIRED)
 file(GLOB _HDRS "include/foobar/*.hpp" "include/foobar/*.hxx")
 file(GLOB _SRCS "src/*.[hc]pp")
 
-#add_executable(${PROJECT_NAME} ${_HDRS} ${_SRCS})
 add_library(${PROJECT_NAME} ${_HDRS} src/FooBar.cpp)
-target_include_directories(${PROJECT_NAME} PRIVATE
+target_include_directories(${PROJECT_NAME} PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:include>)
 set_target_properties(FooBar PROPERTIES PUBLIC_HEADER ${_HDRS})
@@ -29,11 +28,24 @@ elseif(UNIX AND NOT APPLE)
 	set_target_properties(${PROJECT_NAME} PROPERTIES
 		INSTALL_RPATH "$ORIGIN/../Foo:$ORIGIN/../Bar:$ORIGIN")
 endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  VERSION ${PROJECT_VERSION}
+  PUBLIC_HEADER "include/foobar/FooBar.hpp")
 target_link_libraries(${PROJECT_NAME} PUBLIC CMakeSwig::Foo PRIVATE CMakeSwig::Bar)
 add_library(CMakeSwig::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
-# Add Python Wrapper
-add_subdirectory(python)
+# Python Wrapper
+if(BUILD_PYTHON)
+  add_subdirectory(python)
+endif()
+# .Net Wrapper
+if(BUILD_DOTNET)
+  add_subdirectory(dotnet)
+endif()
+# Java Wrapper
+if(BUILD_JAVA)
+  add_subdirectory(java)
+endif()
 
 # Install
 include(GNUInstallDirs)

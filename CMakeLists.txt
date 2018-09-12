@@ -46,6 +46,7 @@ include(CTest)
 add_subdirectory(Foo)
 add_subdirectory(Bar)
 add_subdirectory(FooBar)
+add_subdirectory(FooBarApp)
 
 if(BUILD_PYTHON)
   #######################
