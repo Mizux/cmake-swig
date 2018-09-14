@@ -1,5 +1,7 @@
 # Find Python Interpreter
 # prefer Python 3.7 over 3.6 over ...
+# user can overwrite it e.g.:
+# cmake -H. -Bbuild -DBUILD_PYTHON=ON -DPython_ADDITIONAL_VERSIONS="2.7"
 set(Python_ADDITIONAL_VERSIONS "3.7;3.6;3.5;2.7" CACHE STRING "Python to use for binding")
 find_package(PythonInterp REQUIRED)
 message(STATUS "Found Python: ${PYTHON_EXECUTABLE} (found version \"${PYTHON_VERSION_STRING}\")")
@@ -31,4 +33,3 @@ function(search_python_module MODULE_NAME)
 			)
 	endif()
 endfunction()
-

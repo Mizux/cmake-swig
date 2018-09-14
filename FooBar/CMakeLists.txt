@@ -31,7 +31,9 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER "include/foobar/FooBar.hpp")
-target_link_libraries(${PROJECT_NAME} PUBLIC CMakeSwig::Foo PRIVATE CMakeSwig::Bar)
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE CMakeSwig::Foo
+  PRIVATE CMakeSwig::Bar)
 add_library(CMakeSwig::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 # Python Wrapper
