@@ -23,17 +23,16 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 set_target_properties(FooBar PROPERTIES PUBLIC_HEADER ${_HDRS})
 if(APPLE)
 	set_target_properties(${PROJECT_NAME} PROPERTIES
-		INSTALL_RPATH "@loader_path/../Foo;@loader_path/../Bar;@loader_path")
+		INSTALL_RPATH "@loader_path")
 elseif(UNIX AND NOT APPLE)
 	set_target_properties(${PROJECT_NAME} PROPERTIES
-		INSTALL_RPATH "$ORIGIN/../Foo:$ORIGIN/../Bar:$ORIGIN")
+		INSTALL_RPATH "$ORIGIN")
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER "include/foobar/FooBar.hpp")
 target_link_libraries(${PROJECT_NAME}
-  PRIVATE CMakeSwig::Foo
-  PRIVATE CMakeSwig::Bar)
+  PRIVATE CMakeSwig::Foo CMakeSwig::Bar)
 add_library(CMakeSwig::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 # Python Wrapper

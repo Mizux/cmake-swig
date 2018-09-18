@@ -15,10 +15,10 @@ find_package(FooBar CONFIG REQUIRED)
 add_executable(${PROJECT_NAME} src/main.cpp)
 if(APPLE)
 	set_target_properties(${PROJECT_NAME} PROPERTIES
-    INSTALL_RPATH "@loader_path/../FooBar;@loader_path/../lib")
+    INSTALL_RPATH "@loader_path/../lib")
 elseif(UNIX AND NOT APPLE)
 	set_target_properties(${PROJECT_NAME} PROPERTIES
-		INSTALL_RPATH "$ORIGIN/../FooBar:$ORIGIN/../lib")
+		INSTALL_RPATH "$ORIGIN/../lib")
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION})
