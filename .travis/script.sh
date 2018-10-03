@@ -12,7 +12,7 @@ fi
 #################
 cmake --version
 if [[ "$LANGUAGE" == "cpp" ]]; then
-  cmake -H. -Bbuild
+  LDFLAGS=-v cmake -H. -Bbuild
 elif [[ "$LANGUAGE" == "python2" ]]; then
   python --version
   cmake -H. -Bbuild -DBUILD_PYTHON=ON -DPython_ADDITIONAL_VERSIONS=2.7
