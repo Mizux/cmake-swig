@@ -2,12 +2,19 @@
 
 #include <string>
 
+//! @namespace foo The Foo namespace
 namespace foo {
-  void fooHello();
+//! @brief Free function in foo namespace.
+//! @param[in] level Scope level.
+void fooHello(int level);
 
-	class Foo {
-		public:
-			std::string operator()() const;
-	};
-}
+//! @brief Class Foo.
+class Foo {
+ public:
+  //! @brief Static method of Foo class.
+  //! @param[in] level Scope level.
+  static void hello(int level);
 
+  std::string operator()() const;
+};
+}  // namespace foo

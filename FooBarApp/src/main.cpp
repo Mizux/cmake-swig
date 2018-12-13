@@ -1,8 +1,7 @@
 #include <foobar/FooBar.hpp>
 
 int main(int argc, char** argv) {
-	foobar::FooBar tmp;
-	tmp();
+  foobar::FooBar::hello(1);
 
-	return 0;
+  return 0;
 }

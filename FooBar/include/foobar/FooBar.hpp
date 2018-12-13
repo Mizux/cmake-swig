@@ -1,11 +1,18 @@
 #pragma once
 
+//! @namespace foobar The Foobar namespace.
 namespace foobar {
-  void fooBarHello();
+//! @brief Free function in foobar namespace
+//! @param[in] level Scope level.
+void foobarHello(int level);
 
-	class FooBar {
-		public:
-			void operator()() const;
-	};
-}
+//! @brief Class FooBar.
+class FooBar {
+ public:
+  //! @brief Static method of FooBar class.
+  //! @param[in] level Scope level.
+  static void hello(int level);
 
+  void operator()() const;
+};
+}  // namespace foobar
