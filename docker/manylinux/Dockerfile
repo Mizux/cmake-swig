@@ -23,4 +23,8 @@ RUN wget "https://downloads.sourceforge.net/project/swig/swig/swig-3.0.12/swig-3
 && cd .. \
 && rm -rf swig-3.0.12
 
+# Update auditwheel to support manylinux2010
+RUN /opt/_internal/cpython-3.6.7/bin/pip install auditwheel==2.0.0rc1
 
+COPY build_manylinux.sh .
+RUN chmod a+x build_manylinux.sh

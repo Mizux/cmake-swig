@@ -321,18 +321,26 @@ distclean: clean
 ##############
 ##  PYTHON  ##
 ##############
-.PHONY: build_manylinux
-bash_manylinux:
 
-build_manylinux: cache/manylinux/build.log
+.PHONY: docker_manylinux
+docker_manylinux: cache/manylinux/docker_devel.tar
+
+cache/manylinux/docker_devel.tar: docker/manylinux/Dockerfile docker/manylinux/build_manylinux.sh | cache/manylinux
+	-docker image rm -f ${IMAGE}_manylinux:devel 2>/dev/null
+	$(DOCKER_BUILD_CMD) -f $< -t ${IMAGE}_manylinux:devel docker/manylinux
+	docker save ${IMAGE}_manylinux:devel -o $@
+
+.PHONY: bash_manylinux
 bash_manylinux: cache/manylinux/docker_devel.tar
 	${DOCKER_DEVEL_CMD} ${IMAGE}_manylinux:devel /bin/sh
 
+.PHONY: build_manylinux
+build_manylinux: cache/manylinux/build.log
 
-cache/manylinux/configure.log: cache/manylinux/docker_devel.tar CMakeLists.txt cmake */CMakeLists.txt
+cache/manylinux/build.log: cache/manylinux/docker_devel.tar CMakeLists.txt cmake */CMakeLists.txt
 	@docker load -i $<
 	${DOCKER_DEVEL_CMD} \
  -v ${PWD}:/project -w /project \
  ${IMAGE}_manylinux:devel \
- /bin/sh -c "cmake -H. -Bcache/manylinux/build -DBUILD_PYTHON=ON"
+ /bin/sh -c "/build_manylinux.sh"
 	@date > $@
