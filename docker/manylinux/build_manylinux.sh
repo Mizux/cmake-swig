@@ -12,7 +12,8 @@ do
   rm -rf cache/manylinux/build_$PYTAG
 
   PATH=${PYROOT}/bin:${PATH_BCKP}
-  cmake -H. -Bcache/manylinux/build_$PYTAG -DBUILD_PYTHON=ON
+  cmake -H. -Bcache/manylinux/build_$PYTAG \
+ -DBUILD_PYTHON=ON -DPYTHON_LIBRARY=${PYROOT}/lib/ -DPYTHON_INCLUDE_DIR=${PYROOT}/include/
 done
 
 
