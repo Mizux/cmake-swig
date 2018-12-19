@@ -332,7 +332,10 @@ cache/manylinux/docker_devel.tar: docker/manylinux/Dockerfile docker/manylinux/b
 
 .PHONY: bash_manylinux
 bash_manylinux: cache/manylinux/docker_devel.tar
-	${DOCKER_DEVEL_CMD} ${IMAGE}_manylinux:devel /bin/sh
+	${DOCKER_DEVEL_CMD} \
+ -v ${PWD}:/project \
+ ${IMAGE}_manylinux:devel \
+ /bin/bash
 
 .PHONY: build_manylinux
 build_manylinux: cache/manylinux/build.log
@@ -342,5 +345,5 @@ cache/manylinux/build.log: cache/manylinux/docker_devel.tar CMakeLists.txt cmake
 	${DOCKER_DEVEL_CMD} \
  -v ${PWD}:/project -w /project \
  ${IMAGE}_manylinux:devel \
- /bin/sh -c "/build_manylinux.sh"
+ /bin/bash -c "/build_manylinux.sh"
 	@date > $@

@@ -8,7 +8,10 @@ for PYROOT in /opt/python/*
 do
   PYTAG=$(basename "${PYROOT}")
   echo "$PYTAG"
-  PATH=${PYROOT}:${PATH_BCKP}
+  # Clean the build dir
+  rm -rf cache/manylinux/build_$PYTAG
+
+  PATH=${PYROOT}/bin:${PATH_BCKP}
   cmake -H. -Bcache/manylinux/build_$PYTAG -DBUILD_PYTHON=ON
 done
 
