@@ -322,7 +322,12 @@ distclean: clean
 ##  PYTHON  ##
 ##############
 .PHONY: build_manylinux
+bash_manylinux:
+
 build_manylinux: cache/manylinux/build.log
+bash_manylinux: cache/manylinux/docker_devel.tar
+	${DOCKER_DEVEL_CMD} ${IMAGE}_manylinux:devel /bin/sh
+
 
 cache/manylinux/configure.log: cache/manylinux/docker_devel.tar CMakeLists.txt cmake */CMakeLists.txt
 	@docker load -i $<
