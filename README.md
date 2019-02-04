@@ -8,15 +8,7 @@ with the [SWIG](http://www.swig.org) code generator to generate wrapper and pack
 This project should run on GNU/Linux, MacOS and Windows.
 
 # Wrapper/Package Status
-
-<select id="language">
-<option value="python2">Python 2</option>
-<option value="python3">Python 3</option>
-<option value="java">Java</option>
-<option value="dotnet">.Net</option>
-</select>
-
-<nav>
+<nav for="language">
 <a href="#python-2">Python 2</a> |
 <a href="#python-3">Python 3</a> |
 <a href="#java">Java</a> |
