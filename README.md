@@ -8,22 +8,30 @@ with the [SWIG](http://www.swig.org) code generator to generate wrapper and pack
 This project should run on GNU/Linux, MacOS and Windows.
 
 # Wrapper/Package Status
-## Python2
+
+<nav>
+<a href="#python-2">Python 2</a> |
+<a href="#python-3">Python 3</a> |
+<a href="#java">Java</a> |
+<a href="#dotnet">.Net</a>
+</nav>
+
+## [Python 2](#python-2)
 - [x] GNU/Linux wrapper
 - [x] MacOS wrapper
 - [x] Windows wrapper
 
-## Python3
+## [Python 3](#python-3)
 - [x] GNU/Linux wrapper
 - [x] MacOS wrapper
 - [x] Windows wrapper
 
-## Dotnet
+## [Dotnet](#dotnet)
 - [ ] GNU/Linux wrapper
 - [ ] MacOS wrapper
 - [ ] Windows wrapper
 
-## Java
+## [Java](#java)
 - [ ] GNU/Linux wrapper
 - [ ] MacOS wrapper
 - [ ] Windows wrapper
