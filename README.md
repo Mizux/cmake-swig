@@ -10,11 +10,10 @@ This project should run on GNU/Linux, MacOS and Windows.
 # Wrapper/Package Status
 
 <select id="language">
-    <option value="">--Please choose an option--</option>
-    <option value="python2">Python 2</option>
-    <option value="python3">Python 3</option>
-    <option value="java">Java</option>
-    <option value="dotnet">.Net</option>
+<option value="python2">Python 2</option>
+<option value="python3">Python 3</option>
+<option value="java">Java</option>
+<option value="dotnet">.Net</option>
 </select>
 
 <nav>
