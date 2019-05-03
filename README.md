@@ -9,14 +9,14 @@ This project should run on GNU/Linux, MacOS and Windows.
 
 # Wrapper/Package Status
 ## Python2
-- [x] GNU/Linux wrapper
-- [x] MacOS wrapper
-- [x] Windows wrapper
+- [ ] GNU/Linux wrapper
+- [ ] MacOS wrapper
+- [ ] Windows wrapper
 
 ## Python3
-- [x] GNU/Linux wrapper
-- [x] MacOS wrapper
-- [x] Windows wrapper
+- [ ] GNU/Linux wrapper
+- [ ] MacOS wrapper
+- [ ] Windows wrapper
 
 ## Dotnet
 - [ ] GNU/Linux wrapper
