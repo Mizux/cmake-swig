@@ -1,59 +1,41 @@
-project(FooBar VERSION 1.0.0 LANGUAGES CXX)
-
-if(MSVC)
-# Second, for multi-config builds (e.g. msvc)
-foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
-    string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR})
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR})
-endforeach()
-endif()
-
-find_package(Foo CONFIG REQUIRED)
-find_package(Bar CONFIG REQUIRED)
-
-file(GLOB _HDRS "include/foobar/*.hpp" "include/foobar/*.hxx")
-file(GLOB _SRCS "src/*.[hc]pp")
-
-add_library(${PROJECT_NAME} ${_HDRS} src/FooBar.cpp)
-target_include_directories(${PROJECT_NAME} PUBLIC
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-	$<INSTALL_INTERFACE:include>)
-set_target_properties(FooBar PROPERTIES PUBLIC_HEADER ${_HDRS})
+add_library(FooBar "")
+target_sources(FooBar
+  PUBLIC
+	  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/foobar/FooBar.hpp>
+	  $<INSTALL_INTERFACE:include/foobar/FooBar.hpp>
+  PRIVATE
+  src/FooBar.cpp
+)
+target_include_directories(FooBar
+  PUBLIC
+	  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	  $<INSTALL_INTERFACE:include>
+)
+set_target_properties(FooBar PROPERTIES
+  VERSION ${PROJECT_VERSION}
+  PUBLIC_HEADER $<TARGET_PROPERTY:FooBar,INTERFACE_SOURCES>
+)
+# note: macOS is APPLE and also UNIX !
 if(APPLE)
-	set_target_properties(${PROJECT_NAME} PROPERTIES
+  set_target_properties(FooBar PROPERTIES
 		INSTALL_RPATH "@loader_path")
-elseif(UNIX AND NOT APPLE)
-	set_target_properties(${PROJECT_NAME} PROPERTIES
+elseif(UNIX)
+  set_target_properties(FooBar PROPERTIES
 		INSTALL_RPATH "$ORIGIN")
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES
-  VERSION ${PROJECT_VERSION}
-  PUBLIC_HEADER "include/foobar/FooBar.hpp")
-target_link_libraries(${PROJECT_NAME}
-  PUBLIC CMakeSwig::Foo CMakeSwig::Bar)
-add_library(CMakeSwig::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
-
-# Python Wrapper
-if(BUILD_PYTHON)
-  add_subdirectory(python)
-endif()
-# .Net Wrapper
-if(BUILD_DOTNET)
-  add_subdirectory(dotnet)
-endif()
-# Java Wrapper
-if(BUILD_JAVA)
-  add_subdirectory(java)
-endif()
+target_link_libraries(FooBar
+  PUBLIC
+    CMakeSwig::Foo
+    CMakeSwig::Bar
+)
+add_library(CMakeSwig::FooBar ALIAS FooBar)
 
 # Install
 include(GNUInstallDirs)
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS FooBar
 	EXPORT CMakeSwigTargets
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/foobar
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	#RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-	)
+)
