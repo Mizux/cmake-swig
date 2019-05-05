@@ -14,6 +14,10 @@ endif()
 if(POLICY CMP0078)
   cmake_policy(SET CMP0078 NEW)
 endif()
+# SWIG: use SWIG_MODULE_NAME property.
+if(POLICY CMP0086)
+  cmake_policy(SET CMP0086 NEW)
+endif()
 
 project(CMakeSwig VERSION 1.0 LANGUAGES CXX)
 message(STATUS "version: ${PROJECT_VERSION}")

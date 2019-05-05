@@ -24,6 +24,11 @@ set(Python_ADDITIONAL_VERSIONS "${PYTHON_VERSION_STRING}")
 find_package(PythonLibs REQUIRED)
 message(STATUS "Found Python Include: ${PYTHON_INCLUDE_DIRS} (found version \"${PYTHONLIBS_VERSION_STRING}\")")
 
+add_subdirectory(Foo/python)
+add_subdirectory(Bar/python)
+add_subdirectory(FooBar/python)
+
+
 # Find if python module MODULE_NAME is available, if not install it to the Python user install
 # directory.
 function(search_python_module MODULE_NAME)
@@ -56,9 +61,10 @@ configure_file(cmake/__init__.py.in FooBar/__init__.py COPYONLY)
 # i.e. inside a add_custom_command()
 # This command will depend on TARGET(s) in cmake generator expression
 add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
-  COMMAND ${CMAKE_COMMAND} -E echo "from setuptools import dist, find_packages, setup" > setup.py
+  COMMAND ${CMAKE_COMMAND} -E echo "from setuptools import find_packages, setup" > setup.py
+	COMMAND ${CMAKE_COMMAND} -E echo "from setuptools.dist import Distribution" >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "class BinaryDistribution(dist.Distribution):" >> setup.py
+	COMMAND ${CMAKE_COMMAND} -E echo "class BinaryDistribution(Distribution):" >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "  def is_pure(self):" >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "    return False" >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "  def has_ext_modules(self):" >> setup.py
@@ -75,12 +81,13 @@ add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
   COMMAND ${CMAKE_COMMAND} -E echo "  version='${PROJECT_VERSION}'," >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "  author='Mizux'," >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "  distclass=BinaryDistribution," >> setup.py
+  COMMAND ${CMAKE_COMMAND} -E echo "  cmdclass={'install': InstallPlatlib}," >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "  packages=find_packages()," >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "  package_data={" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  '${PROJECT_NAME}':[$<$<NOT:$<PLATFORM_ID:Windows>>:'.libs/*']," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  '${PROJECT_NAME}.Foo':['$<TARGET_FILE_NAME:Foo>','$<TARGET_FILE_NAME:_pyFoo>']," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  '${PROJECT_NAME}.Bar':['$<TARGET_FILE_NAME:Bar>','$<TARGET_FILE_NAME:_pyBar>']," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  '${PROJECT_NAME}.FooBar':['$<TARGET_FILE_NAME:FooBar>','$<TARGET_FILE_NAME:_pyFooBar>']," >> setup.py
+  COMMAND ${CMAKE_COMMAND} -E echo "  '${PROJECT_NAME}':[$<$<NOT:$<PLATFORM_ID:Windows>>:'.libs/*','$<TARGET_FILE_NAME:Foo>'>]," >> setup.py
+	COMMAND ${CMAKE_COMMAND} -E echo "  'Foo':['$<TARGET_FILE_NAME:Foo>','$<TARGET_FILE_NAME:pyFoo>']," >> setup.py
+	COMMAND ${CMAKE_COMMAND} -E echo "  'Bar':['$<TARGET_FILE_NAME:Bar>','$<TARGET_FILE_NAME:pyBar>']," >> setup.py
+	COMMAND ${CMAKE_COMMAND} -E echo "  'FooBar':['$<TARGET_FILE_NAME:FooBar>','$<TARGET_FILE_NAME:pyFooBar>']," >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "  }," >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "  include_package_data=True," >> setup.py
   COMMAND ${CMAKE_COMMAND} -E echo "  classifiers=[" >> setup.py
@@ -104,7 +111,10 @@ search_python_module(wheel)
 add_custom_target(bdist ALL
   DEPENDS setup.py
   COMMAND ${CMAKE_COMMAND} -E remove_directory dist
-  COMMAND ${PYTHON_EXECUTABLE} setup.py bdist bdist_wheel
+  COMMAND ${CMAKE_COMMAND} -E make_directory .libs
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Foo> $<TARGET_FILE:Bar> $<TARGET_FILE:FooBar> .libs
+	#COMMAND ${PYTHON_EXECUTABLE} setup.py bdist bdist_wheel
+  COMMAND ${PYTHON_EXECUTABLE} setup.py bdist_wheel
   )
 
 # Test

@@ -1,16 +1,3 @@
-# Setup SWIG
-find_package(SWIG REQUIRED)
-include(UseSWIG)
-
-# Setup Python
-find_package(PythonInterp REQUIRED)
-find_package(PythonLibs REQUIRED)
-
-# include path for swig foo.i 'target'
-include_directories(../include)
-set_property(SOURCE foo.i PROPERTY CPLUSPLUS ON)
-# outdir for .py file
-set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/..)
 # outdir for .so file
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/..)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/..)
@@ -22,26 +9,38 @@ foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
 	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR}/..)
 endforeach()
 
-# this will generate pyFoo.py AND _%module%.so
+set_property(SOURCE foo.i PROPERTY CPLUSPLUS ON)
+set_property(SOURCE foo.i PROPERTY SWIG_MODULE_NAME pyFoo)
 swig_add_library(pyFoo
 	TYPE SHARED
 	LANGUAGE python
+	OUTPUT_DIR ..
 	SOURCES	foo.i)
 
-# ${SWIG_MODULE_pyFoo_REAL_NAME} will resolve to _pyFoo.so TARGET
-target_include_directories(${SWIG_MODULE_pyFoo_REAL_NAME} PRIVATE
-	${PYTHON_INCLUDE_DIRS})
-target_link_libraries(${SWIG_MODULE_pyFoo_REAL_NAME} PRIVATE
-	Foo ${PYTHON_LIBRARIES})
-if(UNIX)
-	if(NOT APPLE)
-		set_target_properties(${SWIG_MODULE_pyFoo_REAL_NAME} PROPERTIES
-			INSTALL_RPATH	"$ORIGIN")
-	else()
-		set_target_properties(${SWIG_MODULE_pyFoo_REAL_NAME} PROPERTIES
-			SUFFIX ".so"
-			INSTALL_RPATH	"@loader_path")
-		set_property(TARGET ${SWIG_MODULE_pyFoo_REAL_NAME} APPEND PROPERTY
-			LINK_FLAGS "-flat_namespace -undefined suppress")
-	endif()
+target_include_directories(pyFoo
+	PRIVATE
+		../include
+		${PYTHON_INCLUDE_DIRS}
+)
+set_property(TARGET pyFoo PROPERTY SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON)
+
+# note: macOS is APPLE and also UNIX !
+if(APPLE)
+	set_target_properties(pyFoo PROPERTIES
+		SUFFIX ".so"
+		INSTALL_RPATH	"@loader_path"
+	)
+	set_property(TARGET pyFoo APPEND PROPERTY
+		LINK_FLAGS "-flat_namespace -undefined suppress"
+	)
+elseif(UNIX)
+	set_target_properties(pyFoo PROPERTIES
+		INSTALL_RPATH	"$ORIGIN"
+	)
 endif()
+
+target_link_libraries(pyFoo
+	PRIVATE
+		Foo
+		${PYTHON_LIBRARIES}
+)
