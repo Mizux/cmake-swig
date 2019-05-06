@@ -1,9 +1,9 @@
-import Foo.pyFoo as f
-f.fooHello()
+import CMakeSwig.Foo.pyFoo as f
+f.fooHello(1)
 
-import Bar.pyBar as b
-b.barHello()
+import CMakeSwig.Bar.pyBar as b
+b.barHello(1)
 
-import FooBar.pyFooBar as fb
-fb.fooBarHello()
+import CMakeSwig.FooBar.pyFooBar as fb
+fb.foobarHello(1)
 

@@ -18,8 +18,8 @@ void FooBar::hello(int level) {
 }
 
 void FooBar::operator()() const {
-  foo::Foo foo{};
-  bar::Bar bar{};
+  foo::Foo foo;
+  bar::Bar bar;
   std::cout << foo() << bar() << std::endl;
 }
 }  // namespace foobar

@@ -12,8 +12,8 @@ This project should run on GNU/Linux, MacOS and Windows.
 <nav for="language">
 <a href="#python-2">Python 2</a> |
 <a href="#python-3">Python 3</a> |
-<a href="#java">Java</a> |
-<a href="#dotnet">.Net</a>
+<a href="#dotnet">.Net</a> |
+<a href="#java">Java</a>
 </nav>
 
 ## [Python 2](#python-2)

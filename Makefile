@@ -57,7 +57,7 @@ IMAGE := cmake-swig
 cache:
 	mkdir cache
 
-# need docker/% to avoid stem matching <distro>/docker_devel.tar
+# need docker/% to avoid stem matching "<distro>/docker_devel.tar"
 cache/%: | docker/% cache
 	mkdir cache/$*
 
@@ -236,10 +236,30 @@ cache/%/test.log: cache/%/build.log
 ###############
 ##  INSTALL  ##
 ###############
-.PHONY: install install_alpine install_ubuntu
-install: install_alpine install_ubuntu
+.PHONY: install \
+install_alpine \
+install_centos-7 \
+install_debian-9 \
+install_ubuntu-latest \
+install_ubuntu-18.04 \
+install_ubuntu-16.04 \
+install_ubuntu-14.04
+install: \
+install_alpine \
+install_centos-7 \
+install_debian-9 \
+install_ubuntu-latest \
+install_ubuntu-18.04 \
+install_ubuntu-16.04 \
+install_ubuntu-14.04
 install_alpine: cache/alpine/install.log
-install_ubuntu: cache/ubuntu/install.log
+install_centos-7: cache/centos-7/install.log
+install_debian-9: cache/debian-9/install.log
+install_ubuntu-latest: cache/ubuntu-latest/install.log
+install_ubuntu-18.04: cache/ubuntu-18.04/install.log
+install_ubuntu-16.04: cache/ubuntu-16.04/install.log
+install_ubuntu-14.04: cache/ubuntu-14.04/install.log
+
 cache/%/install.log: cmake/docker/%/InstallDockerfile cache/%/build.log
 	${DOCKER_DEVEL_CMD} ${IMAGE}_$*:devel /bin/sh -c \
 		"cmake --build cache/$*/build --target install -- DESTDIR=install"
@@ -296,3 +316,34 @@ distclean: clean
 	-docker container rm $$(docker container ls --all -q)
 	-docker image rm $$(docker image ls --all -q)
 	rm -rf cache
+
+
+##############
+##  PYTHON  ##
+##############
+
+.PHONY: docker_manylinux
+docker_manylinux: cache/manylinux/docker_devel.tar
+
+cache/manylinux/docker_devel.tar: docker/manylinux/Dockerfile docker/manylinux/build_manylinux.sh | cache/manylinux
+	-docker image rm -f ${IMAGE}_manylinux:devel 2>/dev/null
+	$(DOCKER_BUILD_CMD) -f $< -t ${IMAGE}_manylinux:devel docker/manylinux
+	docker save ${IMAGE}_manylinux:devel -o $@
+
+.PHONY: bash_manylinux
+bash_manylinux: cache/manylinux/docker_devel.tar
+	${DOCKER_DEVEL_CMD} \
+ -v ${PWD}:/project \
+ ${IMAGE}_manylinux:devel \
+ /bin/bash
+
+.PHONY: build_manylinux
+build_manylinux: cache/manylinux/build.log
+
+cache/manylinux/build.log: cache/manylinux/docker_devel.tar CMakeLists.txt cmake */CMakeLists.txt
+	@docker load -i $<
+	${DOCKER_DEVEL_CMD} \
+ -v ${PWD}:/project -w /project \
+ ${IMAGE}_manylinux:devel \
+ /bin/bash -c "/build_manylinux.sh"
+	@date > $@
