@@ -9,11 +9,6 @@ This project should run on GNU/Linux, MacOS and Windows.
 
 # Wrapper/Package Status
 
-<select>
- <option value="1">gd</option>
- <option value="2">fdgg</option>
-</select>
-
 <nav for="language">
 <a href="#python-2">Python 2</a> |
 <a href="#python-3">Python 3</a> |
@@ -108,7 +103,7 @@ Thus the project layout is as follow:
 # C++ Project Build
 To build the C++ project, as usual:
 ```shell
-cmake -H. -Bbuild
+cmake -S. -Bbuild
 cmake --build build --target all
 ```
 note: SWIG automatically put its target(s) in `all`, thus `make` will also call
@@ -156,15 +151,15 @@ For FooBar/CMakeLists.txt (which depend on Foo & Bar):
 set(CMAKE_INSTALL_RPATH "$ORIGIN:$ORIGIN/../Foo:$ORIGIN/../Bar")
 ```
 
-note: you allways need `$ORIGIN/` since `_pyFoo.so` will depend on `libFoo.so`
+note: you allways need `$ORIGIN/../${PROJECT_NAME}/.libs` since `_pyFoo.so` will depend on `libFoo.so`
 (which will be built in the same directory see above).
 
 ### Why setup.py has to be generated
 To avoid to put hardcoded path to SWIG `.so` generated files,
-we could use `$<TARGET_FILE:tgt>` to retrieve the file (and also deal with Mac/Windows suffix, and target dependencies).  
+we could use `$<TARGET_FILE_NAME:tgt>` to retrieve the file (and also deal with Mac/Windows suffix, and target dependencies).  
 In order for setup.py to use
 [cmake generator expression](https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#informational-expressions)
-(e.g. $<TARGET_FILE:_pyFoo>). We need to generate it at build time (e.g. using
+(e.g. $<TARGET_FILE_NAME:_pyFoo>). We need to generate it at build time (e.g. using
 [add_custom_command()](https://cmake.org/cmake/help/latest/command/add_custom_command.html)).  
 note: This will also add automatically a dependency between the command and the TARGET !
 
