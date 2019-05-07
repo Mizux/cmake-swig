@@ -36,69 +36,74 @@ This project should run on GNU/Linux, MacOS and Windows.
 - [ ] MacOS wrapper
 - [ ] Windows wrapper
 
-# CMake Dependencies Tree
-To complexify a little, the CMake project is composed of three libraries (Foo, Bar and FooBar)
+# Dependencies
+To complexify a little, the CMake project is composed of three libraries (`Foo`, `Bar` and `FooBar`)
 with the following dependencies:  
 ```sh
 Foo:
 Bar:
 FooBar: PUBLIC Foo PRIVATE Bar
+FooBarApp: PRIVATE FooBar
 ```
-## Project directory layout
-Thus the project layout is as follow:
-```sh
- CMakeLists.txt // Meta CMake file doing the orchestration
- cmake // Subsidiary CMake files
- Foo
- ├── CMakeLists.txt
- ├── include
- │   └── foo
- │       └── Foo.hpp
- ├── python
- │   ├── CMakeLists.txt
- │   └── foo.i
- ├── dotnet
- │   ├── CMakeLists.txt
- │   └── foo.i
- ├── java
- │   ├── CMakeLists.txt
- │   └── foo.i
- └── src
-     └── Foo.cpp
- Bar
- ├── CMakeLists.txt
- ├── include
- │   └── bar
- │       └── Bar.hpp
- ├── python
- │   ├── CMakeLists.txt
- │   └── bar.i
- ├── dotnet
- │   ├── CMakeLists.txt
- │   └── bar.i
- ├── java
- │   ├── CMakeLists.txt
- │   └── bar.i
- └── src
-     └── Bar.cpp
- FooBar
- ├── CMakeLists.txt
- ├── include
- │   └── foobar
- │       └── FooBar.hpp
- ├── python
- │   ├── CMakeLists.txt
- │   └── foobar.i
- ├── dotnet
- │   ├── CMakeLists.txt
- │   └── foobar.i
- ├── java
- │   ├── CMakeLists.txt
- │   └── foobar.i
- └── src
-     ├── FooBar.cpp
-     └── main.cpp
-```
+
+# Codemap
+The project layout is as follow:
+
+* [CMakeLists.txt](CMakeLists.txt) Top-level for [CMake](https://cmake.org/cmake/help/latest/) based build.
+* [cmake](cmake) Subsidiary CMake files.
+
+* [Foo](Foo) Root directory for `Foo` library.
+  * [CMakeLists.txt](Foo/CMakeLists.txt) for `Foo`.
+  * [include](Foo/include) public folder.
+    * [foo](Foo/include/foo)
+      * [Foo.hpp](Foo/include/foo/Foo.hpp)
+  * [python](Foo/python)
+    * [CMakeLists.txt](Foo/python/CMakeLists.txt) for `Foo` Python.
+    * [foo.i](Foo/python/foo.i) SWIG Python wrapper.
+  * [dotnet](Foo/dotnet)
+    * [CMakeLists.txt](Foo/dotnet/CMakeLists.txt) for `Foo` .Net.
+    * [foo.i](Foo/dotnet/foo.i) SWIG .Net wrapper.
+  * [java](Foo/java)
+    * [CMakeLists.txt](Foo/java/CMakeLists.txt) for `Foo` Java.
+    * [java/foo.i](Foo/java/foo.i) SWIG Java wrapper.
+  * [src](Foo/src) private folder.
+    * [src/Foo.cpp](Foo/src/Foo.cpp)
+* [Bar](Bar) Root directory for `Bar` library.
+  * [CMakeLists.txt](Bar/CMakeLists.txt) for `Bar`.
+  * [include](Bar/include) public folder.
+    * [bar](Bar/include/bar)
+      * [Bar.hpp](Bar/include/bar/Bar.hpp)
+  * [python](Bar/python)
+    * [CMakeLists.txt](Bar/python/CMakeLists.txt) for `Bar` Python.
+    * [bar.i](Bar/python/bar.i) SWIG Python wrapper.
+  * [dotnet](Bar/dotnet)
+    * [CMakeLists.txt](Bar/dotnet/CMakeLists.txt) for `Bar` .Net.
+    * [bar.i](Bar/dotnet/bar.i) SWIG .Net wrapper.
+  * [java](Bar/java)
+    * [CMakeLists.txt](Bar/java/CMakeLists.txt) for `Bar` Java.
+    * [java/bar.i](Bar/java/bar.i) SWIG Java wrapper.
+  * [src](Bar/src) private folder.
+    * [src/Bar.cpp](Bar/src/Bar.cpp)
+* [FooBar](FooBar) Root directory for `FooBar` library.
+  * [CMakeLists.txt](FooBar/CMakeLists.txt) for `FooBar`.
+  * [include](FooBar/include) public folder.
+    * [foobar](FooBar/include/foobar)
+      * [FooBar.hpp](FooBar/include/foobar/FooBar.hpp)
+  * [python](FooBar/python)
+    * [CMakeLists.txt](FooBar/python/CMakeLists.txt) for `FooBar` Python.
+    * [foobar.i](FooBar/python/foobar.i) SWIG Python wrapper.
+  * [dotnet](FooBar/dotnet)
+    * [CMakeLists.txt](FooBar/dotnet/CMakeLists.txt) for `FooBar` .Net.
+    * [foobar.i](FooBar/dotnet/foobar.i) SWIG .Net wrapper.
+  * [java](FooBar/java)
+    * [CMakeLists.txt](FooBar/java/CMakeLists.txt) for `FooBar` Java.
+    * [java/foobar.i](FooBar/java/foobar.i) SWIG Java wrapper.
+  * [src](FooBar/src) private folder.
+    * [src/FooBar.cpp](FooBar/src/FooBar.cpp)
+* [FooBarApp](FooBarApp) Root directory for `FooBarApp` executable.
+  * [CMakeLists.txt](FooBarApp/CMakeLists.txt) for `FooBarApp`.
+  * [src](FooBarApp/src) private folder.
+    * [src/main.cpp](FooBarApp/src/main.cpp)
 
 # C++ Project Build
 To build the C++ project, as usual:
@@ -106,16 +111,40 @@ To build the C++ project, as usual:
 cmake -S. -Bbuild
 cmake --build build --target all
 ```
-note: SWIG automatically put its target(s) in `all`, thus `make` will also call
-swig and generate `_module.so`.
+
+## Managing RPATH
+Since we want to use the [CMAKE_BINARY_DIR](https://cmake.org/cmake/help/latest/variable/CMAKE_BINARY_DIR.html) to generate the wrapper package (e.g. python wheel package) as well as be able to test from the build directory.
+We need to enable:
+```cmake
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+```
+And have a finely tailored rpath for each library.
+
+For `Foo` and `Bar` which depend on nothing:
+```cmake
+set(CMAKE_INSTALL_RPATH "$ORIGIN")
+```
+
+For `FooBar` which depend on `Foo` and `Bar`:
+```cmake
+set(CMAKE_INSTALL_RPATH "$ORIGIN:$ORIGIN/../Foo:$ORIGIN/../Bar")
+```
+
+For `FooBarApp` which depend on `FooBar`:
+```cmake
+set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$ORIGIN/../FooBar")
+```
 
 # SWIG Wrapper Generation
-Using swig to generate wrapper it's easy thanks to
-[UseSWIG](https://cmake.org/cmake/help/latest/module/UseSWIG.html) module.  
+Using [swig](https://github.com/swig/swig) to generate wrapper it's easy thanks to the modern
+[UseSWIG](https://cmake.org/cmake/help/latest/module/UseSWIG.html) module (**CMake >= 3.14**).  
 
 Creating a Python binary package containing all `.py` and `.so` (with good rpath) is not so easy... 
 
-### Managing SWIG generated files
+note: SWIG automatically put its target(s) in `all`, thus `make` will also call
+swig and generate `_module.so`.
+
+## Managing SWIG generated files
 Since python use the directory name where `__init__.py` file is located.  
 We would like to have `pyFoo.py` generated file in `build/Foo` and not in `build/Foo/python`.  
 You can use `CMAKE_SWIG_DIR` to change the output directory for the `.py` file e.g.:
@@ -132,24 +161,6 @@ set(SWIG_OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR}/..)
 ```
 Then you only need to create a `__init__.py` file in `build/Foo` to be able to use
 the build directory to generate the Python package.
-
-### Managing RPATH
-Since we want to use the [CMAKE_BINARY_DIR](https://cmake.org/cmake/help/latest/variable/CMAKE_BINARY_DIR.html) to generate the python binary package.
-We need to enable:
-```cmake
-set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-```
-And have a finely tailored rpath for each library.
-
-For Foo/CMakeLists.txt (which depend on nothing):
-```cmake
-set(CMAKE_INSTALL_RPATH "$ORIGIN")
-```
-
-For FooBar/CMakeLists.txt (which depend on Foo & Bar):
-```cmake
-set(CMAKE_INSTALL_RPATH "$ORIGIN:$ORIGIN/../Foo:$ORIGIN/../Bar")
-```
 
 note: you allways need `$ORIGIN/../${PROJECT_NAME}/.libs` since `_pyFoo.so` will depend on `libFoo.so`
 (which will be built in the same directory see above).
