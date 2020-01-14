@@ -5,6 +5,10 @@ set -e
 #################
 ##  CONFIGURE  ##
 #################
+if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+  export PATH=/opt/cmake-3.16.2/bin:$PATH
+fi
+
 cmake --version
 if [[ "$LANGUAGE" == "cpp" ]]; then
   LDFLAGS=-v cmake -S. -Bbuild
