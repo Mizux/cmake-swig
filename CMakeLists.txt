@@ -90,6 +90,11 @@ include(CTest)
 
 include(cpp)
 
+if(WIN32 AND (BUILD_PYTHON OR BUILD_JAVA OR BUILD_DOTNET))
+  message(STATUS "Getting SWIG: ...")
+  include(swig)
+endif()
+
 include(python)
 include(java)
 include(dotnet)
