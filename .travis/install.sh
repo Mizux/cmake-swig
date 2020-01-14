@@ -8,7 +8,7 @@ function install-cmake() {
     wget https://cmake.org/files/v3.16/cmake-3.16.2.tar.gz
     tar xzf cmake-3.16.2.tar.gz && rm cmake-3.16.2.tar.gz
     cd cmake-3.16.2 && ./bootstrap --prefix=/usr
-    make
+    make -j 2
     sudo make install
     cd .. && rm -rf cmake-3.16.2
     sudo rm /usr/local/cmake-3.12.4/bin/cmake
@@ -28,9 +28,9 @@ function install-swig() {
     tar zxf rel-4.0.1.tar.gz
     cd swig-rel-4.0.1
     ./autogen.sh
-    ./configure --prefix "${HOME}"/swig/ 1>/dev/null
-    make >/dev/null
-    make install >/dev/null
+    ./configure --prefix=/usr
+    make -j 2
+    sudo make install
   elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
     brew install swig
   fi
