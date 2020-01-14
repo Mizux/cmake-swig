@@ -53,7 +53,7 @@ elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
     brew upgrade python
     python3 -m pip install virtualenv wheel six
   elif [[ "$LANGUAGE" == "dotnet" ]]; then
-    brew tap caskroom/cask
+    brew tap homebrew/cask-cask
     brew cask install dotnet-sdk
   elif [[ "$LANGUAGE" == "java" ]]; then
     brew cask install java
