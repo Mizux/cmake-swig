@@ -11,6 +11,7 @@ function install-cmake() {
     make
     sudo make install
     cd .. && rm -rf cmake-3.16.2
+    sudo rm /usr/local/cmake-3.12.4/bin/cmake
     command -v cmake
     cmake --version
   elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
