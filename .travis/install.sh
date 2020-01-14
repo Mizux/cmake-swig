@@ -16,7 +16,7 @@ function install-swig() {
 
 function install-python(){
   # work around https://github.com/travis-ci/travis-ci/issues/8363
-  pyenv global 3.6
+  pyenv global 3.7
   python --version
   python -m pip --version
   python -m pip install virtualenv wheel six
@@ -35,11 +35,6 @@ eval "${MATRIX_EVAL}"
 
 # apt-get only have swig 2.0.11
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-  sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  sudo apt-get update -qq
-  # GCC 4.8 Fail with $ORIGIN
-  sudo apt-get install -qq g++-6
-  sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
   /usr/bin/x86_64-linux-gnu-ld --version
   if [[ "$LANGUAGE" != "cpp" ]]; then
     install-swig
