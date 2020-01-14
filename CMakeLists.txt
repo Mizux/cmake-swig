@@ -93,6 +93,7 @@ include(cpp)
 if(WIN32 AND (BUILD_PYTHON OR BUILD_JAVA OR BUILD_DOTNET))
   message(STATUS "Getting SWIG: ...")
   include(swig)
+  message(STATUS "Getting SWIG: ...DONE")
 endif()
 
 include(python)
