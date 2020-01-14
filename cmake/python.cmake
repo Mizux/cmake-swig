@@ -131,15 +131,15 @@ if(BUILD_TESTING)
 	set(VENV_EXECUTABLE ${PYTHON_EXECUTABLE} -m virtualenv)
 	set(VENV_DIR ${CMAKE_BINARY_DIR}/venv)
 	if(WIN32)
-		set(VENV_BIN_DIR "${VENV_DIR}\\Scripts")
+		set(VENV_BIN "${VENV_DIR}\\Scripts\\python.exe")
 	else()
-		set(VENV_BIN_DIR ${VENV_DIR}/bin)
+		set(VENV_BIN ${VENV_DIR}/bin/python)
 	endif()
 	# make a virtualenv to install our python package in it
 	add_custom_command(TARGET bdist POST_BUILD
 		COMMAND ${VENV_EXECUTABLE} -p ${PYTHON_EXECUTABLE} ${VENV_DIR}
-		COMMAND ${VENV_BIN_DIR}/python setup.py install
+		COMMAND ${VENV_BIN} setup.py install
 		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/python)
 	# run the tests within the virtualenv
-	add_test(pytest_venv ${VENV_BIN_DIR}/python ${CMAKE_CURRENT_SOURCE_DIR}/cmake/test.py)
+	add_test(NAME pytest_venv COMMAND ${VENV_BIN} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/test.py)
 endif()
