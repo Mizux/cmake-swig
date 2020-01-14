@@ -5,9 +5,9 @@ set -e
 function install-swig() {
   # Need SWIG >= 3.0.8
   cd /tmp/
-  wget https://github.com/swig/swig/archive/rel-3.0.12.tar.gz
-  tar zxf rel-3.0.12.tar.gz
-  cd swig-rel-3.0.12
+  wget https://github.com/swig/swig/archive/rel-4.0.1.tar.gz
+  tar zxf rel-4.0.1.tar.gz
+  cd swig-rel-4.0.1
   ./autogen.sh
   ./configure --prefix "${HOME}"/swig/ 1>/dev/null
   make >/dev/null
@@ -15,19 +15,20 @@ function install-swig() {
 }
 
 function install-python(){
+  # work around https://github.com/travis-ci/travis-ci/issues/8363
+  pyenv global 3.6
   python --version
   python -m pip --version
   python -m pip install virtualenv wheel six
 }
 
+# see https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-ubuntu-1804
 function install-dotnet-sdk(){
   sudo apt-get install -yq apt-transport-https
-  curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-  sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-  echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > dotnetdev.list
-  sudo mv dotnetdev.list /etc/apt/sources.list.d/dotnetdev.list
+  wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
+  sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get update -qq
-  sudo apt-get install -yq dotnet-sdk-2.1
+  sudo apt-get install -yq dotnet-sdk-3.1
 }
 
 eval "${MATRIX_EVAL}"
@@ -43,13 +44,7 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   if [[ "$LANGUAGE" != "cpp" ]]; then
     install-swig
   fi
-  if [[ "$LANGUAGE" == "python2" ]]; then
-    # work around https://github.com/travis-ci/travis-ci/issues/8363
-    pyenv global 2.7
-    install-python
-  elif [[ "$LANGUAGE" == "python3" ]]; then
-    # work around https://github.com/travis-ci/travis-ci/issues/8363
-    pyenv global 3.6
+  if [[ "$LANGUAGE" == "python" ]]; then
     install-python
   elif [[ "$LANGUAGE" == "dotnet" ]]; then
     install-dotnet-sdk
@@ -59,10 +54,7 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
   brew update
   brew install swig
-  if [[ "$LANGUAGE" == "python2" ]]; then
-    brew outdated | grep -q python@2 && brew upgrade python@2
-    python2 -m pip install virtualenv wheel six
-  elif [[ "$LANGUAGE" == "python3" ]]; then
+  if [[ "$LANGUAGE" == "python" ]]; then
     brew upgrade python
     python3 -m pip install virtualenv wheel six
   elif [[ "$LANGUAGE" == "dotnet" ]]; then
