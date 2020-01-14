@@ -7,11 +7,11 @@ function install-cmake() {
   if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     wget https://cmake.org/files/v3.16/cmake-3.16.2.tar.gz
     tar xzf cmake-3.16.2.tar.gz && rm cmake-3.16.2.tar.gz
-    cd cmake-3.16.2 && ./bootstrap --prefix=/usr
+    cd cmake-3.16.2 && ./bootstrap --prefix=/opt/cmake-3.16.2
     make -j 2
     sudo make install
     cd .. && rm -rf cmake-3.16.2
-    sudo rm /usr/local/cmake-3.12.4/bin/cmake
+    export PATH=/opt/cmake-3.16.2/bin:$PATH
     command -v cmake
     cmake --version
   elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
