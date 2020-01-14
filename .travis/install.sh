@@ -2,6 +2,24 @@
 set -x
 set -e
 
+function install-cmake() {
+  # need CMake >= 3.14 (for using the newly swig built-in UseSWIG module)
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    wget https://cmake.org/files/v3.16/cmake-3.16.2.tar.gz
+    tar xzf cmake-3.16.2.tar.gz
+    rm cmake-3.16.2.tar.gz
+    cd cmake-3.16.2
+    ./bootstrap --prefix=/usr
+    make
+    make install
+    cd ..
+    rm -rf cmake-3.16.2
+    cmake --version
+  elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    cmake --version
+  fi
+}
+
 function install-swig() {
   if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     # apt-get only have swig 2.0.11
@@ -63,6 +81,7 @@ elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
   brew update
 fi
 
+install-cmake
 if [[ "$LANGUAGE" != "cpp" ]]; then
   install-swig
 fi
