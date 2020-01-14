@@ -15,13 +15,7 @@ if [[ "$LANGUAGE" == "cpp" ]]; then
   LDFLAGS=-v cmake -H. -Bbuild
 elif [[ "$LANGUAGE" == "python" ]]; then
   python --version
-	if [ "${TRAVIS_OS_NAME}" == linux ];then
-    cmake -H. -Bbuild -DBUILD_PYTHON=ON -DPython_ADDITIONAL_VERSIONS=3.6
-	elif [ "${TRAVIS_OS_NAME}" == osx ];then
-    cmake -H. -Bbuild -DBUILD_PYTHON=ON -DPython_ADDITIONAL_VERSIONS=3.7
-  else
-    exit 42
-  fi
+  cmake -H. -Bbuild -DBUILD_PYTHON=ON -DPython_ADDITIONAL_VERSIONS=3.7
 elif [[ "$LANGUAGE" == "dotnet" ]]; then
     if [ "${TRAVIS_OS_NAME}" == osx ];then
       # Installer changes path but won't be picked up in current terminal session
