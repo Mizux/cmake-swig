@@ -13,10 +13,7 @@ fi
 cmake --version
 if [[ "$LANGUAGE" == "cpp" ]]; then
   LDFLAGS=-v cmake -H. -Bbuild
-elif [[ "$LANGUAGE" == "python2" ]]; then
-  python --version
-  cmake -H. -Bbuild -DBUILD_PYTHON=ON -DPython_ADDITIONAL_VERSIONS=2.7
-elif [[ "$LANGUAGE" == "python3" ]]; then
+elif [[ "$LANGUAGE" == "python" ]]; then
   python --version
 	if [ "${TRAVIS_OS_NAME}" == linux ];then
     cmake -H. -Bbuild -DBUILD_PYTHON=ON -DPython_ADDITIONAL_VERSIONS=3.6
@@ -26,11 +23,11 @@ elif [[ "$LANGUAGE" == "python3" ]]; then
     exit 42
   fi
 elif [[ "$LANGUAGE" == "dotnet" ]]; then
-	if [ "${TRAVIS_OS_NAME}" == osx ];then
-    # Installer changes path but won't be picked up in current terminal session
-    # Need to explicitly add location
-    export PATH=/usr/local/share/dotnet:"${PATH}"
-  fi
+    if [ "${TRAVIS_OS_NAME}" == osx ];then
+      # Installer changes path but won't be picked up in current terminal session
+      # Need to explicitly add location
+      export PATH=/usr/local/share/dotnet:"${PATH}"
+    fi
   dotnet --info
   cmake -H. -Bbuild -DBUILD_DOTNET=ON
 elif [[ "$LANGUAGE" == "java" ]]; then
