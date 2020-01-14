@@ -10,18 +10,12 @@ This project should run on GNU/Linux, MacOS and Windows.
 # Wrapper/Package Status
 
 <nav for="language">
-<a href="#python-2">Python 2</a> |
-<a href="#python-3">Python 3</a> |
+<a href="#python">Python 3</a> |
 <a href="#dotnet">.Net</a> |
 <a href="#java">Java</a>
 </nav>
 
-## [Python 2](#python-2)
-- [x] GNU/Linux wrapper
-- [x] MacOS wrapper
-- [x] Windows wrapper
-
-## [Python 3](#python-3)
+## [Python 3](#python)
 - [x] GNU/Linux wrapper
 - [x] MacOS wrapper
 - [x] Windows wrapper
