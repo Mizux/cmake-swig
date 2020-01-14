@@ -42,4 +42,4 @@ build_script:
   - cmake --build build --config %configuration% --target ALL_BUILD -- %MSBUILD_FLAGS%
 
 test_script:
-  - cmake --build build --config %configuration% --target RUN_TESTS -- %MSBUILD_FLAGS% --output-on-failure
+  - cmake --build build --config %configuration% --target RUN_TESTS -- %MSBUILD_FLAGS%
