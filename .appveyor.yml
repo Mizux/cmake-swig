@@ -2,61 +2,44 @@ version: '{build}'
 shallow_clone: true
 
 platform: x64
+configuration:
+  - Debug
+  - Release
 
 environment:
   MSBUILD_FLAGS: /verbosity:minimal /maxcpucount
   matrix:
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
-    VS: 2017
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    CMAKE_GENERATOR: "Visual Studio 16 2019"
     LANGUAGE: cpp
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
-    VS: 2017
-    LANGUAGE: python2
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
-    VS: 2017
-    LANGUAGE: python3
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
-    VS: 2017
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    CMAKE_GENERATOR: "Visual Studio 16 2019"
+    LANGUAGE: python
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    CMAKE_GENERATOR: "Visual Studio 16 2019"
     LANGUAGE: dotnet
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
-    VS: 2017
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    CMAKE_GENERATOR: "Visual Studio 16 2019"
     LANGUAGE: java
-
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-    CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
-    VS: 2015
-    LANGUAGE: cpp
 
 matrix:
   fast_finish: false
 
 install:
-  - if "%VS%"=="2017" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
-  - if "%VS%"=="2015" call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
-  - if "%VS%"=="2015" call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+  - if "%LANGUAGE%"=="python"
+    set PATH=C:\Python38-x64;%PATH% &
+    python -V &
+    python -m pip install virtualenv wheel
+
+before_build:
   - cmake --version
-  - if "%LANGUAGE%"=="python2"
-    set PATH=C:\Python27-x64;%PATH% &
-    python -V &
-    python -m pip install virtualenv wheel
-  - if "%LANGUAGE%"=="python3"
-    set PATH=C:\Python36-x64;%PATH% &
-    python -V &
-    python -m pip install virtualenv wheel
+  - if "%LANGUAGE%"=="cpp" cmake -S. -Bbuild -G "%CMAKE_GENERATOR%" -DCMAKE_BUILD_TYPE=%configuration%
+  - if "%LANGUAGE%"=="python" cmake -S. -Bbuild -DBUILD_PYTHON=ON -G "%CMAKE_GENERATOR%" -DCMAKE_BUILD_TYPE=%configuration%
+  - if "%LANGUAGE%"=="dotnet" cmake -S. -Bbuild -DBUILD_DOTNET=ON -G "%CMAKE_GENERATOR%" -DCMAKE_BUILD_TYPE=%configuration%
+  - if "%LANGUAGE%"=="java" cmake -S. -Bbuild -DBUILD_JAVA=ON -G "%CMAKE_GENERATOR%" -DCMAKE_BUILD_TYPE=%configuration%
 
 build_script:
-  - if "%LANGUAGE%"=="cpp" cmake -H. -Bbuild -G "%CMAKE_GENERATOR%"
-  - if "%LANGUAGE%"=="python2" cmake -H. -Bbuild -DBUILD_PYTHON=ON -G "%CMAKE_GENERATOR%"
-  - if "%LANGUAGE%"=="python3" cmake -H. -Bbuild -DBUILD_PYTHON=ON -G "%CMAKE_GENERATOR%"
-  - if "%LANGUAGE%"=="dotnet" cmake -H. -Bbuild -DBUILD_DOTNET=ON -G "%CMAKE_GENERATOR%"
-  - if "%LANGUAGE%"=="java" cmake -H. -Bbuild -DBUILD_JAVA=ON -G "%CMAKE_GENERATOR%"
-  - cmake --build build --config Release --target ALL_BUILD -- %MSBUILD_FLAGS%
+  - cmake --build build --config %configuration% --target ALL_BUILD -- %MSBUILD_FLAGS%
 
 test_script:
-  - cd build && ctest -C Release --output-on-failure
-
+  - cmake --build build --config %configuration% --target RUN_TESTS -- %MSBUILD_FLAGS% --output-on-failure
