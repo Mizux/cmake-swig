@@ -40,7 +40,7 @@ function install-dotnet-sdk(){
     sudo apt-get update -qq
     sudo apt-get install -yq dotnet-sdk-3.1
   elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
-    brew tap homebrew/cask-cask
+    #brew tap homebrew/cask-cask
     brew cask install dotnet-sdk
     dotnet --info
   fi
