@@ -7,7 +7,7 @@ configuration:
   - Release
 
 environment:
-  MSBUILD_FLAGS: /verbosity:minimal /maxcpucount
+  MSBUILD_FLAGS: /maxcpucount
   matrix:
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
     LANGUAGE: cpp
