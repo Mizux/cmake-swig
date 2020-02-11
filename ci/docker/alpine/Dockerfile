@@ -1,29 +1,99 @@
-FROM alpine:latest
+# Create a virtual environment with all tools installed
+# ref: https://hub.docker.com/_/alpine
+FROM alpine:edge AS env
 LABEL maintainer="mizux.dev@gmail.com"
+# Install system build dependencies
+ENV PATH=$PATH:/usr/local/bin
+RUN apk add --no-cache git build-base linux-headers cmake
+CMD [ "/bin/sh" ]
 
-# Base install
-RUN apk add --no-cache git cmake build-base linux-headers
 
+
+
+# Add the library src to our build env
+FROM env AS cpp
+# Create lib directory
+WORKDIR /home/lib
+# Bundle lib source
+COPY . .
+# CMake configure
+RUN cmake -S. -Bbuild
+# CMake build
+RUN cmake --build build --target all -v
+# CMake build
+RUN cmake --build build --target install
+
+
+
+FROM env AS python
 # Swig install
 RUN apk add --no-cache swig
-
 # Python install
-RUN apk add --no-cache python3-dev py3-virtualenv \
-&& python3 -m pip install wheel
+RUN apk add --no-cache python3-dev
+# Create lib directory
+WORKDIR /home/lib
+# Bundle lib source
+COPY . .
+# CMake configure
+RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON
+# CMake build
+RUN cmake --build build --target all -v
+# CMake build
+RUN cmake --build build --target install
 
+
+
+FROM env AS java
+# Swig install
+RUN apk add --no-cache swig
 # Java install
 RUN apk add --no-cache openjdk8
+# Create lib directory
+WORKDIR /home/lib
+# Bundle lib source
+COPY . .
+# CMake configure
+RUN cmake -S. -Bbuild -DBUILD_JAVA=ON
+# CMake build
+RUN cmake --build build --target all -v
+# CMake build
+RUN cmake --build build --target install
 
-# .Net install
-ENV DOTNET_SDK_VERSION 2.1.402
-RUN apk add --no-cache icu-libs libintl \
-&& apk add --no-cache --virtual .build-deps openssl \
-&& wget -O dotnet.tar.gz https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-musl-x64.tar.gz \
-&& dotnet_sha512='88309e5ddc1527f8ad19418bc1a628ed36fa5b21318a51252590ffa861e97bd4f628731bdde6cd481a1519d508c94960310e403b6cdc0e94c1781b405952ea3a' \
+
+
+FROM env AS dotnet
+# Swig install
+RUN apk add --no-cache swig
+# Add dependencies for disabling invariant mode (set in base image)
+RUN apk add --no-cache icu-libs
+# Install .NET Core SDK
+RUN dotnet_sdk_version=3.1.101 \
+&& wget -O dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/$dotnet_sdk_version/dotnet-sdk-$dotnet_sdk_version-linux-musl-x64.tar.gz \
+&& dotnet_sha512='ce386da8bc07033957fd404909fc230e8ab9e29929675478b90f400a1838223379595a4459056c6c2251ab5c722f80858b9ca536db1a2f6d1670a97094d0fe55' \
 && echo "$dotnet_sha512  dotnet.tar.gz" | sha512sum -c - \
 && mkdir -p /usr/share/dotnet \
-&& tar -C /usr/share/dotnet -xzf dotnet.tar.gz \
-&& rm dotnet.tar.gz \
+&& tar -C /usr/share/dotnet -oxzf dotnet.tar.gz \
 && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet \
-&& apk del .build-deps
+&& rm dotnet.tar.gz
+# Trigger first run experience by running arbitrary cmd
 RUN dotnet --info
+# Create lib directory
+WORKDIR /home/lib
+# Bundle lib source
+COPY . .
+# CMake configure
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
+# CMake build
+RUN cmake --build build --target all -v
+# CMake build
+RUN cmake --build build --target install
+
+
+
+# Create an install image
+FROM env AS install_cpp
+# Copy lib from devel to prod
+COPY --from=cpp /usr/local /usr/local/
+# Copy  sample
+WORKDIR /home/sample
+COPY ci/sample .

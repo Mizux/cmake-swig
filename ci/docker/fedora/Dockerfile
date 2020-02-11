@@ -1,53 +1,22 @@
 # Create a virtual environment with all tools installed
 # ref: https://hub.docker.com/_/fedora
 FROM fedora:latest AS env
-LABEL maintainer="corentinl@google.com"
+LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
 ENV PATH=$PATH:/usr/local/bin
 RUN dnf -y update \
+&& dnf -y install git \
 && dnf -y groupinstall "Development Tools" \
-&& dnf -y install cmake gcc-c++ \
+&& dnf -y install gcc-c++ cmake \
 && dnf clean all
-
-RUN cd /tmp \
-&& git clone https://github.com/Mizux/CoinUtils.git \
-&& cd CoinUtils \
-&& cmake -H. -Bbuild \
-&& cmake --build build --target install \
-&& cd .. \
-&& rm -rf CoinUtils
-
-RUN cd /tmp \
-&& git clone https://github.com/Mizux/Osi.git \
-&& cd Osi \
-&& cmake -H. -Bbuild \
-&& cmake --build build --target install \
-&& cd .. \
-&& rm -rf Osi
-
-RUN cd /tmp \
-&& git clone https://github.com/Mizux/Clp.git \
-&& cd Clp \
-&& cmake -H. -Bbuild \
-&& cmake --build build --target install \
-&& cd .. \
-&& rm -rf Clp
-
-RUN cd /tmp \
-&& git clone https://github.com/Mizux/Cgl.git \
-&& cd Cgl \
-&& cmake -H. -Bbuild \
-&& cmake --build build --target install \
-&& cd .. \
-&& rm -rf Cgl
-
 CMD [ "/bin/sh" ]
 
+
+
 # Add the library src to our build env
-FROM env AS devel
+FROM env AS cpp
 # Create lib directory
-WORKDIR /home/lib
-# Bundle lib source
+WORKDIR /home/liBundle lib source
 COPY . .
 # CMake configure
 RUN cmake -S. -Bbuild
@@ -56,10 +25,81 @@ RUN cmake --build build --target all -v
 # CMake build
 RUN cmake --build build --target install
 
+
+
+FROM env AS python
+# Swig install
+RUN dnf -y update \
+&& dnf -y install swig \
+&& dnf clean all
+# Python install
+RUN dnf -y update \
+&& dnf -y install python3 \
+&& dnf clean all
+# Create lib directory
+WORKDIR /home/lib
+# Bundle lib source
+COPY . .
+# CMake configure
+RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON
+# CMake build
+RUN cmake --build build --target all -v
+# CMake build
+RUN cmake --build build --target install
+
+
+
+FROM env AS java
+# Swig install
+RUN dnf -y update \
+&& dnf -y install swig \
+&& dnf clean all
+# Java install
+RUN dnf -y update \
+&& dnf -y install java-1.8.0-openjdk \
+&& dnf clean all
+# Create lib directory
+WORKDIR /home/lib
+# Bundle lib source
+COPY . .
+# CMake configure
+RUN cmake -S. -Bbuild -DBUILD_JAVA=ON
+# CMake build
+RUN cmake --build build --target all -v
+# CMake build
+RUN cmake --build build --target install
+
+
+
+
+FROM env AS dotnet
+# Swig install
+RUN dnf -y update \
+&& dnf -y install swig \
+&& dnf clean all
+# .Net install
+RUN dnf -y update \
+&& dnf -y install dotnet-sdk \
+&& dnf clean all
+# Trigger first run experience by running arbitrary cmd
+RUN dotnet --info
+# Create lib directory
+WORKDIR /home/lib
+# Bundle lib source
+COPY . .
+# CMake configure
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
+# CMake build
+RUN cmake --build build --target all -v
+# CMake build
+RUN cmake --build build --target install
+
+
+
 # Create an install image
 FROM env AS install
 # Copy lib from devel to prod
-COPY --from=devel /usr/local /usr/local/
+COPY --from=cpp /usr/local /usr/local/
 # Copy  sample
 WORKDIR /home/sample
-COPY .ci/sample .
+COPY ci/sample .
