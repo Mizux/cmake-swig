@@ -11,10 +11,10 @@ find_package(SWIG REQUIRED)
 include(UseSWIG)
 
 # Find Python Interpreter
-# prefer Python 3.7 over 3.6 over ...
+# prefer Python 3.8 over 3.7 over ...
 # user can overwrite it e.g.:
 # cmake -H. -Bbuild -DBUILD_PYTHON=ON -DPython_ADDITIONAL_VERSIONS="2.7"
-set(Python_ADDITIONAL_VERSIONS "3.7;3.6;3.5;2.7" CACHE STRING "Python to use for binding")
+set(Python_ADDITIONAL_VERSIONS "3.8;3.7;3.6;3.5;2.7" CACHE STRING "Python to use for binding")
 find_package(PythonInterp REQUIRED)
 message(STATUS "Found Python: ${PYTHON_EXECUTABLE} (found version \"${PYTHON_VERSION_STRING}\")")
 
@@ -107,7 +107,8 @@ add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
 	WORKING_DIRECTORY python
 	VERBATIM)
 
-# Look for python module wheel
+# Look for required python modules
+search_python_module(setuptools)
 search_python_module(wheel)
 
 add_custom_target(bdist ALL
