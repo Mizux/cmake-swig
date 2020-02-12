@@ -9,20 +9,20 @@ RUN yum -y update \
 && rm -rf /var/cache/yum
 
 # Install CMake
-RUN wget "https://cmake.org/files/v3.8/cmake-3.8.2-Linux-x86_64.sh" \
-&& chmod 775 cmake-3.8.2-Linux-x86_64.sh \
-&& yes | ./cmake-3.8.2-Linux-x86_64.sh --prefix=/usr --exclude-subdir
+RUN wget "https://cmake.org/files/v3.16/cmake-3.16.4-Linux-x86_64.sh" \
+&& chmod 775 cmake-3.16.4-Linux-x86_64.sh \
+&& yes | ./cmake-3.16.4-Linux-x86_64.sh --prefix=/usr --exclude-subdir
 
 # Swig install
-RUN wget "https://downloads.sourceforge.net/project/swig/swig/swig-3.0.12/swig-3.0.12.tar.gz" \
-&& tar xvf swig-3.0.12.tar.gz \
-&& rm swig-3.0.12.tar.gz \
-&& cd swig-3.0.12 \
+RUN wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz" \
+&& tar xvf swig-4.0.1.tar.gz \
+&& rm swig-4.0.1.tar.gz \
+&& cd swig-4.0.1 \
 && ./configure --prefix=/usr \
 && make -j 4 \
 && make install \
 && cd .. \
-&& rm -rf swig-3.0.12
+&& rm -rf swig-4.0.1
 
 COPY build_manylinux.sh .
 RUN chmod a+x build_manylinux.sh

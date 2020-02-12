@@ -20,7 +20,7 @@ WORKDIR /home/lib
 # Bundle lib source
 COPY . .
 # CMake configure
-RUN cmake -S. -Bbuild
+RUN cmake -H. -Bbuild
 # CMake build
 RUN cmake --build build --target all
 # CMake build
@@ -44,9 +44,9 @@ WORKDIR /home/lib
 # Bundle lib source
 COPY . .
 # CMake configure
-RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON
+RUN cmake -H. -Bbuild -DBUILD_PYTHON=ON
 # CMake build
-RUN cmake --build build --target all -v
+RUN cmake --build build --target all
 # CMake build
 RUN cmake --build build --target install
 
@@ -68,9 +68,9 @@ WORKDIR /home/lib
 # Bundle lib source
 COPY . .
 # CMake configure
-RUN cmake -S. -Bbuild -DBUILD_JAVA=ON
+RUN cmake -H. -Bbuild -DBUILD_JAVA=ON
 # CMake build
-RUN cmake --build build --target all -v
+RUN cmake --build build --target all
 # CMake build
 RUN cmake --build build --target install
 
@@ -101,9 +101,9 @@ WORKDIR /home/lib
 # Bundle lib source
 COPY . .
 # CMake configure
-RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
+RUN cmake -H. -Bbuild -DBUILD_DOTNET=ON
 # CMake build
-RUN cmake --build build --target all -v
+RUN cmake --build build --target all
 # CMake build
 RUN cmake --build build --target install
 

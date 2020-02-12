@@ -46,7 +46,7 @@ COPY . .
 # CMake configure
 RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON
 # CMake build
-RUN cmake --build build --target all -v
+RUN cmake --build build --target all
 # CMake build
 RUN cmake --build build --target install
 
@@ -70,7 +70,7 @@ COPY . .
 # CMake configure
 RUN cmake -S. -Bbuild -DBUILD_JAVA=ON
 # CMake build
-RUN cmake --build build --target all -v
+RUN cmake --build build --target all
 # CMake build
 RUN cmake --build build --target install
 
@@ -103,7 +103,7 @@ COPY . .
 # CMake configure
 RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
 # CMake build
-RUN cmake --build build --target all -v
+RUN cmake --build build --target all
 # CMake build
 RUN cmake --build build --target install
 
