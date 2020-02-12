@@ -111,7 +111,7 @@ add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
 search_python_module(setuptools)
 search_python_module(wheel)
 
-add_custom_target(bdist ALL
+add_custom_target(python_package ALL
 	DEPENDS setup.py
 	COMMAND ${CMAKE_COMMAND} -E remove_directory dist
 	COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_NAME}/.libs
@@ -137,7 +137,7 @@ if(BUILD_TESTING)
 		set(VENV_BIN ${VENV_DIR}/bin/python)
 	endif()
 	# make a virtualenv to install our python package in it
-	add_custom_command(TARGET bdist POST_BUILD
+	add_custom_command(TARGET python_package POST_BUILD
 		COMMAND ${VENV_EXECUTABLE} -p ${PYTHON_EXECUTABLE} ${VENV_DIR}
 		COMMAND ${VENV_BIN} setup.py install
 		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/python)
