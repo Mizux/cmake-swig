@@ -11,10 +11,17 @@ void foobarHello(int level) {
 }
 
 void FooBar::hello(int level) {
-  std::cout << "[" << level << "] Enter FooBar::hello" << std::endl;
+  std::cout << "[" << level << "] Enter FooBar::hello(int)" << std::endl;
   foo::Foo::hello(level + 1);
   bar::Bar::hello(level + 1);
-  std::cout << "[" << level << "] Exit FooBar::hello" << std::endl;
+  std::cout << "[" << level << "] Exit FooBar::hello(int)" << std::endl;
+}
+
+void FooBar::hello(int64_t level) {
+  std::cout << "[" << level << "] Enter FooBar::hello(int64_t)" << std::endl;
+  foo::Foo::hello(level + 1);
+  bar::Bar::hello(level + 1);
+  std::cout << "[" << level << "] Exit FooBar::hello(int64_t)" << std::endl;
 }
 
 void FooBar::operator()() const {

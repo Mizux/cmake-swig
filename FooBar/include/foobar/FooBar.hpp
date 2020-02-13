@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 //! @namespace foobar The Foobar namespace.
 namespace foobar {
 //! @brief Free function in foobar namespace
@@ -12,6 +14,10 @@ class FooBar {
   //! @brief Static method of FooBar class.
   //! @param[in] level Scope level.
   static void hello(int level);
+
+  //! @brief Static method of FooBar class.
+  //! @param[in] level Scope level.
+  static void hello(int64_t level);
 
   void operator()() const;
 };
