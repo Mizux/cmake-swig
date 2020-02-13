@@ -1,5 +1,6 @@
 %module pyFooBar
 
+%include "stdint.i"
 %include "std_string.i"
 // Add necessary symbols to generated header
 %{
