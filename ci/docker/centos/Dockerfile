@@ -5,7 +5,7 @@ LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
 ENV PATH=$PATH:/usr/local/bin
 RUN yum -y update \
-&& yum -y install git \
+&& yum -y install git wget \
 && yum -y groupinstall "Development Tools" \
 && yum -y install epel-release \
 && yum -y install cmake3 \
