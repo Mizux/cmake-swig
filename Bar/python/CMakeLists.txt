@@ -26,8 +26,4 @@ elseif(UNIX)
 		INSTALL_RPATH "$ORIGIN:$ORIGIN/../../${PROJECT_NAME}/.libs"
 		)
 endif()
-target_link_libraries(pyBar
-	PRIVATE
-	Bar
-	${PYTHON_LIBRARIES}
-	)
+target_link_libraries(pyBar	PRIVATE	Bar)

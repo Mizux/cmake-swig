@@ -24,8 +24,4 @@ elseif(UNIX)
 		INSTALL_RPATH "$ORIGIN:$ORIGIN/../../${PROJECT_NAME}/.libs"
 		)
 endif()
-target_link_libraries(pyFooBar
-	PRIVATE
-	FooBar
-	${PYTHON_LIBRARIES}
-	)
+target_link_libraries(pyFooBar PRIVATE FooBar)
