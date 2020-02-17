@@ -18,6 +18,8 @@ FROM env AS cpp
 # Create lib directory
 WORKDIR /home/liBundle lib source
 COPY . .
+# CMake version
+RUN cmake -version
 # CMake configure
 RUN cmake -S. -Bbuild
 # CMake build

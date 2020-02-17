@@ -12,6 +12,8 @@ RUN yum -y update \
 RUN wget "https://cmake.org/files/v3.16/cmake-3.16.4-Linux-x86_64.sh" \
 && chmod 775 cmake-3.16.4-Linux-x86_64.sh \
 && yes | ./cmake-3.16.4-Linux-x86_64.sh --prefix=/usr --exclude-subdir
+# CMake version
+RUN cmake -version
 
 # Swig install
 RUN wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz" \

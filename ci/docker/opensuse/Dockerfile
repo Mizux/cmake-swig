@@ -18,6 +18,8 @@ FROM env AS cpp
 WORKDIR /home/lib
 # Bundle lib source
 COPY . .
+# CMake version
+RUN cmake -version
 # CMake configure
 RUN cmake -S. -Bbuild
 # CMake build
