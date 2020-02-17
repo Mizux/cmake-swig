@@ -29,7 +29,7 @@ FROM env AS python
 # Swig install
 RUN pacman -Syu --noconfirm swig
 # Python install
-RUN pacman -Syu --noconfirm python
+RUN pacman -Syu --noconfirm python python-pip
 # Create lib directory
 WORKDIR /home/lib
 # Bundle lib source
