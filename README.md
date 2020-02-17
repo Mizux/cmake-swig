@@ -48,29 +48,6 @@ with the [SWIG](http://www.swig.org) code generator to generate wrapper and pack
 
 This project should run on GNU/Linux, MacOS and Windows.
 
-# Wrapper/Package Status
-
-<nav for="language">
-<a href="#python">Python 3</a> |
-<a href="#dotnet">.Net</a> |
-<a href="#java">Java</a>
-</nav>
-
-## [Python 3](#python)
-- [x] GNU/Linux wrapper
-- [x] MacOS wrapper
-- [x] Windows wrapper
-
-## [Dotnet](#dotnet)
-- [ ] GNU/Linux wrapper
-- [ ] MacOS wrapper
-- [ ] Windows wrapper
-
-## [Java](#java)
-- [ ] GNU/Linux wrapper
-- [ ] MacOS wrapper
-- [ ] Windows wrapper
-
 # Dependencies
 To complexify a little, the CMake project is composed of three libraries (`Foo`, `Bar` and `FooBar`)
 with the following dependencies:  
@@ -174,45 +151,25 @@ set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$ORIGIN/../FooBar")
 Using [swig](https://github.com/swig/swig) to generate wrapper it's easy thanks to the modern
 [UseSWIG](https://cmake.org/cmake/help/latest/module/UseSWIG.html) module (**CMake >= 3.14**).  
 
-Creating a Python binary package containing all `.py` and `.so` (with good rpath) is not so easy... 
-
 note: SWIG automatically put its target(s) in `all`, thus `make` will also call
 swig and generate `_module.so`.
 
-## Managing SWIG generated files
-Since python use the directory name where `__init__.py` file is located.  
-We would like to have `pyFoo.py` generated file in `build/Foo` and not in `build/Foo/python`.  
-You can use `CMAKE_SWIG_DIR` to change the output directory for the `.py` file e.g.:
-```cmake
-set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/..)
-```
-And you can use `CMAKE_LIBRARY_OUTPUT_DIRECTORY` to change the output directory for the `.so` file e.g.:
-```cmake
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/..)
-```
-[optional]You can use `SWIG_OUTFILE_DIR` to change the output directory for the `.cxx` file e.g.:
-```cmake
-set(SWIG_OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR}/..)
-```
-Then you only need to create a `__init__.py` file in `build/Foo` to be able to use
-the build directory to generate the Python package.
+## Wrapper documentation
 
-note: you allways need `$ORIGIN/../${PROJECT_NAME}/.libs` since `_pyFoo.so` will depend on `libFoo.so`
-(which will be built in the same directory see above).
+<nav for="language">
+<a href="#python">Python 3</a> |
+<a href="#dotnet">.Net</a> |
+<a href="#java">Java</a>
+</nav>
 
-### Why setup.py has to be generated
-To avoid to put hardcoded path to SWIG `.so` generated files,
-we could use `$<TARGET_FILE_NAME:tgt>` to retrieve the file (and also deal with Mac/Windows suffix, and target dependencies).  
-In order for setup.py to use
-[cmake generator expression](https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#informational-expressions)
-(e.g. $<TARGET_FILE_NAME:_pyFoo>). We need to generate it at build time (e.g. using
-[add_custom_command()](https://cmake.org/cmake/help/latest/command/add_custom_command.html)).  
-note: This will also add automatically a dependency between the command and the TARGET !
+## [Python 3](#python)
+See [python.md](doc/python.md).
 
-## Testing Python
-### Testing using virtualenv
+## [Dotnet](#dotnet)
+See [dotnet.md](doc/dotnet.md).
 
-### Testing using the `CMAKE_BINARY_DIR`
+## [Java](#java)
+See [java.md](doc/java.md).
 
 # Contributing
 
