@@ -5,7 +5,7 @@ LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
 ENV PATH=$PATH:/usr/local/bin
 RUN yum -y update \
-&& yum -y install git wget \
+&& yum -y install git wget pcre-devel \
 && yum -y groupinstall "Development Tools" \
 && yum -y install epel-release \
 && yum -y install cmake3 \
@@ -47,7 +47,7 @@ RUN wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.
 && rm -rf swig-4.0.1
 # Python install
 RUN yum -y update \
-&& yum -y install python-devel python-setuptools python-six python-wheel \
+&& yum -y install python36-devel \
 && yum clean all \
 && rm -rf /var/cache/yum
 # Create lib directory
