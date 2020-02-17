@@ -31,6 +31,10 @@ set(Python_ADDITIONAL_VERSIONS "3.8;3.7;3.6;3.5;2.7" CACHE STRING "Python to use
 find_package(PythonInterp REQUIRED)
 message(STATUS "Found Python: ${PYTHON_EXECUTABLE} (found version \"${PYTHON_VERSION_STRING}\")")
 
+if(PYTHON_VERSION_MAJOR GREATER 2)
+	list(APPEND CMAKE_SWIG_FLAGS "-py3")
+endif()
+
 # Find Python Library
 # Force PythonLibs to find the same version than the python interpreter (or nothing).
 set(Python_ADDITIONAL_VERSIONS "${PYTHON_VERSION_STRING}")
