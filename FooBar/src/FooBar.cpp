@@ -6,8 +6,13 @@
 
 namespace foobar {
 void foobarHello(int level) {
-  std::cout << "[" << level << "] Enter foobarHello" << std::endl;
-  std::cout << "[" << level << "] Exit foobarHello" << std::endl;
+  std::cout << "[" << level << "] Enter foobarHello(int)" << std::endl;
+  std::cout << "[" << level << "] Exit foobarHello(int)" << std::endl;
+}
+
+void foobarHello(int64_t level) {
+  std::cout << "[" << level << "] Enter foobarHello(int64_t)" << std::endl;
+  std::cout << "[" << level << "] Exit foobarHello(int64_t)" << std::endl;
 }
 
 void FooBar::hello(int level) {

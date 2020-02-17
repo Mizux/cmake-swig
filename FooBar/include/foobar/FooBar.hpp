@@ -8,6 +8,10 @@ namespace foobar {
 //! @param[in] level Scope level.
 void foobarHello(int level);
 
+//! @brief Free function in foobar namespace
+//! @param[in] level Scope level.
+void foobarHello(int64_t level);
+
 //! @brief Class FooBar.
 class FooBar {
  public:
