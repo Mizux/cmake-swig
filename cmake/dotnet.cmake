@@ -19,6 +19,10 @@ if(SWIG_VERSION_MAJOR GREATER 3)
 	list(APPEND CMAKE_SWIG_FLAGS "-doxygen")
 endif()
 
+if(UNIX AND NOT APPLE)
+	list(APPEND CMAKE_SWIG_FLAGS "-DSWIGWORDSIZE64")
+endif()
+
 # Find dotnet
 find_program(DOTNET_EXECUTABLE dotnet)
 if(NOT DOTNET_EXECUTABLE)
