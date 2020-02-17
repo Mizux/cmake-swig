@@ -8,6 +8,7 @@ endif()
 
 # Will need swig
 find_package(SWIG REQUIRED)
+message(STATUS "Found Swig: ${SWIG_EXECUTABLE} (found version \"${SWIG_VERSION}\")")
 include(UseSWIG)
 
 # Find Python Interpreter

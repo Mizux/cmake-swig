@@ -3,8 +3,13 @@ if(NOT BUILD_DOTNET)
 endif()
 
 if(NOT TARGET CMakeSwig::FooBar)
-  message(FATAL_ERROR "Python: missing FooBar TARGET")
+  message(FATAL_ERROR ".Net: missing FooBar TARGET")
 endif()
+
+# Will need swig
+find_package(SWIG REQUIRED)
+message(STATUS "Found Swig: ${SWIG_EXECUTABLE} (found version \"${SWIG_VERSION}\")")
+include(UseSWIG)
 
 # Find dotnet
 find_program(DOTNET_EXECUTABLE dotnet)

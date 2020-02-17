@@ -3,8 +3,13 @@ if(NOT BUILD_JAVA)
 endif()
 
 if(NOT TARGET CMakeSwig::FooBar)
-  message(FATAL_ERROR "Python: missing FooBar TARGET")
+  message(FATAL_ERROR "Java: missing FooBar TARGET")
 endif()
+
+# Will need swig
+find_package(SWIG REQUIRED)
+message(STATUS "Found Swig: ${SWIG_EXECUTABLE} (found version \"${SWIG_VERSION}\")")
+include(UseSWIG)
 
 # Find java
 find_package(Java COMPONENTS Development REQUIRED)
