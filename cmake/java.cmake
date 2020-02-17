@@ -8,7 +8,16 @@ endif()
 
 # Will need swig
 find_package(SWIG REQUIRED)
+include(util)
+setup_package_version_variables(SWIG)
+message(STATUS "swig major: ${SWIG_VERSION_MAJOR}")
+message(STATUS "swig minor: ${SWIG_VERSION_MINOR}")
+message(STATUS "swig patch: ${SWIG_VERSION_PATCH}")
 include(UseSWIG)
+
+if(SWIG_VERSION_MAJOR GREATER 3)
+	list(APPEND CMAKE_SWIG_FLAGS "-doxygen")
+endif()
 
 # Find java
 find_package(Java COMPONENTS Development REQUIRED)
