@@ -81,6 +81,8 @@ add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
 	COMMAND ${CMAKE_COMMAND} -E echo "  name='${PROJECT_NAME}'," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "  version='${PROJECT_VERSION}'," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "  author='Mizux'," >> setup.py
+	COMMAND ${CMAKE_COMMAND} -E echo "  author_email='\"Mizux Seiha\" <mizux.dev@gmail.com>'," >> setup.py
+	COMMAND ${CMAKE_COMMAND} -E echo "  url='https://github.com/Mizux/cmake-swig'," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "  distclass=BinaryDistribution," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "  cmdclass={'install': InstallPlatlib}," >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "  packages=find_packages()," >> setup.py
@@ -120,7 +122,7 @@ add_custom_target(python_package ALL
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pyBar> ${PROJECT_NAME}/Bar
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pyFooBar> ${PROJECT_NAME}/FooBar
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Foo> $<TARGET_FILE:Bar> $<TARGET_FILE:FooBar> ${PROJECT_NAME}/.libs
-	#COMMAND ${PYTHON_EXECUTABLE} setup.py bdist bdist_wheel
+	#COMMAND ${PYTHON_EXECUTABLE} setup.py bdist_egg bdist_wheel
 	COMMAND ${PYTHON_EXECUTABLE} setup.py bdist_wheel
 	WORKING_DIRECTORY python
 	)
@@ -131,7 +133,7 @@ if(BUILD_TESTING)
 	search_python_module(virtualenv)
 	# Testing using a vitual environment
 	set(VENV_EXECUTABLE ${PYTHON_EXECUTABLE} -m virtualenv)
-	set(VENV_DIR ${CMAKE_BINARY_DIR}/venv)
+	set(VENV_DIR ${CMAKE_CURRENT_BINARY_DIR}/venv)
 	if(WIN32)
 		set(VENV_BIN "${VENV_DIR}\\Scripts\\python.exe")
 	else()
@@ -140,8 +142,8 @@ if(BUILD_TESTING)
 	# make a virtualenv to install our python package in it
 	add_custom_command(TARGET python_package POST_BUILD
 		COMMAND ${VENV_EXECUTABLE} -p ${PYTHON_EXECUTABLE} ${VENV_DIR}
-		COMMAND ${VENV_BIN} setup.py install
-		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/python)
+		COMMAND ${VENV_BIN} -m pip install "${CMAKE_CURRENT_BINARY_DIR}/python/dist/*.whl"
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 	# run the tests within the virtualenv
 	add_test(NAME pytest_venv COMMAND ${VENV_BIN} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/test.py)
 endif()
