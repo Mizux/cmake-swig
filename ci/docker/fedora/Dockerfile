@@ -36,7 +36,7 @@ RUN dnf -y update \
 && dnf clean all
 # Python install
 RUN dnf -y update \
-&& dnf -y install python3 \
+&& dnf -y install python3 python3-devel \
 && dnf clean all
 # Create lib directory
 WORKDIR /home/lib
