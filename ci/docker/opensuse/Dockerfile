@@ -36,7 +36,7 @@ RUN zypper up -y \
 && zypper clean -a
 # Python install
 RUN zypper up -y \
-&& zypper install -y python \
+&& zypper install -y python3 python3-pip python3-devel \
 && zypper clean -a
 # Create lib directory
 WORKDIR /home/lib
