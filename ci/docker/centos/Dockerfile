@@ -5,13 +5,20 @@ LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
 ENV PATH=$PATH:/usr/local/bin
 RUN yum -y update \
-&& yum -y install git wget pcre-devel \
+&& yum -y install git wget openssl-devel \
 && yum -y groupinstall "Development Tools" \
-&& yum -y install epel-release \
-&& yum -y install cmake3 \
-&& ln -s /usr/bin/cmake3 /usr/local/bin/cmake \
 && yum clean all \
 && rm -rf /var/cache/yum
+# Install CMake 3.16.3
+RUN wget "https://cmake.org/files/v3.16/cmake-3.16.4.tar.gz" \
+&& tar xzf cmake-3.16.4.tar.gz \
+&& rm cmake-3.16.4.tar.gz \
+&& cd cmake-3.16.4 \
+&& ./bootstrap --prefix=/usr \
+&& make \
+&& make install \
+&& cd .. \
+&& rm -rf cmake-3.16.4
 CMD [ "/bin/sh" ]
 
 
@@ -36,7 +43,11 @@ RUN cmake --build build --target install
 # Add the library src to our build env
 FROM env AS python
 # Swig install
-RUN wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz" \
+RUN yum -y update \
+&& yum -y install pcre-devel \
+&& yum clean all \
+&& rm -rf /var/cache/yum \
+&& wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz" \
 && tar xvf swig-4.0.1.tar.gz \
 && rm swig-4.0.1.tar.gz \
 && cd swig-4.0.1 \
@@ -66,7 +77,11 @@ RUN cmake --build build --target install
 # Add the library src to our build env
 FROM env AS java
 # Swig install
-RUN wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz" \
+RUN yum -y update \
+&& yum -y install pcre-devel \
+&& yum clean all \
+&& rm -rf /var/cache/yum \
+&& wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz" \
 && tar xvf swig-4.0.1.tar.gz \
 && rm swig-4.0.1.tar.gz \
 && cd swig-4.0.1 \
@@ -96,7 +111,11 @@ RUN cmake --build build --target install
 # Add the library src to our build env
 FROM env AS dotnet
 # Swig install
-RUN wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz" \
+RUN yum -y update \
+&& yum -y install pcre-devel \
+&& yum clean all \
+&& rm -rf /var/cache/yum \
+&& wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz" \
 && tar xvf swig-4.0.1.tar.gz \
 && rm swig-4.0.1.tar.gz \
 && cd swig-4.0.1 \
