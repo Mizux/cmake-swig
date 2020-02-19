@@ -13,7 +13,7 @@ endif()
 find_package(SWIG REQUIRED)
 include(UseSWIG)
 
-if(${SWIG_VERSION} VERSION_GREATER 3)
+if(${SWIG_VERSION} VERSION_GREATER_EQUAL 4)
 	list(APPEND CMAKE_SWIG_FLAGS "-doxygen")
 endif()
 
