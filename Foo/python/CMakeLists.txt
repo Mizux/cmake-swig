@@ -27,4 +27,8 @@ elseif(UNIX)
     INSTALL_RPATH	"$ORIGIN:$ORIGIN/../../${PROJECT_NAME}/.libs"
 		)
 endif()
-target_link_libraries(pyFoo PRIVATE	Foo)
+target_link_libraries(pyFoo
+	PRIVATE
+	Foo
+	$<$<PLATFORM_ID:Windows>:${PYTHON_LIBRARIES}>
+	)
