@@ -2,6 +2,9 @@ if(NOT BUILD_JAVA)
   return()
 endif()
 
+# Use latest UseSWIG module
+cmake_minimum_required(VERSION 3.14)
+
 if(NOT TARGET CMakeSwig::FooBar)
   message(FATAL_ERROR "Java: missing FooBar TARGET")
 endif()

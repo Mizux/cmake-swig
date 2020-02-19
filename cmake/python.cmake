@@ -2,6 +2,9 @@ if(NOT BUILD_PYTHON)
 	return()
 endif()
 
+# Use latest UseSWIG module
+cmake_minimum_required(VERSION 3.14)
+
 if(NOT TARGET CMakeSwig::FooBar)
 	message(FATAL_ERROR "Python: missing FooBar TARGET")
 endif()

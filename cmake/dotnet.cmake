@@ -2,6 +2,9 @@ if(NOT BUILD_DOTNET)
   return()
 endif()
 
+# Use latest UseSWIG module
+cmake_minimum_required(VERSION 3.14)
+
 if(NOT TARGET CMakeSwig::FooBar)
   message(FATAL_ERROR ".Net: missing FooBar TARGET")
 endif()
