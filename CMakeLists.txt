@@ -22,9 +22,6 @@ endif()
 project(CMakeSwig VERSION 1.0 LANGUAGES CXX)
 message(STATUS "version: ${PROJECT_VERSION}")
 
-#include(util)
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
 # Force default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
