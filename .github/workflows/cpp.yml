@@ -9,7 +9,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build env image
       run: make --directory=ci env
-    - name: Build project
-      run: make --directory=ci devel
-    - name: Test project
-      run: make --directory=ci test_devel
+    - name: Build C++ project
+      run: make --directory=ci devel_cpp
+    - name: Test C++ project
+      run: make --directory=ci test_cpp
