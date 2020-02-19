@@ -21,16 +21,16 @@ To be compliant with [PEP513](https://www.python.org/dev/peps/pep-0513/#the-many
 Creating a Python native package containing all `.py` and `.so` (with good rpath/loaderpath) is not so easy... 
 
 # Build the Binary Package
-To build the python package, simply run:
+To build the Python wheel package, simply run:
 ```sh
 cmake -S. -Bbuild -DBUILD_PYTHON=ON
 cmake --build build --target python_package
 ```
 
 ## Build directory layout
-Since python use the directory name where `__init__.py` file is located and we
+Since Python use the directory name where `__init__.py` file is located and we
 want to use the [CMAKE_BINARY_DIR](https://cmake.org/cmake/help/latest/variable/CMAKE_BINARY_DIR.html) 
-to generate the python binary package.  
+to generate the Python binary package.  
 
 We want this layout (`tree build --prune -U -P "*.py|*.so*" -I "build"`):
 ```shell
