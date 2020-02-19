@@ -20,8 +20,8 @@ jobs:
     - name: Configure
       run: cmake -S. -Bbuild -G "Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_DEPS=ON
     - name: Build
-      run: cmake --build build --config Release --target ALL_BUILD -- /maxcpucount
+      run: cmake --build build --config Release --target ALL_BUILD -- /verbosity:normal /maxcpucount
     - name: Test
-      run: cmake --build build --config Release --target RUN_TESTS -- /maxcpucount
+      run: cmake --build build --config Release --target RUN_TESTS -- /verbosity:normal /maxcpucount
     - name: Install
-      run: cmake --build build --config Release --target INSTALL -- /maxcpucount
+      run: cmake --build build --config Release --target INSTALL -- /verbosity:normal /maxcpucount
