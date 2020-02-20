@@ -156,7 +156,9 @@ if(BUILD_TESTING)
 	# make a virtualenv to install our python package in it
 	add_custom_command(TARGET python_package POST_BUILD
 		COMMAND ${VENV_EXECUTABLE} -p ${PYTHON_EXECUTABLE} ${VENV_DIR}
-		COMMAND ${VENV_BIN} -m pip install --find-links=./python/dist ${PROJECT_NAME}
+    # Must not call it in a folder containing the setup.py otherwise pip call it
+    # (i.e. "python setup.py bdist") while we want to consume the wheel package
+		COMMAND ${VENV_BIN} -m pip install --find-links=${CMAKE_CURRENT_BINARY_DIR}/python/dist ${PROJECT_NAME}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 	# run the tests within the virtualenv
 	add_test(NAME pytest_venv COMMAND ${VENV_BIN} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/test.py)
