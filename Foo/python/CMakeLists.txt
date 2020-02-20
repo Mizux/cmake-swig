@@ -27,8 +27,12 @@ elseif(UNIX)
     INSTALL_RPATH	"$ORIGIN:$ORIGIN/../../${PROJECT_NAME}/.libs"
 		)
 endif()
-target_link_libraries(pyFoo
-	PRIVATE
-	Foo
-	$<$<PLATFORM_ID:Windows>:${PYTHON_LIBRARIES}>
-	)
+target_link_libraries(pyFoo	PRIVATE	Foo)
+
+# Variable PYTHON_LIBRARIES can contains keyword `optimized`
+# which won't be interpreted inside a generator expression.
+# i.e. we can't use: $<$<PLATFORM_ID:Windows>:${PYTHON_LIBRARIES}>
+# see: https://cmake.org/cmake/help/git-stage/command/target_link_libraries.html#command:target_link_libraries
+if(MSVC)
+  target_link_libraries(pyFoo	PRIVATE	${PYTHON_LIBRARIES})
+endif()
