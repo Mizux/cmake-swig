@@ -6,6 +6,10 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 if(POLICY CMP0068)
   cmake_policy(SET CMP0068 NEW)
 endif()
+# Define file(GENERATE) behavior for relative paths.
+if(POLICY CMP0070)
+  cmake_policy(SET CMP0070 NEW)
+endif()
 # target_sources: use absolute path for INTERFACE_SOURCES.
 if(POLICY CMP0076)
   cmake_policy(SET CMP0076 NEW)
