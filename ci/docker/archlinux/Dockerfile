@@ -68,7 +68,7 @@ RUN cmake --build build --target install
 FROM env AS dotnet
 # Swig install
 RUN pacman -Syu --noconfirm swig
-# Java install
+# .Net install
 RUN pacman -Syu --noconfirm dotnet-sdk
 # Create lib directory
 WORKDIR /home/lib
