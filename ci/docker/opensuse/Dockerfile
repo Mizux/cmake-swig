@@ -80,6 +80,7 @@ RUN zypper up -y \
 && zypper install -y swig \
 && zypper clean -a
 # .Net install
+# https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-opensuse15
 RUN zypper up -y \
 && zypper install -y dotnet-sdk \
 && zypper clean -a

@@ -125,6 +125,7 @@ RUN yum -y update \
 && cd .. \
 && rm -rf swig-4.0.1
 # .Net install
+# see https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-centos7
 RUN rpm -Uvh "https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm" \
 && yum -y update \
 && yum -y install dotnet-sdk-3.1 \

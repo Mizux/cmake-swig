@@ -81,6 +81,7 @@ RUN dnf -y update \
 && dnf -y install swig \
 && dnf clean all
 # .Net install
+# see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-fedora31
 RUN dnf -y update \
 && dnf -y install dotnet-sdk \
 && dnf clean all

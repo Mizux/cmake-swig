@@ -95,7 +95,8 @@ RUN apt-get update -qq \
 && apt-get install -yq swig \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-# Dotnet install
+# .Net install
+# see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-ubuntu-1910
 RUN apt-get update -qq \
 && apt-get install -yq wget gpg apt-transport-https \
 && wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg \
