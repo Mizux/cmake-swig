@@ -4,7 +4,7 @@ FROM opensuse/tumbleweed AS env
 LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
 ENV PATH=$PATH:/usr/local/bin
-RUN zypper up -y \
+RUN zypper update -y \
 && zypper install -y git gcc gcc-c++ cmake \
 && zypper clean -a
 ENV CC=gcc CXX=g++
@@ -31,11 +31,11 @@ RUN cmake --build build --target install
 
 FROM env AS python
 # Swig install
-RUN zypper up -y \
+RUN zypper update -y \
 && zypper install -y swig \
 && zypper clean -a
 # Python install
-RUN zypper up -y \
+RUN zypper update -y \
 && zypper install -y python3 python3-pip python3-devel \
 && zypper clean -a
 # Create lib directory
@@ -53,12 +53,12 @@ RUN cmake --build build --target install
 
 FROM env AS java
 # Swig install
-RUN zypper up -y \
+RUN zypper update -y \
 && zypper install -y swig \
 && zypper clean -a
 # Java install
-RUN zypper up -y \
-&& zypper install -y openjdk \
+RUN zypper update -y \
+&& zypper install -y java-1_8_0-openjdk-devel \
 && zypper clean -a
 # Create lib directory
 WORKDIR /home/lib
@@ -76,14 +76,20 @@ RUN cmake --build build --target install
 
 FROM env AS dotnet
 # Swig install
-RUN zypper up -y \
+RUN zypper update -y \
 && zypper install -y swig \
 && zypper clean -a
 # .Net install
-# https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-opensuse15
-RUN zypper up -y \
-&& zypper install -y dotnet-sdk \
-&& zypper clean -a
+RUN zypper update -y \
+&& zypper install -y wget tar libicu-devel
+RUN dotnet_sdk_version=3.1.102 \
+&& wget -O dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/$dotnet_sdk_version/dotnet-sdk-$dotnet_sdk_version-linux-x64.tar.gz \
+&& dotnet_sha512='9cacdc9700468a915e6fa51a3e5539b3519dd35b13e7f9d6c4dd0077e298baac0e50ad1880181df6781ef1dc64a232e9f78ad8e4494022987d12812c4ca15f29' \
+&& echo "$dotnet_sha512  dotnet.tar.gz" | sha512sum -c - \
+&& mkdir -p /usr/share/dotnet \
+&& tar -C /usr/share/dotnet -oxzf dotnet.tar.gz \
+&& ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet \
+&& rm dotnet.tar.gz
 # Trigger first run experience by running arbitrary cmd
 RUN dotnet --info
 # Create lib directory
