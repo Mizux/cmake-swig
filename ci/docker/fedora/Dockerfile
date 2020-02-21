@@ -5,7 +5,7 @@ LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
 ENV PATH=$PATH:/usr/local/bin
 RUN dnf -y update \
-&& dnf -y install git \
+&& dnf -y install git wget \
 && dnf -y groupinstall "Development Tools" \
 && dnf -y install gcc-c++ cmake \
 && dnf clean all
@@ -82,8 +82,10 @@ RUN dnf -y update \
 && dnf clean all
 # .Net install
 # see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-fedora31
-RUN dnf -y update \
-&& dnf -y install dotnet-sdk \
+RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc \
+&& wget -q -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/31/prod.repo \
+&& dnf -y update \
+&& dnf -y install dotnet-sdk-3.1 \
 && dnf clean all
 # Trigger first run experience by running arbitrary cmd
 RUN dotnet --info
