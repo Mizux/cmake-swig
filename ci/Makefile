@@ -49,9 +49,9 @@ help:
 	@echo -e "\t\t${BOLD}alpine${RESET} (latest)"
 	@echo -e "\t\t${BOLD}archlinux${RESET} (latest)"
 	@echo -e "\t\t${BOLD}centos${RESET} (latest)"
+	@echo -e "\t\t${BOLD}debian${RESET} (latest)"
 	@echo -e "\t\t${BOLD}fedora${RESET} (latest)"
 	@echo -e "\t\t${BOLD}opensuse${RESET} (tumbleweed)"
-	@echo -e "\t\t${BOLD}debian${RESET} (latest)"
 	@echo -e "\t\t${BOLD}ubuntu${RESET} (latest)"
 	@echo -e "\te.g. 'make devel_alpine'"
 	@echo
