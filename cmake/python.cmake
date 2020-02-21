@@ -24,12 +24,12 @@ endif()
 # Find Python Interpreter
 # prefer Python 3.8 over 3.7 over ...
 # user can overwrite it e.g.:
-# cmake -H. -Bbuild -DBUILD_PYTHON=ON -DPython_ADDITIONAL_VERSIONS="2.7"
+# cmake -S. -Bbuild -DBUILD_PYTHON=ON -DPython_ADDITIONAL_VERSIONS="3.6"
 set(Python_ADDITIONAL_VERSIONS "3.8;3.7;3.6;3.5;2.7" CACHE STRING "Python to use for binding")
 find_package(PythonInterp REQUIRED)
 message(STATUS "Found Python: ${PYTHON_EXECUTABLE} (found version \"${PYTHON_VERSION_STRING}\")")
 
-if(PYTHON_VERSION_MAJOR GREATER 2)
+if(${PYTHON_VERSION_STRING} VERSION_GREATER_EQUAL 3)
 	list(APPEND CMAKE_SWIG_FLAGS "-py3")
 endif()
 
@@ -42,27 +42,6 @@ message(STATUS "Found Python Include: ${PYTHON_INCLUDE_DIRS} (found version \"${
 add_subdirectory(Foo/python)
 add_subdirectory(Bar/python)
 add_subdirectory(FooBar/python)
-
-# Find if python module MODULE_NAME is available, if not install it to the Python user install
-# directory.
-function(search_python_module MODULE_NAME)
-	execute_process(
-		COMMAND ${PYTHON_EXECUTABLE} -c "import ${MODULE_NAME}; print(${MODULE_NAME}.__version__)"
-		RESULT_VARIABLE _RESULT
-		OUTPUT_VARIABLE MODULE_VERSION
-		ERROR_QUIET
-		OUTPUT_STRIP_TRAILING_WHITESPACE
-		)
-	if(${_RESULT} STREQUAL "0")
-		message(STATUS "Found python module: ${MODULE_NAME} (found version \"${MODULE_VERSION}\")")
-	else()
-		message(WARNING "Can't find python module \"${MODULE_NAME}\", user install it using pip...")
-		execute_process(
-			COMMAND ${PYTHON_EXECUTABLE} -m pip install --upgrade --user ${MODULE_NAME}
-			OUTPUT_STRIP_TRAILING_WHITESPACE
-			)
-	endif()
-endfunction()
 
 #######################
 ## Python Packaging  ##
@@ -123,6 +102,27 @@ add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
 	COMMENT "Generate setup.py at build time (to use generator expression)"
 	WORKING_DIRECTORY python
 	VERBATIM)
+
+# Find if python module MODULE_NAME is available,
+# if not install it to the Python user install directory.
+function(search_python_module MODULE_NAME)
+	execute_process(
+		COMMAND ${PYTHON_EXECUTABLE} -c "import ${MODULE_NAME}; print(${MODULE_NAME}.__version__)"
+		RESULT_VARIABLE _RESULT
+		OUTPUT_VARIABLE MODULE_VERSION
+		ERROR_QUIET
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+		)
+	if(${_RESULT} STREQUAL "0")
+		message(STATUS "Found python module: ${MODULE_NAME} (found version \"${MODULE_VERSION}\")")
+	else()
+		message(WARNING "Can't find python module \"${MODULE_NAME}\", user install it using pip...")
+		execute_process(
+			COMMAND ${PYTHON_EXECUTABLE} -m pip install --upgrade --user ${MODULE_NAME}
+			OUTPUT_STRIP_TRAILING_WHITESPACE
+			)
+	endif()
+endfunction()
 
 # Look for required python modules
 search_python_module(setuptools)
