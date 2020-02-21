@@ -5,9 +5,19 @@ LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
 ENV PATH=$PATH:/usr/local/bin
 RUN apt-get update -qq \
-&& apt-get install -yq git build-essential cmake \
+&& apt-get install -yq git wget libssl-dev build-essential \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Install CMake 3.16.4
+RUN wget "https://cmake.org/files/v3.16/cmake-3.16.4.tar.gz" \
+&& tar xzf cmake-3.16.4.tar.gz \
+&& rm cmake-3.16.4.tar.gz \
+&& cd cmake-3.16.4 \
+&& ./bootstrap --prefix=/usr \
+&& make \
+&& make install \
+&& cd .. \
+&& rm -rf cmake-3.16.4
 CMD [ "/bin/sh" ]
 
 
