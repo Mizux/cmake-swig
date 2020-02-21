@@ -3,13 +3,19 @@ name: Docker CI
 on: [push, pull_request]
 
 jobs:
-  build:
+  Alpine:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build env image
-      run: make --directory=ci env
+      run: make --directory=ci env_alpine
     - name: Build project
-      run: make --directory=ci devel
-    - name: Test project
-      run: make --directory=ci test_devel
+      run: make --directory=ci devel_alpine
+    - name: Test C++
+      run: make --directory=ci test_alpine_cpp
+    - name: Test Python
+      run: make --directory=ci test_alpine_python
+    - name: Test Java
+      run: make --directory=ci test_alpine_java
+    - name: Test .Net
+      run: make --directory=ci test_alpine_dotnet
