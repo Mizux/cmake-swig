@@ -11,6 +11,7 @@ target_include_directories(Foo
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
+target_compile_features(Foo PUBLIC cxx_std_11)
 set_target_properties(Foo PROPERTIES
   VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER $<TARGET_PROPERTY:Foo,INTERFACE_SOURCES>

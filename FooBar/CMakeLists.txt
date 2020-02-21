@@ -11,6 +11,7 @@ target_include_directories(FooBar
 	  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	  $<INSTALL_INTERFACE:include>
 )
+target_compile_features(FooBar PUBLIC cxx_std_11)
 set_target_properties(FooBar PROPERTIES
   VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER $<TARGET_PROPERTY:FooBar,INTERFACE_SOURCES>

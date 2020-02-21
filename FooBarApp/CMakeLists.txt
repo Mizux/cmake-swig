@@ -3,6 +3,7 @@ target_sources(FooBarApp
   PRIVATE
   src/main.cpp
 )
+target_compile_features(FooBarApp PUBLIC cxx_std_11)
 set_target_properties(FooBarApp PROPERTIES
   VERSION ${PROJECT_VERSION})
 # note: macOS is APPLE and also UNIX !
