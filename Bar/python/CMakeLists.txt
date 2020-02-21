@@ -4,14 +4,14 @@ swig_add_library(pyBar
 	LANGUAGE python
 	OUTPUT_DIR ${CMAKE_BINARY_DIR}/python/${PROJECT_NAME}/Bar
 	SOURCES bar.i)
-set_property(TARGET pyBar PROPERTY
-	SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON
-	)
+
 target_include_directories(pyBar
 	PRIVATE
 	../include
 	${PYTHON_INCLUDE_DIRS}
 	)
+set_property(TARGET pyBar PROPERTY SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON)
+
 # note: macOS is APPLE and also UNIX !
 if(APPLE)
 	set_target_properties(pyBar PROPERTIES
