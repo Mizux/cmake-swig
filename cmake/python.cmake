@@ -148,17 +148,18 @@ if(BUILD_TESTING)
 	set(VENV_EXECUTABLE ${PYTHON_EXECUTABLE} -m virtualenv)
 	set(VENV_DIR ${CMAKE_CURRENT_BINARY_DIR}/venv)
 	if(WIN32)
-		set(VENV_BIN "${VENV_DIR}\\Scripts\\python.exe")
+		set(VENV_PYTHON_EXECUTABLE "${VENV_DIR}\\Scripts\\python.exe")
 	else()
-		set(VENV_BIN ${VENV_DIR}/bin/python)
+		set(VENV_PYTHON_EXECUTABLE ${VENV_DIR}/bin/python)
 	endif()
 	# make a virtualenv to install our python package in it
 	add_custom_command(TARGET python_package POST_BUILD
 		COMMAND ${VENV_EXECUTABLE} -p ${PYTHON_EXECUTABLE} ${VENV_DIR}
-    # Must not call it in a folder containing the setup.py otherwise pip call it
-    # (i.e. "python setup.py bdist") while we want to consume the wheel package
-		COMMAND ${VENV_BIN} -m pip install --find-links=${CMAKE_CURRENT_BINARY_DIR}/python/dist ${PROJECT_NAME}
+		# Must not call it in a folder containing the setup.py otherwise pip call it
+		# (i.e. "python setup.py bdist") while we want to consume the wheel package
+		COMMAND ${VENV_PYTHON_EXECUTABLE} -m pip install --find-links=${CMAKE_CURRENT_BINARY_DIR}/python/dist ${PROJECT_NAME}
+		BYPRODUCTS ${VENV_DIR}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 	# run the tests within the virtualenv
-	add_test(NAME pytest_venv COMMAND ${VENV_BIN} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/test.py)
+	add_test(NAME pytest_venv COMMAND ${VENV_PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/test.py)
 endif()
