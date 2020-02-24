@@ -140,6 +140,7 @@ add_custom_target(python_package ALL
 	#COMMAND ${PYTHON_EXECUTABLE} setup.py bdist_egg bdist_wheel
 	COMMAND ${PYTHON_EXECUTABLE} setup.py bdist_wheel
 	BYPRODUCTS
+	  python/${PROJECT_NAME}
 	  python/build
 	  python/dist
 	  python/${PROJECT_NAME}.egg-info
