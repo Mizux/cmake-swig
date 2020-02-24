@@ -49,7 +49,8 @@ add_subdirectory(FooBar/python)
 # To use a cmake generator expression (aka $<>), it must be processed at build time
 # i.e. inside a add_custom_command()
 # This command will depend on TARGET(s) in cmake generator expression
-add_custom_command(OUTPUT setup.py dist ${PROJECT_NAME}.egg-info
+add_custom_command(OUTPUT
+	python/setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "from setuptools import find_packages, setup" > setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "from setuptools.dist import Distribution" >> setup.py
 	COMMAND ${CMAKE_COMMAND} -E echo "" >> setup.py
@@ -124,11 +125,12 @@ search_python_module(setuptools)
 search_python_module(wheel)
 
 add_custom_target(python_package ALL
-	DEPENDS setup.py
+	DEPENDS python/setup.py
 	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/${PROJECT_NAME}/__init__.py
 	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/${PROJECT_NAME}/Foo/__init__.py
 	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/${PROJECT_NAME}/Bar/__init__.py
 	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/${PROJECT_NAME}/FooBar/__init__.py
+
 	COMMAND ${CMAKE_COMMAND} -E remove_directory dist
 	COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_NAME}/.libs
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pyFoo> ${PROJECT_NAME}/Foo
@@ -137,6 +139,10 @@ add_custom_target(python_package ALL
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Foo> $<TARGET_FILE:Bar> $<TARGET_FILE:FooBar> ${PROJECT_NAME}/.libs
 	#COMMAND ${PYTHON_EXECUTABLE} setup.py bdist_egg bdist_wheel
 	COMMAND ${PYTHON_EXECUTABLE} setup.py bdist_wheel
+	BYPRODUCTS
+	  python/build
+	  python/dist
+	  python/${PROJECT_NAME}.egg-info
 	WORKING_DIRECTORY python
 	)
 
