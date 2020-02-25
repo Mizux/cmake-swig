@@ -2,16 +2,19 @@ FROM quay.io/pypa/manylinux2010_x86_64:latest
 LABEL maintainer="mizux.dev@gmail.com"
 
 # Base install
+ENV PATH=$PATH:/usr/local/bin
 RUN yum -y update \
 && yum -y groupinstall 'Development Tools' \
 && yum -y install wget pcre-devel which redhat-lsb-core \
 && yum clean all \
 && rm -rf /var/cache/yum
-
-# Install CMake
+# Install CMake 3.16.4
 RUN wget "https://cmake.org/files/v3.16/cmake-3.16.4-Linux-x86_64.sh" \
-&& chmod 775 cmake-3.16.4-Linux-x86_64.sh \
-&& yes | ./cmake-3.16.4-Linux-x86_64.sh --prefix=/usr --exclude-subdir
+&& chmod a+x cmake-3.16.4-Linux-x86_64.sh \
+&& ./cmake-3.16.4-Linux-x86_64.sh --prefix=/usr/local/ --skip-license \
+&& rm cmake-3.16.4-Linux-x86_64.sh
+CMD [ "/bin/sh" ]
+
 # CMake version
 RUN cmake -version
 

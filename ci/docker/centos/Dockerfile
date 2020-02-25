@@ -9,16 +9,11 @@ RUN yum -y update \
 && yum -y groupinstall "Development Tools" \
 && yum clean all \
 && rm -rf /var/cache/yum
-# Install CMake 3.16.3
-RUN wget "https://cmake.org/files/v3.16/cmake-3.16.4.tar.gz" \
-&& tar xzf cmake-3.16.4.tar.gz \
-&& rm cmake-3.16.4.tar.gz \
-&& cd cmake-3.16.4 \
-&& ./bootstrap --prefix=/usr \
-&& make \
-&& make install \
-&& cd .. \
-&& rm -rf cmake-3.16.4
+# Install CMake 3.16.4
+RUN wget "https://cmake.org/files/v3.16/cmake-3.16.4-Linux-x86_64.sh" \
+&& chmod a+x cmake-3.16.4-Linux-x86_64.sh \
+&& ./cmake-3.16.4-Linux-x86_64.sh --prefix=/usr/local/ --skip-license \
+&& rm cmake-3.16.4-Linux-x86_64.sh
 CMD [ "/bin/sh" ]
 
 
