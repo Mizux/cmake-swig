@@ -55,6 +55,7 @@ build/python
         ├── libFooBar.so.1.0
         └── libFoo.so.1.0
 ```
+note: on Windows since we are using static libraries we won't have the `.libs` directory...
 
 ## Managing SWIG generated files
 You can use `CMAKE_SWIG_DIR` to change the output directory for the `.py` file e.g.:
