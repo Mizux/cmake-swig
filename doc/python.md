@@ -11,9 +11,9 @@
 
 
 # Python Wrapper Status
-- [x] GNU/Linux wrapper
-- [x] MacOS wrapper
-- [x] Windows wrapper
+* [x] GNU/Linux wrapper
+* [x] MacOS wrapper
+* [x] Windows wrapper
 
 # Introduction 
 To be compliant with [PEP513](https://www.python.org/dev/peps/pep-0513/#the-manylinux1-policy) a python package should embbed all its C++ shared libraries.
@@ -34,7 +34,7 @@ to generate the Python binary package.
 
 We want this layout (`tree build --prune -U -P "*.py|*.so*" -I "build"`):
 ```shell
-build/python
+<CMAKE_BINARY_DIR>/python
 ├── setup.py
 └── CMakeSwig
     ├── __init__.py
@@ -55,31 +55,39 @@ build/python
         ├── libFooBar.so.1.0
         └── libFoo.so.1.0
 ```
+note: On UNIX you always need `$ORIGIN/../../${PROJECT_NAME}/.libs` since `_pyFoo.so` will depend on `libFoo.so`.
+note: On APPLE you always need `"@loader_path;@loader_path/../../${PROJECT_NAME}/.libs` since `_pyFoo.so` will depend on `libFoo.dylib`.
 note: on Windows since we are using static libraries we won't have the `.libs` directory...
 
-## Managing SWIG generated files
-You can use `CMAKE_SWIG_DIR` to change the output directory for the `.py` file e.g.:
-```cmake
-set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/..)
-```
-And you can use `CMAKE_LIBRARY_OUTPUT_DIRECTORY` to change the output directory for the `.so` file e.g.:
-```cmake
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/..)
-```
-[optional]You can use `SWIG_OUTFILE_DIR` to change the output directory for the `.cxx` file e.g.:
-```cmake
-set(SWIG_OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR}/..)
-```
-Then you only need to create a `__init__.py` file in `build/Foo` to be able to use
-the build directory to generate the Python package.
+So we also need to create few `__init__.py` files to be able to use the build directory to generate the Python package.
 
-note: you allways need `$ORIGIN/../${PROJECT_NAME}/.libs` since `_pyFoo.so` will depend on `libFoo.so`
-(which will be built in the same directory see above).
+### Why on APPLE lib must be .so
+Actually, the cpython code responsible for loading native libraries expect `.so`
+on all UNIX platforms.
+
+```c
+const char *_PyImport_DynLoadFiletab[] = {
+#ifdef __CYGWIN__
+    ".dll",
+#else  /* !__CYGWIN__ */
+    "." SOABI ".so",
+#ifdef ALT_SOABI
+    "." ALT_SOABI ".so",
+#endif
+    ".abi" PYTHON_ABI_STRING ".so",
+    ".so",
+#endif  /* __CYGWIN__ */
+    NULL,
+};
+```
+ref: https://github.com/python/cpython/blob/master/Python/dynload_shlib.c#L36-L48
+
+i.e. `pyFoo` -> `_pyFoo.so` -> `libFoo.dylib`
 
 ### Why setup.py has to be generated
 To avoid to put hardcoded path to SWIG `.so/.dylib` generated files,
 we could use `$<TARGET_FILE_NAME:tgt>` to retrieve the file (and also deal with Mac/Windows suffix, and target dependencies).  
-In order for setup.py to use
+In order for `setup.py` to use
 [cmake generator expression](https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#informational-expressions)
 (e.g. $<TARGET_FILE_NAME:_pyFoo>). We need to generate it at build time (e.g. using
 [add_custom_command()](https://cmake.org/cmake/help/latest/command/add_custom_command.html)).  

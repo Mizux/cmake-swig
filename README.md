@@ -43,26 +43,33 @@
 [appveyor_link]: https://ci.appveyor.com/project/Mizux/cmake-swig/branch/master
 
 # Introduction
+<nav for="language"> |
+<a href="#codemap">Codemap</a> |
+<a href="doc/cpp.md">C++</a> |
+<a href="doc/swig.md">Swig</a> |
+<a href="doc/python.md">Python 3</a> |
+<a href="doc/dotnet.md">.Net Core</a> |
+<a href="doc/java.md">Java</a> |
+</nav>
+
 This is a complete example of how to create a Modern [CMake](https://cmake.org/) C++ Project
 with the [SWIG](http://www.swig.org) code generator to generate wrapper and package for Python, .Net and Java.  
 
 This project should run on GNU/Linux, MacOS and Windows.
 
-# Dependencies
-To complexify a little, the CMake project is composed of three libraries (`Foo`, `Bar` and `FooBar`)
-with the following dependencies:  
-```sh
-Foo:
-Bar:
-FooBar: PUBLIC Foo PRIVATE Bar
-FooBarApp: PRIVATE FooBar
-```
+You can find detailed documentation for [C++](doc/cpp.md), [Swig](doc/swig.md),
+[Python 3](doc/python.md), [.Net Core](doc/dotnet.md) and [Java](doc/java.md).
 
-# Codemap
+note: You should read **C++** and **Swig** first since since other languages are
+just swig generated wrappers from the C++.
+
+# [Codemap](#codemap)
 The project layout is as follow:
 
 * [CMakeLists.txt](CMakeLists.txt) Top-level for [CMake](https://cmake.org/cmake/help/latest/) based build.
 * [cmake](cmake) Subsidiary CMake files.
+
+* [ci](ci) Root directory for continuous integration.
 
 * [Foo](Foo) Root directory for `Foo` library.
   * [CMakeLists.txt](Foo/CMakeLists.txt) for `Foo`.
@@ -116,60 +123,6 @@ The project layout is as follow:
   * [CMakeLists.txt](FooBarApp/CMakeLists.txt) for `FooBarApp`.
   * [src](FooBarApp/src) private folder.
     * [src/main.cpp](FooBarApp/src/main.cpp)
-
-# C++ Project Build
-To build the C++ project, as usual:
-```shell
-cmake -S. -Bbuild
-cmake --build build --target all
-```
-
-## Managing RPATH
-Since we want to use the [CMAKE_BINARY_DIR](https://cmake.org/cmake/help/latest/variable/CMAKE_BINARY_DIR.html) to generate the wrapper package (e.g. python wheel package) as well as be able to test from the build directory.
-We need to enable:
-```cmake
-set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-```
-And have a finely tailored rpath for each library.
-
-For `Foo` and `Bar` which depend on nothing:
-```cmake
-set(CMAKE_INSTALL_RPATH "$ORIGIN")
-```
-
-For `FooBar` which depend on `Foo` and `Bar`:
-```cmake
-set(CMAKE_INSTALL_RPATH "$ORIGIN:$ORIGIN/../Foo:$ORIGIN/../Bar")
-```
-
-For `FooBarApp` which depend on `FooBar`:
-```cmake
-set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$ORIGIN/../FooBar")
-```
-
-# SWIG Wrapper Generation
-Using [swig](https://github.com/swig/swig) to generate wrapper it's easy thanks to the modern
-[UseSWIG](https://cmake.org/cmake/help/latest/module/UseSWIG.html) module (**CMake >= 3.14**).  
-
-note: SWIG automatically put its target(s) in `all`, thus `make` will also call
-swig and generate `_module.so`.
-
-## Wrapper documentation
-
-<nav for="language">
-<a href="#python">Python 3</a> |
-<a href="#dotnet">.Net</a> |
-<a href="#java">Java</a>
-</nav>
-
-## [Python 3](#python)
-See [python.md](doc/python.md).
-
-## [Dotnet](#dotnet)
-See [dotnet.md](doc/dotnet.md).
-
-## [Java](#java)
-See [java.md](doc/java.md).
 
 # Contributing
 

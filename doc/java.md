@@ -11,9 +11,9 @@
 
 
 # Java Wrapper Status
-- [ ] GNU/Linux wrapper
-- [ ] MacOS wrapper
-- [ ] Windows wrapper
+* [ ] GNU/Linux wrapper
+* [ ] MacOS wrapper
+* [ ] Windows wrapper
 
 # Introduction
 
