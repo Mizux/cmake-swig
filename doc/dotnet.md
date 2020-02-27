@@ -54,8 +54,8 @@ Is the .NetStandard2.0 library which should depends on all previous available pa
 * [`src/dotnet/Mizux.CMakeSwigApp`](src/dotnet/Mizux.CMakeSwigApp)
 Is a .NetCoreApp2.1 application with a **`PackageReference`** to `Mizux.CMakeSwig` project to test.
 
-note: While Microsoft use for native libraries naming `runtime-<rid>.Company.Project`,
-it is very difficult to get ownership on it, so you should prefer to use`Company.Project.runtime-<rid>` instead since you can have ownership on `Company.*` prefix easily.
+note: While Microsoft use `runtime-<rid>.Company.Project` for native libraries naming,
+it is very difficult to get ownership on it, so you should prefer to use`Company.Project.runtime-<rid>` instead since you can have ownership on `Company.*` prefix more easily.
 
 # Build Process
 To Create a native dependent package we will split it in two parts:
