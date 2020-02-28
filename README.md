@@ -32,9 +32,12 @@
 [dotnet_win_svg]: https://github.com/Mizux/cmake-swig/workflows/.Net%20Windows%20CI/badge.svg
 [dotnet_win_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A".Net+Windows+CI"
 
-
+[![Build Status][docker_status]][docker_link]
 [![Build Status][travis_status]][travis_link]
 [![Build Status][appveyor_status]][appveyor_link]
+
+[docker_status]: https://github.com/Mizux/cmake-swig/workflows/Docker%20CI/badge.svg
+[docker_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"Docker+CI"
 
 [travis_status]: https://travis-ci.com/Mizux/cmake-swig.svg?branch=master
 [travis_link]: https://travis-ci.com/Mizux/cmake-swig
