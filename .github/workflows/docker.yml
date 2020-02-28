@@ -20,6 +20,91 @@ jobs:
     - name: Test .Net
       run: make --directory=ci test_alpine_dotnet
 
+  Archlinux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build env image
+      run: make --directory=ci env_archlinux
+    - name: Build project
+      run: make --directory=ci devel_archlinux
+    - name: Test C++
+      run: make --directory=ci test_archlinux_cpp
+    - name: Test Python
+      run: make --directory=ci test_archlinux_python
+    - name: Test Java
+      run: make --directory=ci test_archlinux_java
+    - name: Test .Net
+      run: make --directory=ci test_archlinux_dotnet
+
+  Centos:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build env image
+      run: make --directory=ci env_centos
+    - name: Build project
+      run: make --directory=ci devel_centos
+    - name: Test C++
+      run: make --directory=ci test_centos_cpp
+    - name: Test Python
+      run: make --directory=ci test_centos_python
+    - name: Test Java
+      run: make --directory=ci test_centos_java
+    - name: Test .Net
+      run: make --directory=ci test_centos_dotnet
+
+  Debian:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build env image
+      run: make --directory=ci env_debian
+    - name: Build project
+      run: make --directory=ci devel_debian
+    - name: Test C++
+      run: make --directory=ci test_debian_cpp
+    - name: Test Python
+      run: make --directory=ci test_debian_python
+    - name: Test Java
+      run: make --directory=ci test_debian_java
+    - name: Test .Net
+      run: make --directory=ci test_debian_dotnet
+
+  Fedora:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build env image
+      run: make --directory=ci env_fedora
+    - name: Build project
+      run: make --directory=ci devel_fedora
+    - name: Test C++
+      run: make --directory=ci test_fedora_cpp
+    - name: Test Python
+      run: make --directory=ci test_fedora_python
+    - name: Test Java
+      run: make --directory=ci test_fedora_java
+    - name: Test .Net
+      run: make --directory=ci test_fedora_dotnet
+
+  OpenSuse:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build env image
+      run: make --directory=ci env_opensuse
+    - name: Build project
+      run: make --directory=ci devel_opensuse
+    - name: Test C++
+      run: make --directory=ci test_opensuse_cpp
+    - name: Test Python
+      run: make --directory=ci test_opensuse_python
+    - name: Test Java
+      run: make --directory=ci test_opensuse_java
+    - name: Test .Net
+      run: make --directory=ci test_opensuse_dotnet
+
   Ubuntu:
     runs-on: ubuntu-latest
     steps:
