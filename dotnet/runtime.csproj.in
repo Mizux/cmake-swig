@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    <RuntimeIdentifier>@RUNTIME_IDENTIFIER@</RuntimeIdentifier>
+    <AssemblyName>mizux-cmakeswig-native</AssemblyName>
+    <Version>@PROJECT_VERSION@</Version>
+
+    <!-- Nuget Properties -->
+    <Description>.NET native wrapper for the CMakeSwig project</Description>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+
+    <!-- Pack Option -->
+    <Title>Mizux.CMakeSwig @RUNTIME_IDENTIFIER@ v@PROJECT_VERSION@</Title>
+    <PackageId>Mizux.CMakeSwig.runtime.@RUNTIME_IDENTIFIER@</PackageId>
+
+    <!-- Signing -->
+    <SignAssembly>false</SignAssembly>
+    <PublicSign>false</PublicSign>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Native library must be in native directory... -->
+    <Content Include="@../../libCmakeSwig.so@">
+      <PackagePath>runtimes/@RUNTIME_IDENTIFIER@/native/%(Filename)%(Extension)</PackagePath>
+      <Pack>true</Pack>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="../../../lib/$(AssemblyName).so; ../../../lib/libfoo.so">
+      <PackagePath>runtimes/@RUNTIME_IDENTIFIER@/native/%(Filename)%(Extension)</PackagePath>
+      <Pack>true</Pack>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>
