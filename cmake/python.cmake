@@ -39,9 +39,10 @@ set(Python_ADDITIONAL_VERSIONS "${PYTHON_VERSION_STRING}")
 find_package(PythonLibs REQUIRED)
 message(STATUS "Found Python Include: ${PYTHON_INCLUDE_DIRS} (found version \"${PYTHONLIBS_VERSION_STRING}\")")
 
-add_subdirectory(Foo/python)
-add_subdirectory(Bar/python)
-add_subdirectory(FooBar/python)
+# Swig wrap all libraries
+foreach(SUBPROJECT IN ITEMS Foo Bar FooBar)
+  add_subdirectory(${SUBPROJECT}/python)
+endforeach()
 
 #######################
 ## Python Packaging  ##
