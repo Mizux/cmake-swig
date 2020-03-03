@@ -34,8 +34,9 @@ set_target_properties(mizux-cmakeswig-native PROPERTIES
 set(CMAKE_SWIG_DOTNET Mizux.CMakeSwig)
 foreach(SUBPROJECT IN ITEMS Foo Bar FooBar)
   add_subdirectory(${SUBPROJECT}/dotnet)
-  target_sources(mizux-cmakeswig-native PRIVATE $<TARGET_OBJECTS:dotnet_${SUBPROJECT}>)
-  add_dependencies(mizux-cmakeswig-native dotnet_${SUBPROJECT})
+  target_link_libraries(mizux-cmakeswig-native PRIVATE dotnet_${SUBPROJECT})
+  #target_sources(mizux-cmakeswig-native PRIVATE $<TARGET_OBJECTS:dotnet_${SUBPROJECT}>)
+  #add_dependencies(mizux-cmakeswig-native dotnet_${SUBPROJECT})
 endforeach()
 
 
