@@ -28,3 +28,30 @@ message(STATUS "Found Java: ${Java_JAVA_EXECUTABLE} (found version \"${Java_VERS
 find_package(JNI REQUIRED)
 message(STATUS "Found JNI: ${JNI_FOUND}")
 
+# Find maven
+find_program(MAVEN_EXECUTABLE mvn)
+if(NOT MAVEN_EXECUTABLE)
+  message(FATAL_ERROR "Check for maven Program: not found")
+else()
+  message(STATUS "Found maven Program: ${MAVEN_EXECUTABLE}")
+endif()
+
+# Swig wrap all libraries
+foreach(SUBPROJECT IN ITEMS Foo Bar FooBar)
+  add_subdirectory(${SUBPROJECT}/java)
+  list(APPEND java_libs java_${SUBPROJECT})
+endforeach()
+
+######################
+##  Java Packaging  ##
+######################
+configure_file(java/pom.xml.in java/pom.xml @ONLY)
+
+add_custom_target(dotnet_native
+  DEPENDS
+    ${java_libs}
+    ${PROJECT_BINARY_DIR}/java/pom.xml
+    COMMAND ${MAVEN_EXECUTABLE} package
+  WORKING_DIRECTORY java
+  )
+
