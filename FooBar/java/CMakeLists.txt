@@ -9,4 +9,5 @@ swig_add_library(java_FooBar
 	SOURCES	foobar.i)
 
 set_property(TARGET java_FooBar PROPERTY SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON)
+target_include_directories(java_FooBar ${JNI_INCLUDE_DIRS})
 target_link_libraries(java_FooBar PRIVATE CMakeSwig::FooBar)
