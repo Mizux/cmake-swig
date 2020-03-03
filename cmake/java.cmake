@@ -47,7 +47,7 @@ endforeach()
 ######################
 configure_file(java/pom.xml.in java/pom.xml @ONLY)
 
-add_custom_target(dotnet_native
+add_custom_target(dotnet_native ALL
   DEPENDS
     ${java_libs}
     ${PROJECT_BINARY_DIR}/java/pom.xml
