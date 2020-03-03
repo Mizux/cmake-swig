@@ -34,6 +34,15 @@ endforeach()
 ######################
 ##  .Net Packaging  ##
 ######################
+configure_file(
+  dotnet/runtime.csproj.in
+  dotnet/${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
+  @ONLY)
+
+file(COPY dotnet/logo.png DESTINATION dotnet)
+file(COPY dotnet/Directory.Build.props DESTINATION dotnet)
+
+
 if(APPLE)
   set(RUNTIME_IDENTIFIER osx-x64)
 elseif(UNIX)
@@ -45,18 +54,12 @@ else()
 endif()
 set(CMAKE_SWIG_DOTNET_NATIVE Mizux.CMakeSwig.runtime.${RUNTIME_IDENTIFIER})
 
-add_custom_target(dotnet_native
+add_custom_target(dotnet_native ALL
   DEPENDS
     ${dotnet_libs}
     ${PROJECT_BINARY_DIR}/dotnet/${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
   COMMAND ${CMAKE_COMMAND} -E make_directory packages
-  COMMAND ${DOTNET_CLI} build -c Release /p:Platform=x64 ${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
-  COMMAND ${DOTNET_CLI} pack -c Release ${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
+  COMMAND ${DOTNET_EXECUTABLE} build -c Release /p:Platform=x64 ${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
+  COMMAND ${DOTNET_EXECUTABLE} pack -c Release ${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
   WORKING_DIRECTORY dotnet
   )
-
-configure_file(
-  dotnet/runtime.csproj.in
-  dotnet/${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
-  @ONLY)
-
