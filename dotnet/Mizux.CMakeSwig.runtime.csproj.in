@@ -11,8 +11,8 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
 
     <!-- Pack Option -->
-    <Title>Mizux.CMakeSwig @RUNTIME_IDENTIFIER@ v@PROJECT_VERSION@</Title>
-    <PackageId>Mizux.CMakeSwig.runtime.@RUNTIME_IDENTIFIER@</PackageId>
+    <Title>@CMAKE_SWIG_DOTNET@ @RUNTIME_IDENTIFIER@ v@PROJECT_VERSION@</Title>
+    <PackageId>@CMAKE_SWIG_DOTNET_NATIVE@</PackageId>
 
     <!-- Signing -->
     <SignAssembly>false</SignAssembly>
@@ -22,12 +22,12 @@
 
   <ItemGroup>
     <!-- Native library must be in native directory... -->
-    <Content Include="@../../libCmakeSwig.so@">
+    <Content Include="@Foo@;@Bar@;@FooBar@">
       <PackagePath>runtimes/@RUNTIME_IDENTIFIER@/native/%(Filename)%(Extension)</PackagePath>
       <Pack>true</Pack>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="../../../lib/$(AssemblyName).so; ../../../lib/libfoo.so">
+    <Content Include="@native@">
       <PackagePath>runtimes/@RUNTIME_IDENTIFIER@/native/%(Filename)%(Extension)</PackagePath>
       <Pack>true</Pack>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
