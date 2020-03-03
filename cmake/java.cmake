@@ -33,7 +33,7 @@ find_program(MAVEN_EXECUTABLE mvn)
 if(NOT MAVEN_EXECUTABLE)
   message(FATAL_ERROR "Check for maven Program: not found")
 else()
-  message(STATUS "Found maven Program: ${MAVEN_EXECUTABLE}")
+  message(STATUS "Found Maven: ${MAVEN_EXECUTABLE}")
 endif()
 
 # Swig wrap all libraries

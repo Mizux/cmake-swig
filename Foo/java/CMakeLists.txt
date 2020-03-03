@@ -9,5 +9,5 @@ swig_add_library(java_Foo
 	SOURCES	foo.i)
 
 set_property(TARGET java_Foo PROPERTY SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON)
-target_include_directories(java_Foo ${JNI_INCLUDE_DIRS})
+target_include_directories(java_Foo PRIVATE ${JNI_INCLUDE_DIRS})
 target_link_libraries(java_Foo PRIVATE CMakeSwig::Foo)

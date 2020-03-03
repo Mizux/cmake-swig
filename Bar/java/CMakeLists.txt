@@ -9,5 +9,5 @@ swig_add_library(java_Bar
 	SOURCES	bar.i)
 
 set_property(TARGET java_Bar PROPERTY SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON)
-target_include_directories(java_Bar ${JNI_INCLUDE_DIRS})
+target_include_directories(java_Bar PRIVATE ${JNI_INCLUDE_DIRS})
 target_link_libraries(java_Bar PRIVATE CMakeSwig::Bar)
