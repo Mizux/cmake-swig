@@ -127,10 +127,10 @@ search_python_module(wheel)
 
 add_custom_target(python_package ALL
 	DEPENDS python/setup.py
-	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/${PROJECT_NAME}/__init__.py
-	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/${PROJECT_NAME}/Foo/__init__.py
-	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/${PROJECT_NAME}/Bar/__init__.py
-	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/${PROJECT_NAME}/FooBar/__init__.py
+  COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/python/__init__.py.in ${PROJECT_NAME}/__init__.py
+	COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/python/__init__.py.in ${PROJECT_NAME}/Foo/__init__.py
+	COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/python/__init__.py.in ${PROJECT_NAME}/Bar/__init__.py
+	COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/python/__init__.py.in ${PROJECT_NAME}/FooBar/__init__.py
 
 	COMMAND ${CMAKE_COMMAND} -E remove_directory dist
 	COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_NAME}/.libs
