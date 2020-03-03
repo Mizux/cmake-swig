@@ -1,6 +1,6 @@
 set_property(SOURCE bar.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE bar.i PROPERTY COMPILE_OPTIONS
-  -namespace Mizux.CMakeSwig.Bar
+  -namespace ${CMAKE_SWIG_DOTNET}.Bar
   -dllimport mizux-cmakeswig-native
   )
 swig_add_library(dotnet_Bar

@@ -1,6 +1,6 @@
 set_property(SOURCE foobar.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE foobar.i PROPERTY COMPILE_OPTIONS
-  -namespace Mizux.CMakeSwig.FooBar
+  -namespace ${CMAKE_SWIG_DOTNET}.FooBar
   -dllimport mizux-cmakeswig-native
   )
 swig_add_library(dotnet_FooBar
