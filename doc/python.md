@@ -24,15 +24,18 @@ Creating a Python native package containing all `.py` and `.so` (with good rpath
 To build the Python wheel package, simply run:
 ```sh
 cmake -S. -Bbuild -DBUILD_PYTHON=ON
-cmake --build build --target python_package
+cmake --build build --target python_package -v
 ```
+note: Since `python_package` is in target `all`, you can also ommit the
+`--target` option.
 
+# Technical Notes
 ## Build directory layout
 Since Python use the directory name where `__init__.py` file is located and we
 want to use the [CMAKE_BINARY_DIR](https://cmake.org/cmake/help/latest/variable/CMAKE_BINARY_DIR.html) 
 to generate the Python binary package.  
 
-We want this layout (`tree build --prune -U -P "*.py|*.so*" -I "build"`):
+We want this layout:
 ```shell
 <CMAKE_BINARY_DIR>/python
 ├── setup.py
@@ -55,13 +58,15 @@ We want this layout (`tree build --prune -U -P "*.py|*.so*" -I "build"`):
         ├── libFooBar.so.1.0
         └── libFoo.so.1.0
 ```
+src: `tree build --prune -U -P "*.py|*.so*" -I "build"`
+
 note: On UNIX you always need `$ORIGIN/../../${PROJECT_NAME}/.libs` since `_pyFoo.so` will depend on `libFoo.so`.
 note: On APPLE you always need `"@loader_path;@loader_path/../../${PROJECT_NAME}/.libs` since `_pyFoo.so` will depend on `libFoo.dylib`.
 note: on Windows since we are using static libraries we won't have the `.libs` directory...
 
 So we also need to create few `__init__.py` files to be able to use the build directory to generate the Python package.
 
-### Why on APPLE lib must be .so
+## Why on APPLE lib must be .so
 Actually, the cpython code responsible for loading native libraries expect `.so`
 on all UNIX platforms.
 
@@ -84,7 +89,7 @@ ref: https://github.com/python/cpython/blob/master/Python/dynload_shlib.c#L36-L4
 
 i.e. `pyFoo` -> `_pyFoo.so` -> `libFoo.dylib`
 
-### Why setup.py has to be generated
+## Why setup.py has to be generated
 To avoid to put hardcoded path to SWIG `.so/.dylib` generated files,
 we could use `$<TARGET_FILE_NAME:tgt>` to retrieve the file (and also deal with Mac/Windows suffix, and target dependencies).  
 In order for `setup.py` to use
