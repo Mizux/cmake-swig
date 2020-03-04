@@ -11,15 +11,57 @@
 
 
 # .Net Wrapper Status
-* [ ] GNU/Linux wrapper
-* [ ] MacOS wrapper
+* [x] GNU/Linux wrapper
+* [x] MacOS wrapper
 * [ ] Windows wrapper
 
 # Introduction
 Try to build a .NetStandard2.0 native (for win-x64, linux-x64 and osx-x64) nuget multi package using [`dotnet/cli`](https://github.com/dotnet/cli) and the *new* .csproj format.  
 
+# Build the Binary Packages
+To build the .Net nuget packages, simply run:
+```sh
+cmake -S. -Bbuild -DBUILD_DOTNET=ON
+cmake --build build --target dotnet_package -v
+```
+note: Since `dotnet_package` is in target `all`, you can also ommit the
+`--target` option.
+
+# Technical Notes
 First you should take a look at my [dotnet-native](https://github.com/Mizux/dotnet-native) project to understand the layout.  
 Here I will only focus on the CMake/SWIG tips and tricks.
+
+## Build directory layout
+Since .Net use a `.csproj` project file to orchestrate everything we need to
+generate them and have the following layout:
+
+```shell
+<CMAKE_BINARY_DIR>/dotnet
+build/dotnet
+├── CMakeSwig
+│   ├── Bar
+│   │   ├── Bar.cs
+│   │   ├── csBar.cs
+│   │   ├── csBarPINVOKE.cs
+│   │   └── SWIGTYPE_p_int64_t.cs
+│   ├── Foo
+│   │   ├── csFoo.cs
+│   │   ├── csFooPINVOKE.cs
+│   │   ├── Foo.cs
+│   │   └── SWIGTYPE_p_int64_t.cs
+│   └── FooBar
+│       ├── csFooBar.cs
+│       ├── csFooBarPINVOKE.cs
+│       ├── FooBar.cs
+│       └── SWIGTYPE_p_int64_t.cs
+├── Directory.Build.props
+├── logo.png
+├── Mizux.CMakeSwig
+│   └── Mizux.CMakeSwig.csproj
+└── Mizux.CMakeSwig.runtime.linux-x64
+    └── Mizux.CMakeSwig.runtime.linux-x64.csproj
+```
+src: `tree build/dotnet --prune -I "obj|bin"`
 
 ## Table of Content
 * [Requirement](#requirement)
