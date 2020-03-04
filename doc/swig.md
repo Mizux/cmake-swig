@@ -109,7 +109,7 @@ typedef unsigned long long uint64_t;
 ## SWIG int64_t management stuff
 First, take a look at [Swig stdint.i](https://github.com/swig/swig/blob/3a329566f8ae6210a610012ecd60f6455229fe77/Lib/stdint.i#L20-L24).
 So, when targeting Linux you **must use define SWIGWORDSIZE64** (i.e. `-DSWIGWORDSIZE64`) while
-on macOS and Windows **must not define it**.
+on macOS and Windows you **must not define it**.
 
 Now the bad news, even if you can control the SWIG typedef using `SWIGWORDSIZE64`,
 [SWIG Java](https://github.com/swig/swig/blob/3a329566f8ae6210a610012ecd60f6455229fe77/Lib/java/java.swg#L74-L77) and
@@ -170,8 +170,8 @@ swig_add_library(pyFoo
 ```
 
 # Doxygen
-Since swig 4.0, swig can now extract doxygen comment from C++ to inject it in
-Python/Java.
+Since swig 4.0, swig can now [extract doxygen comments](http://www.swig.org/Doc4.0/Doxygen.html) from C++ to inject it in
+Python and Java.
 
 ## Csharp documentation
 note: Doxygen to csharp was [planned](https://github.com/swig/swig/wiki/SWIG-4.0-Development#doxygen-documentation) but currently is not supported.
