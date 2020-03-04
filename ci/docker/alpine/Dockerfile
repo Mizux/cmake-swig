@@ -50,7 +50,7 @@ FROM env AS java
 RUN apk add --no-cache swig
 # Java install
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
-RUN apk add --no-cache openjdk8
+RUN apk add --no-cache openjdk8 maven
 # Create lib directory
 WORKDIR /home/lib
 # Bundle lib source

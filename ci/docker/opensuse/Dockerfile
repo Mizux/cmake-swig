@@ -58,7 +58,7 @@ RUN zypper update -y \
 && zypper clean -a
 # Java install
 RUN zypper update -y \
-&& zypper install -y java-1_8_0-openjdk-devel \
+&& zypper install -y java-1_8_0-openjdk-devel maven \
 && zypper clean -a
 # Create lib directory
 WORKDIR /home/lib

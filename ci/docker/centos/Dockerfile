@@ -87,7 +87,7 @@ RUN yum -y update \
 && rm -rf swig-4.0.1
 # Java install
 RUN yum -y update \
-&& yum -y install java-1.8.0-openjdk  java-1.8.0-openjdk-devel \
+&& yum -y install java-1.8.0-openjdk  java-1.8.0-openjdk-devel maven \
 && yum clean all \
 && rm -rf /var/cache/yum
 # Create lib directory

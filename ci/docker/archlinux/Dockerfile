@@ -50,7 +50,7 @@ FROM env AS java
 # Swig install
 RUN pacman -Syu --noconfirm swig
 # Java install
-RUN pacman -Syu --noconfirm jdk-openjdk
+RUN pacman -Syu --noconfirm jdk-openjdk maven
 # Create lib directory
 WORKDIR /home/lib
 # Bundle lib source

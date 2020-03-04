@@ -67,7 +67,7 @@ RUN apt-get update -qq \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Java install
 RUN apt-get update -qq \
-&& apt-get install -yq default-jdk \
+&& apt-get install -yq default-jdk maven \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Create lib directory

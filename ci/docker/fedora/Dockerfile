@@ -59,7 +59,7 @@ RUN dnf -y update \
 # Java install
 ENV JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk
 RUN dnf -y update \
-&& dnf -y install java-1.8.0-openjdk-devel \
+&& dnf -y install java-1.8.0-openjdk-devel maven \
 && dnf clean all
 # Create lib directory
 WORKDIR /home/lib
