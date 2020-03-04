@@ -74,19 +74,6 @@ message(STATUS "Build Python: ${BUILD_PYTHON}")
 message(STATUS "Build Java: ${BUILD_JAVA}")
 message(STATUS "Build .Net: ${BUILD_DOTNET}")
 
-# By default all dependencies are NOT built (i.e. BUILD_DEPS=OFF).
-# IF building any wrapper THEN Force BUILD_DEPS=ON
-# IF BUILD_DEPS=ON THEN Force all BUILD_*=ON
-include(CMakeDependentOption)
-CMAKE_DEPENDENT_OPTION(BUILD_DEPS "Force re-build of all dependencies" OFF
-  "NOT BUILD_PYTHON; NOT BUILD_JAVA; NOT BUILD_DOTNET" ON)
-
-message(STATUS "Build all dependencies: ${BUILD_DEPS}")
-
-# Build Needed dependencies
-#add_subdirectory(cmake/dependencies dependencies)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/dependencies/install)
-
 include(CTest)
 
 include(cpp)
