@@ -27,8 +27,13 @@ endif()
 
 # Create the native library
 add_library(mizux-cmakeswig-native SHARED "")
-set_target_properties(mizux-cmakeswig-native PROPERTIES
-  PREFIX "")
+set_target_properties(mizux-cmakeswig-native PROPERTIES PREFIX "")
+# note: macOS is APPLE and also UNIX !
+if(APPLE)
+  set_target_properties(mizux-cmakeswig-native PROPERTIES INSTALL_RPATH "@loader_path")
+elseif(UNIX)
+  set_target_properties(mizux-cmakeswig-native PROPERTIES INSTALL_RPATH "$ORIGIN")
+endif()
 
 # Swig wrap all libraries
 set(CMAKE_SWIG_DOTNET Mizux.CMakeSwig)
