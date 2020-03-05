@@ -127,13 +127,6 @@ The project layout is as follow:
   * [src](FooBarApp/src) private folder.
     * [src/main.cpp](FooBarApp/src/main.cpp)
 
-# Contributing
-
-The [CONTRIBUTING.md](./CONTRIBUTING.md) file contains instructions on how to
-file the Contributor License Agreement before sending any pull requests (PRs).
-Of course, if you're new to the project, it's usually best to discuss any
-proposals and reach consensus before sending your first PR.
-
 # License
 
 Apache 2. See the LICENSE file for details.
