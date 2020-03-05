@@ -27,7 +27,9 @@ endif()
 
 # Create the native library
 add_library(mizux-cmakeswig-native SHARED "")
-set_target_properties(mizux-cmakeswig-native PROPERTIES PREFIX "")
+set_target_properties(mizux-cmakeswig-native PROPERTIES
+  PREFIX ""
+  POSITION_INDEPENDENT_CODE ON)
 # note: macOS is APPLE and also UNIX !
 if(APPLE)
   set_target_properties(mizux-cmakeswig-native PROPERTIES INSTALL_RPATH "@loader_path")
@@ -45,10 +47,9 @@ foreach(SUBPROJECT IN ITEMS Foo Bar FooBar)
 endforeach()
 
 
-######################
-##  .Net Packaging  ##
-######################
-# Runtime Package
+############################
+##  .Net Runtime Package  ##
+############################
 file(COPY dotnet/logo.png DESTINATION dotnet)
 file(COPY dotnet/Directory.Build.props DESTINATION dotnet)
 
