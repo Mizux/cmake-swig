@@ -169,5 +169,6 @@ if(BUILD_TESTING)
     BYPRODUCTS ${VENV_DIR}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
   # run the tests within the virtualenv
-  add_test(NAME pytest_venv COMMAND ${VENV_PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/test.py)
+  add_test(NAME pytest_venv
+    COMMAND ${VENV_PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/python/test.py)
 endif()
