@@ -14,7 +14,7 @@ find_package(SWIG REQUIRED)
 include(UseSWIG)
 
 if(UNIX AND NOT APPLE)
-	list(APPEND CMAKE_SWIG_FLAGS "-DSWIGWORDSIZE64")
+  list(APPEND CMAKE_SWIG_FLAGS "-DSWIGWORDSIZE64")
 endif()
 
 # Find dotnet
@@ -67,16 +67,16 @@ set(CMAKE_SWIG_DOTNET_NATIVE ${CMAKE_SWIG_DOTNET}.runtime.${RUNTIME_IDENTIFIER})
 file(GENERATE OUTPUT dotnet/$<$<BOOL:${GENERATOR_IS_MULTI_CONFIG}>:$<CONFIG>/>replace_runtime.cmake
   CONTENT
   "FILE(READ ${PROJECT_SOURCE_DIR}/dotnet/${CMAKE_SWIG_DOTNET}.runtime.csproj.in input)
-STRING(REPLACE \"@PROJECT_VERSION@\" \"${PROJECT_VERSION}\" input \"\${input}\")
-STRING(REPLACE \"@RUNTIME_IDENTIFIER@\" \"${RUNTIME_IDENTIFIER}\" input \"\${input}\")
-STRING(REPLACE \"@CMAKE_SWIG_DOTNET@\" \"${CMAKE_SWIG_DOTNET}\" input \"\${input}\")
-STRING(REPLACE \"@CMAKE_SWIG_DOTNET_NATIVE@\" \"${CMAKE_SWIG_DOTNET_NATIVE}\" input \"\${input}\")
-STRING(REPLACE \"@Foo@\" \"$<TARGET_FILE:Foo>\" input \"\${input}\")
-STRING(REPLACE \"@Bar@\" \"$<TARGET_FILE:Bar>\" input \"\${input}\")
-STRING(REPLACE \"@FooBar@\" \"$<TARGET_FILE:FooBar>\" input \"\${input}\")
-STRING(REPLACE \"@native@\" \"$<TARGET_FILE:mizux-cmakeswig-native>\" input \"\${input}\")
-FILE(WRITE ${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj \"\${input}\")"
-)
+  STRING(REPLACE \"@PROJECT_VERSION@\" \"${PROJECT_VERSION}\" input \"\${input}\")
+  STRING(REPLACE \"@RUNTIME_IDENTIFIER@\" \"${RUNTIME_IDENTIFIER}\" input \"\${input}\")
+  STRING(REPLACE \"@CMAKE_SWIG_DOTNET@\" \"${CMAKE_SWIG_DOTNET}\" input \"\${input}\")
+  STRING(REPLACE \"@CMAKE_SWIG_DOTNET_NATIVE@\" \"${CMAKE_SWIG_DOTNET_NATIVE}\" input \"\${input}\")
+  STRING(REPLACE \"@Foo@\" \"$<TARGET_FILE:Foo>\" input \"\${input}\")
+  STRING(REPLACE \"@Bar@\" \"$<TARGET_FILE:Bar>\" input \"\${input}\")
+  STRING(REPLACE \"@FooBar@\" \"$<TARGET_FILE:FooBar>\" input \"\${input}\")
+  STRING(REPLACE \"@native@\" \"$<TARGET_FILE:mizux-cmakeswig-native>\" input \"\${input}\")
+  FILE(WRITE ${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj \"\${input}\")"
+  )
 
 add_custom_command(
   OUTPUT dotnet/${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
@@ -87,8 +87,8 @@ add_custom_command(
 
 add_custom_target(dotnet_native
   DEPENDS
-    mizux-cmakeswig-native
-    dotnet/${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
+  mizux-cmakeswig-native
+  dotnet/${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
   COMMAND ${CMAKE_COMMAND} -E make_directory packages
   COMMAND ${DOTNET_EXECUTABLE} build -c Release /p:Platform=x64 ${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
   COMMAND ${DOTNET_EXECUTABLE} pack -c Release ${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
@@ -99,11 +99,11 @@ add_custom_target(dotnet_native
 file(GENERATE OUTPUT dotnet/$<$<BOOL:${GENERATOR_IS_MULTI_CONFIG}>:$<CONFIG>/>replace.cmake
   CONTENT
   "FILE(READ ${PROJECT_SOURCE_DIR}/dotnet/${CMAKE_SWIG_DOTNET}.csproj.in input)
-STRING(REPLACE \"@PROJECT_VERSION@\" \"${PROJECT_VERSION}\" input \"\${input}\")
-STRING(REPLACE \"@CMAKE_SWIG_DOTNET@\" \"${CMAKE_SWIG_DOTNET}\" input \"\${input}\")
-STRING(REPLACE \"@DOTNET_PACKAGES_DIR@\" \"${PROJECT_BINARY_DIR}/dotnet/packages\" input \"\${input}\")
-FILE(WRITE ${CMAKE_SWIG_DOTNET}/${CMAKE_SWIG_DOTNET}.csproj \"\${input}\")"
-)
+  STRING(REPLACE \"@PROJECT_VERSION@\" \"${PROJECT_VERSION}\" input \"\${input}\")
+  STRING(REPLACE \"@CMAKE_SWIG_DOTNET@\" \"${CMAKE_SWIG_DOTNET}\" input \"\${input}\")
+  STRING(REPLACE \"@DOTNET_PACKAGES_DIR@\" \"${PROJECT_BINARY_DIR}/dotnet/packages\" input \"\${input}\")
+  FILE(WRITE ${CMAKE_SWIG_DOTNET}/${CMAKE_SWIG_DOTNET}.csproj \"\${input}\")"
+  )
 
 add_custom_command(
   OUTPUT dotnet/${CMAKE_SWIG_DOTNET}/${CMAKE_SWIG_DOTNET}.csproj
@@ -114,8 +114,8 @@ add_custom_command(
 
 add_custom_target(dotnet_package ALL
   DEPENDS
-    dotnet_native
-    dotnet/${CMAKE_SWIG_DOTNET}/${CMAKE_SWIG_DOTNET}.csproj
+  dotnet_native
+  dotnet/${CMAKE_SWIG_DOTNET}/${CMAKE_SWIG_DOTNET}.csproj
   COMMAND ${DOTNET_EXECUTABLE} build -c Release /p:Platform=x64 ${CMAKE_SWIG_DOTNET}/${CMAKE_SWIG_DOTNET}.csproj
   COMMAND ${DOTNET_EXECUTABLE} pack -c Release ${CMAKE_SWIG_DOTNET}/${CMAKE_SWIG_DOTNET}.csproj
   WORKING_DIRECTORY dotnet

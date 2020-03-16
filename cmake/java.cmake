@@ -14,11 +14,11 @@ find_package(SWIG REQUIRED)
 include(UseSWIG)
 
 if(${SWIG_VERSION} VERSION_GREATER_EQUAL 4)
-	list(APPEND CMAKE_SWIG_FLAGS "-doxygen")
+  list(APPEND CMAKE_SWIG_FLAGS "-doxygen")
 endif()
 
 if(UNIX AND NOT APPLE)
-	list(APPEND CMAKE_SWIG_FLAGS "-DSWIGWORDSIZE64")
+  list(APPEND CMAKE_SWIG_FLAGS "-DSWIGWORDSIZE64")
 endif()
 
 # Find java
@@ -49,9 +49,9 @@ configure_file(java/pom.xml.in java/pom.xml @ONLY)
 
 add_custom_target(dotnet_native ALL
   DEPENDS
-    ${java_libs}
-    ${PROJECT_BINARY_DIR}/java/pom.xml
-    COMMAND ${MAVEN_EXECUTABLE} package
+  ${java_libs}
+  ${PROJECT_BINARY_DIR}/java/pom.xml
+  COMMAND ${MAVEN_EXECUTABLE} package
   WORKING_DIRECTORY java
   )
 
