@@ -19,6 +19,10 @@ set_target_properties(Bar PROPERTIES
 #target_link_libraries(Bar PUBLIC ...)
 add_library(CMakeSwig::Bar ALIAS Bar)
 
+if(BUILD_TESTING)
+  add_subdirectory(test)
+endif()
+
 # Install
 include(GNUInstallDirs)
 install(TARGETS Bar

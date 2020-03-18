@@ -19,6 +19,10 @@ set_target_properties(Foo PROPERTIES
 #target_link_libraries(Foo PUBLIC ...)
 add_library(CMakeSwig::Foo ALIAS Foo)
 
+if(BUILD_TESTING)
+  add_subdirectory(test)
+endif()
+
 # Install
 include(GNUInstallDirs)
 install(TARGETS Foo

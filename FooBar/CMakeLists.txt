@@ -31,6 +31,10 @@ target_link_libraries(FooBar
   )
 add_library(CMakeSwig::FooBar ALIAS FooBar)
 
+if(BUILD_TESTING)
+  add_subdirectory(test)
+endif()
+
 # Install
 include(GNUInstallDirs)
 install(TARGETS FooBar
