@@ -1,4 +1,7 @@
 *.swp
-.vs/
+
 build/
 cache/
+
+.vs/
+compile_commands.json
