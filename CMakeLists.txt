@@ -1,29 +1,40 @@
 # This file is just an orchestration
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.10.3)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Apple: Don't modify install_name when touching RPATH.
 if(POLICY CMP0068)
   cmake_policy(SET CMP0068 NEW)
 endif()
+
 # Define file(GENERATE) behavior for relative paths.
 if(POLICY CMP0070)
   cmake_policy(SET CMP0070 NEW)
 endif()
+
 # target_sources: use absolute path for INTERFACE_SOURCES.
 if(POLICY CMP0076)
   cmake_policy(SET CMP0076 NEW)
 endif()
+
+# option() honors normal variables.
+# see: https://cmake.org/cmake/help/git-stage/policy/CMP0077.html
+if(POLICY CMP0077)
+  cmake_policy(SET CMP0077 NEW)
+endif()
+
 # SWIG: use standard target name.
 if(POLICY CMP0078)
   cmake_policy(SET CMP0078 NEW)
 endif()
+
 # SWIG: use SWIG_MODULE_NAME property.
 if(POLICY CMP0086)
   cmake_policy(SET CMP0086 NEW)
 endif()
 
 project(CMakeSwig VERSION 1.0 LANGUAGES CXX)
+message(STATUS "project: ${PROJECT_NAME}")
 message(STATUS "version: ${PROJECT_VERSION}")
 
 # Force default build type to Release
@@ -48,7 +59,7 @@ if(UNIX)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${OUTPUTCONFIG}/bin)
   endforeach()
 else()
-  # Windows only support static build.
+  # Currently Only support static build for windows
   set(BUILD_SHARED_LIBS OFF)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -60,8 +71,6 @@ else()
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${OUTPUTCONFIG}/bin)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${OUTPUTCONFIG}/bin)
   endforeach()
-  # Currently Only support static build for windows
-  #include(swig)
 endif()
 
 # By default only the ortools C++ library is built.

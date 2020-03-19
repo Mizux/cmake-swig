@@ -17,7 +17,7 @@ set_target_properties(Bar PROPERTIES
   PUBLIC_HEADER $<TARGET_PROPERTY:Bar,INTERFACE_SOURCES>
 )
 #target_link_libraries(Bar PUBLIC ...)
-add_library(CMakeSwig::Bar ALIAS Bar)
+add_library(${PROJECT_NAME}::Bar ALIAS Bar)
 
 if(BUILD_TESTING)
   add_subdirectory(test)
@@ -26,7 +26,7 @@ endif()
 # Install
 include(GNUInstallDirs)
 install(TARGETS Bar
-  EXPORT CMakeSwigTargets
+  EXPORT ${PROJECT_NAME}Targets
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/bar
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

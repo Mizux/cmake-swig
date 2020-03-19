@@ -17,7 +17,7 @@ set_target_properties(Foo PROPERTIES
   PUBLIC_HEADER $<TARGET_PROPERTY:Foo,INTERFACE_SOURCES>
   )
 #target_link_libraries(Foo PUBLIC ...)
-add_library(CMakeSwig::Foo ALIAS Foo)
+add_library(${PROJECT_NAME}::Foo ALIAS Foo)
 
 if(BUILD_TESTING)
   add_subdirectory(test)
@@ -26,7 +26,7 @@ endif()
 # Install
 include(GNUInstallDirs)
 install(TARGETS Foo
-  EXPORT CMakeSwigTargets
+  EXPORT ${PROJECT_NAME}Targets
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/foo
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

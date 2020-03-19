@@ -16,5 +16,5 @@ elseif(UNIX AND NOT APPLE)
 endif()
 target_link_libraries(${NAME}
   PRIVATE
-    Catch2 CMakeSwig::FooBar)
+    Catch2 ${PROJECT_NAME}::FooBar)
 add_test(NAME ${NAME} COMMAND ${NAME})

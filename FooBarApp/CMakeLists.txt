@@ -16,15 +16,15 @@ elseif(UNIX AND NOT APPLE)
 endif()
 target_link_libraries(FooBarApp
   PRIVATE
-    CMakeSwig::FooBar
+  ${PROJECT_NAME}::FooBar
   )
-add_executable(CMakeSwig::FooBarApp ALIAS FooBarApp)
+add_executable(${PROJECT_NAME}::FooBarApp ALIAS FooBarApp)
 
 add_test(NAME FooBarAppTest COMMAND FooBarApp)
 
 # Install
 include(GNUInstallDirs)
 install(TARGETS FooBarApp
-  EXPORT CMakeSwigTargets
+  EXPORT ${PROJECT_NAME}Targets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )

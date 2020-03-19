@@ -26,10 +26,10 @@ elseif(UNIX)
 endif()
 target_link_libraries(FooBar
   PUBLIC
-    CMakeSwig::Foo
-    CMakeSwig::Bar
+  ${PROJECT_NAME}::Foo
+  ${PROJECT_NAME}::Bar
   )
-add_library(CMakeSwig::FooBar ALIAS FooBar)
+add_library(${PROJECT_NAME}::FooBar ALIAS FooBar)
 
 if(BUILD_TESTING)
   add_subdirectory(test)
@@ -38,7 +38,7 @@ endif()
 # Install
 include(GNUInstallDirs)
 install(TARGETS FooBar
-  EXPORT CMakeSwigTargets
+  EXPORT ${PROJECT_NAME}Targets
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/foobar
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
