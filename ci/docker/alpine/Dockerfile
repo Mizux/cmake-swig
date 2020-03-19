@@ -3,7 +3,7 @@
 FROM alpine:edge AS env
 LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
-ENV PATH=$PATH:/usr/local/bin
+ENV PATH=/usr/local/bin:$PATH
 RUN apk add --no-cache git build-base linux-headers cmake
 CMD [ "/bin/sh" ]
 

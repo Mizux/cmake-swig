@@ -3,7 +3,7 @@
 FROM fedora:latest AS env
 LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
-ENV PATH=$PATH:/usr/local/bin
+ENV PATH=/usr/local/bin:$PATH
 RUN dnf -y update \
 && dnf -y install git wget \
 && dnf -y groupinstall "Development Tools" \
@@ -16,7 +16,8 @@ CMD [ "/bin/sh" ]
 # Add the library src to our build env
 FROM env AS cpp
 # Create lib directory
-WORKDIR /home/liBundle lib source
+WORKDIR /home/lib
+# Bundle lib source
 COPY . .
 # CMake version
 RUN cmake -version

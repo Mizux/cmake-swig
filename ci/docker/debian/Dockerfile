@@ -3,7 +3,7 @@
 FROM debian:latest AS env
 LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
-ENV PATH=$PATH:/usr/local/bin
+ENV PATH=/usr/local/bin:$PATH
 RUN apt-get update -qq \
 && apt-get install -yq git wget libssl-dev build-essential \
 && apt-get clean \

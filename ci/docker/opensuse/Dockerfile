@@ -3,7 +3,7 @@
 FROM opensuse/tumbleweed AS env
 LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
-ENV PATH=$PATH:/usr/local/bin
+ENV PATH=/usr/local/bin:$PATH
 RUN zypper update -y \
 && zypper install -y git gcc gcc-c++ cmake \
 && zypper clean -a
