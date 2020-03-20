@@ -1,0 +1,107 @@
+@startdot
+digraph DockerDeps {
+  //rankdir=BT;
+  rankdir=TD;
+  node [shape=cylinder, style="rounded,filled", color=black, fillcolor=royalblue];
+  DISTRO_IMG [label="<distro>:latest"];
+  PKG [label="Build packages\ne.g. cmake, g++", shape=box3d];
+  PYPKG [label="Python packages\ne.g. python-dev", shape=box3d];
+  JAVAPKG [label="Java packages\ne.g. openjdk", shape=box3d];
+  DOTNETPKG [label=".Net packages\ne.g. dotnet-cli", shape=box3d];
+  SRC [label="git repo", shape=folder];
+
+  subgraph clusterDockerfile {
+    ENV_IMG [label="CMakeCpp:<distro>_env\nenv"];
+    SWIG_IMG [label="CMakeCpp:<distro>_swig\nswig"];
+    DEVEL_IMG [label="CMakeCpp:<distro>_cpp_devel\ndevel"];
+    BUILD_IMG [label="CMakeCpp:<distro>_cpp_build\nbuild"];
+    INSTALL_IMG [label="CMakeCpp:<distro>_cpp_install\ninstall"];
+
+    ENV_IMG -> SWIG_IMG;
+    ENV_IMG -> DEVEL_IMG;
+    DEVEL_IMG -> BUILD_IMG;
+    BUILD_IMG -> INSTALL_IMG [label="copy install", style="dashed"];
+    ENV_IMG -> INSTALL_IMG;
+
+    color=royalblue;
+    label = "docker/<distro>/Dockerfile";
+  }
+  DISTRO_IMG -> ENV_IMG;
+  PKG -> ENV_IMG [label="install", style="dashed"];
+  SRC -> DEVEL_IMG [label="copy", style="dashed"];
+
+// PYTHON
+  subgraph clusterPython {
+    PYENV_IMG [label="CMakeCpp:<distro>_python_env\nenv"];
+    PYDEVEL_IMG [label="CMakeCpp:<distro>_python_devel\ndevel"];
+    PYBUILD_IMG [label="CMakeCpp:<distro>_python_build\nbuild"];
+    PYINSTALL_IMG [label="CMakeCpp:<distro>_python_install\ninstall"];
+
+    PYENV_IMG -> PYDEVEL_IMG;
+    PYDEVEL_IMG -> PYBUILD_IMG;
+    PYBUILD_IMG -> PYINSTALL_IMG [label="copy install", style="dashed"];
+    PYENV_IMG -> PYINSTALL_IMG;
+
+    color=royalblue;
+    label = "docker/<distro>/python.Dockerfile";
+  }
+  SWIG_IMG -> PYENV_IMG;
+  PYPKG -> PYENV_IMG [label="install", style="dashed"];
+  SRC -> PYDEVEL_IMG [label="copy", style="dashed"];
+
+// JAVA
+  subgraph clusterJava {
+    JAVAENV_IMG [label="CMakeCpp:<distro>_java_env\nenv"];
+    JAVADEVEL_IMG [label="CMakeCpp:<distro>_java_devel\ndevel"];
+    JAVABUILD_IMG [label="CMakeCpp:<distro>_java_build\nbuild"];
+    JAVAINSTALL_IMG [label="CMakeCpp:<distro>_java_install\ninstall"];
+
+    JAVAENV_IMG -> JAVADEVEL_IMG;
+    JAVADEVEL_IMG -> JAVABUILD_IMG;
+    JAVABUILD_IMG -> JAVAINSTALL_IMG [label="copy install", style="dashed"];
+    JAVAENV_IMG -> JAVAINSTALL_IMG;
+
+    color=royalblue;
+    label = "docker/<distro>/java.Dockerfile";
+  }
+  SWIG_IMG -> JAVAENV_IMG;
+  JAVAPKG -> JAVAENV_IMG [label="install", style="dashed"];
+  SRC -> JAVADEVEL_IMG [label="copy", style="dashed"];
+
+// .NET
+  subgraph clusterDotnet {
+    DOTNETENV_IMG [label="CMakeCpp:<distro>_dotnet_env\nenv"];
+    DOTNETDEVEL_IMG [label="CMakeCpp:<distro>_dotnet_devel\ndevel"];
+    DOTNETBUILD_IMG [label="CMakeCpp:<distro>_dotnet_build\nbuild"];
+    DOTNETINSTALL_IMG [label="CMakeCpp:<distro>_dotnet_install\ninstall"];
+
+    DOTNETENV_IMG -> DOTNETDEVEL_IMG;
+    DOTNETDEVEL_IMG -> DOTNETBUILD_IMG;
+    DOTNETBUILD_IMG -> DOTNETINSTALL_IMG [label="copy install", style="dashed"];
+    DOTNETENV_IMG -> DOTNETINSTALL_IMG;
+
+    color=royalblue;
+    label = "docker/<distro>/dotnet.Dockerfile";
+  }
+  SWIG_IMG -> DOTNETENV_IMG;
+  DOTNETPKG -> DOTNETENV_IMG [label="install", style="dashed"];
+  SRC -> DOTNETDEVEL_IMG [label="copy", style="dashed"];
+
+  subgraph clusterCache {
+    node [shape=note, style="rounded,filled", color=black, fillcolor=royalblue];
+    ENV_TAR [label="docker_env.tar"];
+    DEVEL_TAR [label="docker_devel.tar"];
+    BUILD_TAR [label="docker_build.tar"];
+    INSTALL_TAR [label="docker_install.tar"];
+
+    edge [color=red];
+    ENV_IMG -> ENV_TAR [label="make save_env_<distro>"];
+    DEVEL_IMG -> DEVEL_TAR [label="make save_devel_<distro>"];
+    BUILD_IMG -> BUILD_TAR [label="make save_build_<distro>"];
+    INSTALL_IMG -> INSTALL_TAR [label="make save_install_<distro>"];
+
+    color=royalblue;
+    label = "cache/<distro>/";
+  }
+}
+@enddot

@@ -14,6 +14,7 @@ cons:
   * ~400 MiB dotnet-sdk,
   * ~400 MiB java-jdk.
 
+# Usage
 To get the help simply type:
 ```sh
 make
@@ -24,7 +25,13 @@ note: you can also use from top directory
 make --directory=ci
 ```
 
+## Example
 For example to test `Python` inside an `Alpine` container:
 ```sh
 make test_alpine_python
 ```
+
+# Docker layers
+Dockerfile is splitted in several stages.
+
+![docker](doc/deps.svg)
