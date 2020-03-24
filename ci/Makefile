@@ -17,26 +17,40 @@ help:
 	@echo -e "${BOLD}MAKE TARGETS${RESET}"
 	@echo -e "\t${BOLD}help${RESET}: display this help and exit."
 	@echo
-	@echo -e "\t${BOLD}env${RESET}: build a virtual env image."
-	@echo -e "\t${BOLD}sh_env_<distro>${RESET}: run a container using the virtual env image (debug purpose)."
+	@echo -e "\t${BOLD}<prestage>${RESET}: build <prestage> docker images for ALL DISTROS."
+	@echo -e "\t${BOLD}<distro>_<prestage>${RESET}: build the <prestage> docker image for a specific distro."
+	@echo -e "\t${BOLD}save_<prestage>${RESET}: Save <prestage> docker images for ALL DISTROS."
+	@echo -e "\t${BOLD}save_<distro>_<prestage>${RESET}: Save the <prestage> docker image for a specific distro."
+	@echo -e "\t${BOLD}sh_<distro>_<prestage>${RESET}: run a container using the <prestage> docker image specified (debug purpose)."
 	@echo
-	@echo -e "\t${BOLD}devel${RESET}: build the library for all LANGUAGES and all DISTROS."
-	@echo -e "\t${BOLD}devel_<distro>${RESET}: build the library for all LANGUAGES using a specific distro."
-	@echo -e "\t${BOLD}devel_<lang>${RESET}: build the library for all DISTROS using a specific language."
-	@echo -e "\t${BOLD}devel_<distro>_<lang>${RESET}: build the library using a specific distro and language."
+	@echo -e "\t${BOLD}<stage>${RESET}: build <stage> docker images for ALL DISTROS and ALL LANGUAGES."
+	@echo -e "\t${BOLD}<distro>_<stage>${RESET}: build <stage> docker images for a specific distro for ALL LANGUAGES."
+	@echo -e "\t${BOLD}<lang>_<stage>${RESET}: build <stage> docker images for ALL DISTROS for a specific language."
+	@echo -e "\t${BOLD}<distro>_<lang>_<stage>${RESET}: build the <stage> docker image for a specific distro for a specific language."
+	@echo -e "\t${BOLD}save_<stage>${RESET}: Save <stage> docker images for ALL DISTROS for ALL LANGUAGES."
+	@echo -e "\t${BOLD}save_<distro>_<stage>${RESET}: Save <stage> docker images for a specific distro for ALL LANGUAGES."
+	@echo -e "\t${BOLD}save_<lang>_<stage>${RESET}: Save <stage> docker images for ALL DISTRO for a specific language."
+	@echo -e "\t${BOLD}save_<distro>_<lang>_<stage>${RESET}: Save the <stage> docker image for a specific distro for a specific language."
+	@echo -e "\t${BOLD}sh_<distro>_<lang>_<stage>${RESET}: run a container using the <stage> docker image specified (debug purpose)."
 	@echo
-	@echo -e "\t${BOLD}test_<distro>${RESET}: auto test using the devel image."
-	@echo -e "\t${BOLD}test_<distro>_<lang>${RESET}: auto test using the devel image."
-	@echo -e "\t${BOLD}sh_<distro>_<lang>${RESET}: run a container using the devel image (debug purpose)."
-	@echo
-	@echo -e "\t${BOLD}install${RESET}: execute the cmake target ${BOLD}install${RESET} using all devel image container, then create an install image with it."
-	@echo -e "\t${BOLD}install_<distro>${RESET}: execute the cmake target ${BOLD}install${RESET} using the devel image container specified, then create an install image with it."
-	@echo -e "\t${BOLD}test_install${RESET}: configure, build, install then test a sample project against it using all ${BOLD}install${RESET} image containers."
-	@echo -e "\t${BOLD}test_install_<distro>${RESET}: configure, build, install then test a sample project against it using the ${BOLD}install${RESET} image container specified."
-	@echo -e "\t${BOLD}sh_install_<distro>_<lang>${RESET}: run a container using the install image (debug purpose)."
 	@echo
 	@echo -e "\t${BOLD}clean${RESET}: Remove cache and docker image."
 	@echo -e "\t${BOLD}clean_<distro>${RESET}: Remove cache and docker image for the specified distro."
+	@echo
+	@echo -e "\t${BOLD}<distro>${RESET}:"
+	@echo -e "\t\t${BOLD}alpine${RESET} (edge)"
+	@echo -e "\t\t${BOLD}archlinux${RESET} (latest)"
+	@echo -e "\t\t${BOLD}centos${RESET} (latest)"
+	@echo -e "\t\t${BOLD}debian${RESET} (latest)"
+	@echo -e "\t\t${BOLD}fedora${RESET} (latest)"
+	@echo -e "\t\t${BOLD}opensuse${RESET} (tumbleweed)"
+	@echo -e "\t\t${BOLD}ubuntu${RESET} (rolling)"
+	@echo -e "\te.g. 'make test_ubuntu'"
+	@echo
+	@echo -e "\t${BOLD}<prestage>${RESET}:"
+	@echo -e "\t\t${BOLD}base${RESET} (need by cpp)"
+	@echo -e "\t\t${BOLD}swig${RESET} (need by .Net, Java and Python)"
+	@echo -e "\te.g. 'make base'"
 	@echo
 	@echo -e "\t${BOLD}<lang>${RESET}:"
 	@echo -e "\t\t${BOLD}cpp${RESET} (C++)"
@@ -45,18 +59,15 @@ help:
 	@echo -e "\t\t${BOLD}dotnet${RESET} (.Net Core >= 2.1)"
 	@echo -e "\te.g. 'make devel_cpp'"
 	@echo
-	@echo -e "\t${BOLD}<distro>${RESET}:"
-	@echo -e "\t\t${BOLD}alpine${RESET} (latest)"
-	@echo -e "\t\t${BOLD}archlinux${RESET} (latest)"
-	@echo -e "\t\t${BOLD}centos${RESET} (latest)"
-	@echo -e "\t\t${BOLD}debian${RESET} (latest)"
-	@echo -e "\t\t${BOLD}fedora${RESET} (latest)"
-	@echo -e "\t\t${BOLD}opensuse${RESET} (tumbleweed)"
-	@echo -e "\t\t${BOLD}ubuntu${RESET} (latest)"
-	@echo -e "\te.g. 'make devel_alpine'"
-	@echo
-	@echo -e "\tYou can also mix both using: ${BOLD}<distro>_<lang>${RESET}"
-	@echo -e "\te.g. 'make devel_alpine_cpp'"
+	@echo -e "\t${BOLD}<stage>${RESET}:"
+	@echo -e "\t\t${BOLD}env${RESET}"
+	@echo -e "\t\t${BOLD}devel${RESET}"
+	@echo -e "\t\t${BOLD}build${RESET}"
+	@echo -e "\t\t${BOLD}test${RESET}"
+	@echo -e "\t\t${BOLD}install_devel${RESET}"
+	@echo -e "\t\t${BOLD}install_build${RESET}"
+	@echo -e "\t\t${BOLD}install_test${RESET}"
+	@echo -e "\te.g. 'make build'"
 	@echo
 	@echo -e "\t${BOLD}NOCACHE=1${RESET}: use 'docker build --no-cache' when building container (default use cache)."
 	@echo
@@ -96,25 +107,144 @@ LANGUAGES = cpp python java dotnet
 # $< first prerequist
 # $@ target name
 
-# ENV
-targets = $(addprefix env_, $(DISTROS))
-.PHONY: env $(targets)
-env: $(targets)
-$(targets): env_%: cache/%/docker_env.tar
-cache/%/docker_env.tar: docker/%/Dockerfile
-	@docker image rm -f ${IMAGE}:$*_env 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=env --tag ${IMAGE}:$*_env -f $< docker/$*
+
+## Base ##
+# Build the base image.
+targets = $(addsuffix _base, $(DISTROS))
+.PHONY: base $(targets)
+base: $(targets)
+$(targets): %_base: docker/%/Dockerfile
+	#@docker image rm -f ${IMAGE}:$*_base 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=base --tag ${IMAGE}:$*_base -f $< docker/$*
+
+# Save the base image.
+targets = $(addprefix save_, $(addsuffix _base, $(DISTROS)))
+.PHONY: save_base $(targets)
+save_base: $(targets)
+$(targets): save_%_base: cache/%/docker_base.tar
+cache/%/docker_base.tar: %_base
 	@rm -f $@
 	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_env -o $@
+	docker save ${IMAGE}:$*_base -o $@
 
-# Run a container using the env image.
-targets = $(addprefix sh_env_, $(DISTROS))
+# Run a container using the base image (debug).
+targets = $(addprefix sh_, $(addsuffix _base, $(DISTROS)))
 .PHONY: $(targets)
-$(targets): sh_env_%: cache/%/docker_env.tar
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$* ${IMAGE}:$*_env /bin/sh
+$(targets): sh_%_base: %_base
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_base ${IMAGE}:$*_base /bin/sh
 
-# DEVEL
+
+## SWIG ##
+# Build the swig image.
+targets = $(addsuffix _swig, $(DISTROS))
+.PHONY: swig $(targets)
+swig: $(targets)
+$(targets): %_swig: %_base
+	#@docker image rm -f ${IMAGE}:$*_swig 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=swig --tag ${IMAGE}:$*_swig -f $< docker/$*
+
+# Save the swig image.
+targets = $(addprefix save_, $(addsuffix _swig, $(DISTROS)))
+.PHONY: save_swig $(targets)
+save_swig: $(targets)
+$(targets): save_%_swig: cache/%/docker_swig.tar
+cache/%/docker_swig.tar: %_swig
+	@rm -f $@
+	mkdir -p cache/$*
+	docker save ${IMAGE}:$*_swig -o $@
+
+# Run a container using the swig image (debug).
+targets = $(addprefix sh_, $(addsuffix _swig, $(DISTROS)))
+.PHONY: $(targets)
+$(targets): sh_%_swig: %_swig
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_swig ${IMAGE}:$*_swig /bin/sh
+
+
+## ENV ##
+# Build the env image.
+targets = $(addsuffix _env, $(DISTROS))
+.PHONY: env $(targets)
+env: $(targets)
+$(targets): %_env: $(addprefix %_, $(addsuffix _env, $(LANGUAGES)))
+
+targets = $(addsuffix _env, $(LANGUAGES))
+.PHONY: $(targets)
+$(targets): %_env: $(addsuffix _env, $(addsuffix _%, $(DISTROS)))
+
+cpp_targets = $(addsuffix _env, $(addsuffix _cpp, $(DISTROS)))
+dotnet_targets = $(addsuffix _env, $(addsuffix _dotnet, $(DISTROS)))
+java_targets = $(addsuffix _env, $(addsuffix _java, $(DISTROS)))
+python_targets = $(addsuffix _env, $(addsuffix _python, $(DISTROS)))
+.PHONY: $(cpp_targets) $(dotnet_targets) $(java_targets) $(python_targets)
+
+$(cpp_targets): %_cpp_env: docker/%/cpp.Dockerfile
+	#@docker image rm -f ${IMAGE}:$*_cpp_env 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=env --tag ${IMAGE}:$*_cpp_env -f $< docker/$*
+$(dotnet_targets): %_dotnet_env: docker/%/dotnet.Dockerfile %_swig
+	#@docker image rm -f ${IMAGE}:$*_dotnet_env 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=env --tag ${IMAGE}:$*_dotnet_env -f $< docker/$*
+$(java_targets): %_java_env: docker/%/java.Dockerfile %_swig
+	#@docker image rm -f ${IMAGE}:$*_java_env 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=env --tag ${IMAGE}:$*_java_env -f $< docker/$*
+$(python_targets): %_python_env: docker/%/python.Dockerfile %_swig
+	#@docker image rm -f ${IMAGE}:$*_python_env 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=env --tag ${IMAGE}:$*_python_env -f $< docker/$*
+
+# Save the env image.
+targets = $(addprefix save_, $(addsuffix _env, $(DISTROS)))
+.PHONY: save_env $(targets)
+save_env: $(targets)
+$(targets): save_%_env: $(addprefix save_%_, $(addsuffix _env, $(LANGUAGES)))
+
+targets = $(addprefix save_, $(addsuffix _env, $(LANGUAGES)))
+.PHONY: $(targets)
+$(targets): save_%_env: $(addprefix save_, $(addsuffix _%_env, $(DISTROS)))
+
+cpp_targets = $(addprefix save_, $(addsuffix _cpp_env, $(DISTROS)))
+dotnet_targets = $(addprefix save_, $(addsuffix _dotnet_env, $(DISTROS)))
+java_targets = $(addprefix save_, $(addsuffix _java_env, $(DISTROS)))
+python_targets = $(addprefix save_, $(addsuffix _python_env, $(DISTROS)))
+.PHONY: $(cpp_targets) $(dotnet_targets) $(java_targets) $(python_targets)
+
+$(cpp_targets): save_%_cpp_env: cache/%/docker_cpp_env.tar
+cache/%/docker_cpp_env.tar: %_cpp_env
+	@rm -f $@
+	mkdir -p cache/$*
+	docker save ${IMAGE}:$*_cpp_env -o $@
+$(dotnet_targets): save_%_dotnet_env: cache/%/docker_dotnet_env.tar
+cache/%/docker_dotnet_env.tar: %_dotnet_env
+	@rm -f $@
+	mkdir -p cache/$*
+	docker save ${IMAGE}:$*_dotnet_env -o $@
+$(java_targets): save_%_java_env: cache/%/docker_java_env.tar
+cache/%/docker_java_env.tar: %_java_env
+	@rm -f $@
+	mkdir -p cache/$*
+	docker save ${IMAGE}:$*_java_env -o $@
+$(python_targets): save_%_python_env: cache/%/docker_python_env.tar
+cache/%/docker_python_env.tar: %_python_env
+	@rm -f $@
+	mkdir -p cache/$*
+	docker save ${IMAGE}:$*_python_env -o $@
+
+# Run a container using the env image (debug).
+cpp_targets = $(addprefix sh_, $(addsuffix _cpp_env, $(DISTROS)))
+dotnet_targets = $(addprefix sh_, $(addsuffix _dotnet_env, $(DISTROS)))
+java_targets = $(addprefix sh_, $(addsuffix _java_env, $(DISTROS)))
+python_targets = $(addprefix sh_, $(addsuffix _python_env, $(DISTROS)))
+.PHONY: $(cpp_targets) $(dotnet_targets) $(java_targets) $(python_targets)
+
+$(cpp_targets): sh_%_cpp_env: %_cpp_env
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_cpp_env ${IMAGE}:$*_cpp_env /bin/sh
+$(dotnet_targets): sh_%_dotnet_env: %_dotnet_env
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_dotnet_env ${IMAGE}:$*_dotnet_env /bin/sh
+$(java_targets): sh_%_java_env: %_java_env
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_java_env ${IMAGE}:$*_java_env /bin/sh
+$(python_targets): sh_%_python_env: %_python_env
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_python_env ${IMAGE}:$*_python_env /bin/sh
+
+
+## DEVEL ##
 .PHONY: devel
 devel: $(addprefix devel_, $(DISTROS))
 
@@ -136,6 +266,7 @@ $(distro_python_targets): devel_%_python: cache/%/docker_python.tar
 $(distro_java_targets): devel_%_java: cache/%/docker_java.tar
 $(distro_dotnet_targets): devel_%_dotnet: cache/%/docker_dotnet.tar
 
+# Save the devel image.
 cache/%/docker_cpp.tar: docker/%/Dockerfile ../CMakeLists.txt ../cmake
 	@echo building $@...
 	@docker image rm -f ${IMAGE}:$*_cpp 2>/dev/null
@@ -327,12 +458,14 @@ $(targets): clean_%:
 	-docker image rm -f ${IMAGE}:$*_java 2>/dev/null
 	-docker image rm -f ${IMAGE}:$*_python 2>/dev/null
 	-docker image rm -f ${IMAGE}:$*_cpp 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_devel 2>/dev/null
 	-docker image rm -f ${IMAGE}:$*_env 2>/dev/null
 	-rm -f cache/$*/docker_install_cpp.tar
 	-rm -f cache/$*/docker_dotnet.tar
 	-rm -f cache/$*/docker_java.tar
 	-rm -f cache/$*/docker_python.tar
 	-rm -f cache/$*/docker_cpp.tar
+	-rm -f cache/$*/docker_devel.tar
 	-rm -f cache/$*/docker_env.tar
 	-rmdir cache/$*
 
