@@ -11,28 +11,30 @@ digraph DockerDeps {
   SRC [label="git repo", shape=folder];
 
   subgraph clusterDockerfile {
-    ENV_IMG [label="CMakeSwig:<distro>_env\nenv"];
+    BASE_IMG [label="CMakeSwig:<distro>_base\nenv"];
     SWIG_IMG [label="CMakeSwig:<distro>_swig\nswig"];
 
-    ENV_IMG -> SWIG_IMG;
+    BASE_IMG -> SWIG_IMG;
 
     color=royalblue;
     label = "docker/<distro>/Dockerfile";
   }
-  DISTRO_IMG -> ENV_IMG;
-  PKG -> ENV_IMG [label="install", style="dashed"];
+  DISTRO_IMG -> BASE_IMG;
+  PKG -> BASE_IMG [label="install", style="dashed"];
 
 // LANG
   subgraph clusterLang {
     LANGENV_IMG [label="CMakeSwig:<distro>_<lang>_env\nenv"];
     LANGDEVEL_IMG [label="CMakeSwig:<distro>_<lang>_devel\ndevel"];
     LANGBUILD_IMG [label="CMakeSwig:<distro>_<lang>_build\nbuild"];
-    LANGINSTALL_IMG [label="CMakeSwig:<distro>_<lang>_install\ninstall"];
+    LANGINSTALLDEVEL_IMG [label="CMakeSwig:<distro>_<lang>_install_devel\ninstall"];
+    LANGINSTALLBUILD_IMG [label="CMakeSwig:<distro>_<lang>_install_build\ninstall"];
 
     LANGENV_IMG -> LANGDEVEL_IMG;
     LANGDEVEL_IMG -> LANGBUILD_IMG;
-    LANGBUILD_IMG -> LANGINSTALL_IMG [label="copy install", style="dashed"];
-    LANGENV_IMG -> LANGINSTALL_IMG;
+    LANGBUILD_IMG -> LANGINSTALLDEVEL_IMG [label="copy install", style="dashed"];
+    LANGENV_IMG -> LANGINSTALLDEVEL_IMG;
+    LANGINSTALLDEVEL_IMG -> LANGINSTALLBUILD_IMG;
 
     color=royalblue;
     label = "docker/<distro>/<lang>.Dockerfile";
@@ -45,16 +47,22 @@ digraph DockerDeps {
 
   subgraph clusterCache {
     node [shape=note, style="rounded,filled", color=black, fillcolor=royalblue];
+    BASE_TAR [label="docker_base.tar"];
+    SWIG_TAR [label="docker_swig.tar"];
     LANGENV_TAR [label="docker_<lang>_env.tar"];
     LANGDEVEL_TAR [label="docker_<lang>_devel.tar"];
     LANGBUILD_TAR [label="docker_<lang>_build.tar"];
-    LANGINSTALL_TAR [label="docker_<lang>_install.tar"];
+    LANGINSTALLDEVEL_TAR [label="docker_<lang>_install_devel.tar"];
+    LANGINSTALLBUILD_TAR [label="docker_<lang>_install_build.tar"];
 
     edge [color=red];
-    LANGENV_IMG -> LANGENV_TAR [label="make save_env_<distro>"];
-    LANGDEVEL_IMG -> LANGDEVEL_TAR [label="make save_devel_<distro>"];
-    LANGBUILD_IMG -> LANGBUILD_TAR [label="make save_build_<distro>"];
-    LANGINSTALL_IMG -> LANGINSTALL_TAR [label="make save_install_<distro>"];
+    BASE_IMG -> BASE_TAR [label="make save_<distro>_base"];
+    SWIG_IMG -> SWIG_TAR [label="make save_<distro>_swig"];
+    LANGENV_IMG -> LANGENV_TAR [label="make save_<distro>_<lang>_env"];
+    LANGDEVEL_IMG -> LANGDEVEL_TAR [label="make save_<distro>_<lang>_devel"];
+    LANGBUILD_IMG -> LANGBUILD_TAR [label="make save_<distro>_<lang>_build"];
+    LANGINSTALLDEVEL_IMG -> LANGINSTALLDEVEL_TAR [label="make save_<distro>_<lang>_install_devel"];
+    LANGINSTALLBUILD_IMG -> LANGINSTALLBUILD_TAR [label="make save_<distro>_<lang>_install_build"];
 
     color=royalblue;
     label = "cache/<distro>/";
