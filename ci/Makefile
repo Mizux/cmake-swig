@@ -299,6 +299,44 @@ cache/%/docker_dotnet.tar: docker/%/Dockerfile ../CMakeLists.txt ../cmake
 	mkdir -p cache/$*
 	docker save ${IMAGE}:$*_dotnet -o $@
 
+# Run a container using the devel image (debug).
+cpp_targets = $(addprefix sh_, $(addsuffix _cpp_devel, $(DISTROS)))
+dotnet_targets = $(addprefix sh_, $(addsuffix _dotnet_devel, $(DISTROS)))
+java_targets = $(addprefix sh_, $(addsuffix _java_devel, $(DISTROS)))
+python_targets = $(addprefix sh_, $(addsuffix _python_devel, $(DISTROS)))
+.PHONY: $(cpp_targets) $(dotnet_targets) $(java_targets) $(python_targets)
+
+$(cpp_targets): sh_%_cpp_devel: %_cpp_devel
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_cpp_devel ${IMAGE}:$*_cpp_devel /bin/sh
+$(dotnet_targets): sh_%_dotnet_devel: %_dotnet_devel
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_dotnet_devel ${IMAGE}:$*_dotnet_devel /bin/sh
+$(java_targets): sh_%_java_devel: %_java_devel
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_java_devel ${IMAGE}:$*_java_devel /bin/sh
+$(python_targets): sh_%_python_devel: %_python_devel
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_python_devel ${IMAGE}:$*_python_devel /bin/sh
+
+
+## BUILD ##
+# Run a container using the build image (debug).
+cpp_targets = $(addprefix sh_, $(addsuffix _cpp_build, $(DISTROS)))
+dotnet_targets = $(addprefix sh_, $(addsuffix _dotnet_build, $(DISTROS)))
+java_targets = $(addprefix sh_, $(addsuffix _java_build, $(DISTROS)))
+python_targets = $(addprefix sh_, $(addsuffix _python_build, $(DISTROS)))
+.PHONY: $(cpp_targets) $(dotnet_targets) $(java_targets) $(python_targets)
+
+$(cpp_targets): sh_%_cpp_build: %_cpp_build
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_cpp_build ${IMAGE}:$*_cpp_build /bin/sh
+$(dotnet_targets): sh_%_dotnet_build: %_dotnet_build
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_dotnet_build ${IMAGE}:$*_dotnet_build /bin/sh
+$(java_targets): sh_%_java_build: %_java_build
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_java_build ${IMAGE}:$*_java_build /bin/sh
+$(python_targets): sh_%_python_build: %_python_build
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_python_build ${IMAGE}:$*_python_build /bin/sh
+
+
+
+
+
 # DOCKER BASH INSTALL (debug)
 distro_cpp_targets = $(addprefix sh_, $(addsuffix _cpp, $(DISTROS)))
 distro_python_targets = $(addprefix sh_, $(addsuffix _python, $(DISTROS)))
@@ -342,7 +380,7 @@ $(distro_java_targets): test_%_java: cache/%/docker_java.tar
 $(distro_dotnet_targets): test_%_dotnet: cache/%/docker_dotnet.tar
 	${DOCKER_RUN_CMD} -t --name ${IMAGE}_$*_dotnet ${IMAGE}:$*_dotnet cmake --build build --target test -- CTEST_OUTPUT_ON_FAILURE=1
 
-# INSTALL
+##  INSTALL  ##
 .PHONY: install
 install: $(addprefix install_, $(DISTROS))
 
@@ -453,20 +491,42 @@ clean: $(targets)
 $(targets): clean_%:
 	docker container prune -f
 	docker image prune -f
-	-docker image rm -f ${IMAGE}:$*_install_cpp 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_dotnet 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_java 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_python 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_cpp 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_devel 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_env 2>/dev/null
-	-rm -f cache/$*/docker_install_cpp.tar
-	-rm -f cache/$*/docker_dotnet.tar
-	-rm -f cache/$*/docker_java.tar
-	-rm -f cache/$*/docker_python.tar
-	-rm -f cache/$*/docker_cpp.tar
-	-rm -f cache/$*/docker_devel.tar
-	-rm -f cache/$*/docker_env.tar
+	-docker image rm -f ${IMAGE}:$*_python_install 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_python_build 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_python_devel 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_python_env 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_java_install 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_java_build 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_java_devel 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_java_env 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_dotnet_install 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_dotnet_build 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_dotnet_devel 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_dotnet_env 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_cpp_install 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_cpp_build 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_cpp_devel 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_cpp_env 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_swig 2>/dev/null
+	-docker image rm -f ${IMAGE}:$*_base 2>/dev/null
+	-rm -f cache/$*/docker_python_install.tar
+	-rm -f cache/$*/docker_python_build.tar
+	-rm -f cache/$*/docker_python_devel.tar
+	-rm -f cache/$*/docker_python_env.tar
+	-rm -f cache/$*/docker_java_install.tar
+	-rm -f cache/$*/docker_java_build.tar
+	-rm -f cache/$*/docker_java_devel.tar
+	-rm -f cache/$*/docker_java_env.tar
+	-rm -f cache/$*/docker_dotnet_install.tar
+	-rm -f cache/$*/docker_dotnet_build.tar
+	-rm -f cache/$*/docker_dotnet_devel.tar
+	-rm -f cache/$*/docker_dotnet_env.tar
+	-rm -f cache/$*/docker_cpp_install.tar
+	-rm -f cache/$*/docker_cpp_build.tar
+	-rm -f cache/$*/docker_cpp_devel.tar
+	-rm -f cache/$*/docker_cpp_env.tar
+	-rm -f cache/$*/docker_swig.tar
+	-rm -f cache/$*/docker_base.tar
 	-rmdir cache/$*
 
 .PHONY: distclean
