@@ -33,10 +33,6 @@ help:
 	@echo -e "\t${BOLD}save_<distro>_<lang>_<stage>${RESET}: Save the <stage> docker image for a specific distro for a specific language."
 	@echo -e "\t${BOLD}sh_<distro>_<lang>_<stage>${RESET}: run a container using the <stage> docker image specified (debug purpose)."
 	@echo
-	@echo
-	@echo -e "\t${BOLD}clean${RESET}: Remove cache and docker image."
-	@echo -e "\t${BOLD}clean_<distro>${RESET}: Remove cache and docker image for the specified distro."
-	@echo
 	@echo -e "\t${BOLD}<distro>${RESET}:"
 	@echo -e "\t\t${BOLD}alpine${RESET} (edge)"
 	@echo -e "\t\t${BOLD}archlinux${RESET} (latest)"
@@ -68,6 +64,10 @@ help:
 	@echo -e "\t\t${BOLD}install_build${RESET}"
 	@echo -e "\t\t${BOLD}install_test${RESET}"
 	@echo -e "\te.g. 'make build'"
+	@echo
+	@echo
+	@echo -e "\t${BOLD}clean${RESET}: Remove cache and docker image."
+	@echo -e "\t${BOLD}clean_<distro>${RESET}: Remove cache and docker image for the specified distro."
 	@echo
 	@echo -e "\t${BOLD}NOCACHE=1${RESET}: use 'docker build --no-cache' when building container (default use cache)."
 	@echo
@@ -107,426 +107,196 @@ LANGUAGES = cpp python java dotnet
 # $< first prerequist
 # $@ target name
 
+###############
+## PRESTAGES ##
+###############
+PRESTAGES = base swig
+define make-prestage-target
+#$$(info STAGE: $1)
+#$$(info Create targets: $1 $(addsuffix _$1, $(DISTROS)).)
+targets_$1 = $(addsuffix _$1, $(DISTROS))
+.PHONY: $1 $$(targets_$1)
+$1: $$(targets_$1)
+$$(targets_$1): %_$1: docker/%/Dockerfile
+	#@docker image rm -f ${IMAGE}:$$*_$1 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=$1 --tag ${IMAGE}:$$*_$1 -f $$< ..
 
-## Base ##
-# Build the base image.
-targets = $(addsuffix _base, $(DISTROS))
-.PHONY: base $(targets)
-base: $(targets)
-$(targets): %_base: docker/%/Dockerfile
-	#@docker image rm -f ${IMAGE}:$*_base 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=base --tag ${IMAGE}:$*_base -f $< docker/$*
+#$$(info Create targets: save_$1 $(addprefix save_, $(addsuffix _$1, $(DISTROS))) (debug).)
+save_targets_$1 = $(addprefix save_, $(addsuffix _$1, $(DISTROS)))
+.PHONY: save_$1 $$(save_targets_$1)
+save_$1: $$(save_targets_$1)
+$$(save_targets_$1): save_%_$1: cache/%/docker_$1.tar
+cache/%/docker_$1.tar: %_$1
+	@rm -f $$@
+	mkdir -p cache/$$*
+	docker save ${IMAGE}:$$*_$1 -o $$@
 
-# Save the base image.
-targets = $(addprefix save_, $(addsuffix _base, $(DISTROS)))
-.PHONY: save_base $(targets)
-save_base: $(targets)
-$(targets): save_%_base: cache/%/docker_base.tar
-cache/%/docker_base.tar: %_base
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_base -o $@
+#$$(info Create targets: $(addprefix sh_, $(addsuffix _$1, $(DISTROS))) (debug).)
+sh_targets_$1 = $(addprefix sh_, $(addsuffix _$1, $(DISTROS)))
+.PHONY: $$(sh_targets_$1)
+$$(sh_targets_$1): sh_%_$1: %_$1
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$$*_$1 ${IMAGE}:$$*_$1 /bin/sh
 
-# Run a container using the base image (debug).
-targets = $(addprefix sh_, $(addsuffix _base, $(DISTROS)))
-.PHONY: $(targets)
-$(targets): sh_%_base: %_base
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_base ${IMAGE}:$*_base /bin/sh
+#$$(info Create targets: $(addprefix clean_, $(addsuffix _$1, $(DISTROS))).)
+clean_targets_$1 = $(addprefix clean_, $(addsuffix _$1, $(DISTROS)))
+.PHONY: clean_$1 $$(clean_targets_$1)
+clean_$1: $$(clean_targets_$1)
+$$(clean_targets_$1): clean_%_$1:
+	docker image rm -f ${IMAGE}:$$*_$1 2>/dev/null
+	rm -f cache/$$*/docker_$1.tar
+endef
 
+$(foreach stage,$(PRESTAGES),$(eval $(call make-prestage-target,$(stage))))
 
-## SWIG ##
-# Build the swig image.
-targets = $(addsuffix _swig, $(DISTROS))
-.PHONY: swig $(targets)
-swig: $(targets)
-$(targets): %_swig: %_base
-	#@docker image rm -f ${IMAGE}:$*_swig 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=swig --tag ${IMAGE}:$*_swig -f $< docker/$*
+############
+## STAGES ##
+############
+STAGES = env devel build test install_devel install_build install_test
+define make-stage-target
+#$$(info STAGE: $1)
+#$$(info Create targets: $1 $(addsuffix _$1, $(DISTROS)).)
+targets_$1 = $(addsuffix _$1, $(DISTROS))
+.PHONY: $1 $$(targets_$1)
+$1: $$(targets_$1)
+$$(targets_$1): %_$1: $(addprefix %_, $(addsuffix _$1, $(LANGUAGES)))
 
-# Save the swig image.
-targets = $(addprefix save_, $(addsuffix _swig, $(DISTROS)))
-.PHONY: save_swig $(targets)
-save_swig: $(targets)
-$(targets): save_%_swig: cache/%/docker_swig.tar
-cache/%/docker_swig.tar: %_swig
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_swig -o $@
+#$$(info Create targets: $(addsuffix _$1, $(LANGUAGES)).)
+targets_$1 = $(addsuffix _$1, $(LANGUAGES))
+.PHONY: $$(targets_$1)
+$$(targets_$1): %_$1: $(addsuffix _$1, $(addsuffix _%, $(DISTROS)))
 
-# Run a container using the swig image (debug).
-targets = $(addprefix sh_, $(addsuffix _swig, $(DISTROS)))
-.PHONY: $(targets)
-$(targets): sh_%_swig: %_swig
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_swig ${IMAGE}:$*_swig /bin/sh
+#$$(info Create targets: $(addsuffix _cpp_$1, $(DISTROS)))
+cpp_targets_$1 = $(addsuffix _cpp_$1, $(DISTROS))
+#$$(info Create targets: $(addsuffix _dotnet_$1, $(DISTROS)))
+dotnet_targets_$1 = $(addsuffix _dotnet_$1, $(DISTROS))
+#$$(info Create targets: $(addsuffix _java_$1, $(DISTROS)))
+java_targets_$1 = $(addsuffix _java_$1, $(DISTROS))
+#$$(info Create targets: $(addsuffix _python_$1, $(DISTROS)))
+python_targets_$1 = $(addsuffix _python_$1, $(DISTROS))
+.PHONY: $$(cpp_targets_$1) $$(dotnet_targets_$1) $$(java_targets_$1) $$(python_targets_$1)
 
+$$(cpp_targets_$1): %_cpp_$1: docker/%/cpp.Dockerfile
+	#@docker image rm -f ${IMAGE}:$$*_cpp_$1 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=$1 --tag ${IMAGE}:$$*_cpp_$1 -f $$< ..
+$$(dotnet_targets_$1): %_dotnet_$1: docker/%/dotnet.Dockerfile %_swig
+	#@docker image rm -f ${IMAGE}:$$*_dotnet_$1 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=$1 --tag ${IMAGE}:$$*_dotnet_$1 -f $$< ..
+$$(java_targets_$1): %_java_$1: docker/%/java.Dockerfile %_swig
+	#@docker image rm -f ${IMAGE}:$$*_java_$1 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=$1 --tag ${IMAGE}:$$*_java_$1 -f $$< ..
+$$(python_targets_$1): %_python_$1: docker/%/python.Dockerfile %_swig
+	#@docker image rm -f ${IMAGE}:$$*_python_$1 2>/dev/null
+	${DOCKER_BUILD_CMD} --target=$1 --tag ${IMAGE}:$$*_python_$1 -f $$< ..
 
-## ENV ##
-# Build the env image.
-targets = $(addsuffix _env, $(DISTROS))
-.PHONY: env $(targets)
-env: $(targets)
-$(targets): %_env: $(addprefix %_, $(addsuffix _env, $(LANGUAGES)))
+# Save $1 docker images (debug).
+#$$(info Create targets: save_$1 $(addprefix save_, $(addsuffix _$1, $(DISTROS))).)
+targets_$1 = $(addprefix save_, $(addsuffix _$1, $(DISTROS)))
+.PHONY: save_$1 $$(targets_$1)
+save_$1: $$(targets_$1)
+$$(targets_$1): save_%_$1: $(addprefix save_%_, $(addsuffix _$1, $(LANGUAGES)))
 
-targets = $(addsuffix _env, $(LANGUAGES))
-.PHONY: $(targets)
-$(targets): %_env: $(addsuffix _env, $(addsuffix _%, $(DISTROS)))
+#$$(info Create targets: $(addprefix save_, $(addsuffix _$1, $(LANGUAGES))).)
+targets_$1 = $(addprefix save_, $(addsuffix _$1, $(LANGUAGES)))
+.PHONY: $$(targets_$1)
+$$(targets_$1): save_%_$1: $(addprefix save_, $(addsuffix _%_$1, $(DISTROS)))
 
-cpp_targets = $(addsuffix _env, $(addsuffix _cpp, $(DISTROS)))
-dotnet_targets = $(addsuffix _env, $(addsuffix _dotnet, $(DISTROS)))
-java_targets = $(addsuffix _env, $(addsuffix _java, $(DISTROS)))
-python_targets = $(addsuffix _env, $(addsuffix _python, $(DISTROS)))
-.PHONY: $(cpp_targets) $(dotnet_targets) $(java_targets) $(python_targets)
+#$$(info Create targets: $(addprefix save_, $(addsuffix _cpp_$1, $(DISTROS))))
+cpp_targets_$1 = $(addprefix save_, $(addsuffix _cpp_$1, $(DISTROS)))
+#$$(info Create targets: $(addprefix save_, $(addsuffix _dotnet_$1, $(DISTROS))))
+dotnet_targets_$1 = $(addprefix save_, $(addsuffix _dotnet_$1, $(DISTROS)))
+#$$(info Create targets: $(addprefix save_, $(addsuffix _java_$1, $(DISTROS))))
+java_targets_$1 = $(addprefix save_, $(addsuffix _java_$1, $(DISTROS)))
+#$$(info Create targets: $(addprefix save_, $(addsuffix _python_$1, $(DISTROS))))
+python_targets_$1 = $(addprefix save_, $(addsuffix _python_$1, $(DISTROS)))
+.PHONY: $$(cpp_targets_$1) $$(dotnet_targets_$1) $$(java_targets_$1) $$(python_targets_$1)
 
-$(cpp_targets): %_cpp_env: docker/%/cpp.Dockerfile
-	#@docker image rm -f ${IMAGE}:$*_cpp_env 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=env --tag ${IMAGE}:$*_cpp_env -f $< docker/$*
-$(dotnet_targets): %_dotnet_env: docker/%/dotnet.Dockerfile %_swig
-	#@docker image rm -f ${IMAGE}:$*_dotnet_env 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=env --tag ${IMAGE}:$*_dotnet_env -f $< docker/$*
-$(java_targets): %_java_env: docker/%/java.Dockerfile %_swig
-	#@docker image rm -f ${IMAGE}:$*_java_env 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=env --tag ${IMAGE}:$*_java_env -f $< docker/$*
-$(python_targets): %_python_env: docker/%/python.Dockerfile %_swig
-	#@docker image rm -f ${IMAGE}:$*_python_env 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=env --tag ${IMAGE}:$*_python_env -f $< docker/$*
+$$(cpp_targets_$1): save_%_cpp_$1: cache/%/docker_cpp_$1.tar
+cache/%/docker_cpp_$1.tar: %_cpp_$1
+	@rm -f $$@
+	mkdir -p cache/$$*
+	docker save ${IMAGE}:$$*_cpp_$1 -o $$@
+$$(dotnet_targets_$1): save_%_dotnet_$1: cache/%/docker_dotnet_$1.tar
+cache/%/docker_dotnet_$1.tar: %_dotnet_$1
+	@rm -f $$@
+	mkdir -p cache/$$*
+	docker save ${IMAGE}:$$*_dotnet_$1 -o $$@
+$$(java_targets_$1): save_%_java_$1: cache/%/docker_java_$1.tar
+cache/%/docker_java_$1.tar: %_java_$1
+	@rm -f $$@
+	mkdir -p cache/$$*
+	docker save ${IMAGE}:$$*_java_$1 -o $$@
+$$(python_targets_$1): save_%_python_$1: cache/%/docker_python_$1.tar
+cache/%/docker_python_$1.tar: %_python_$1
+	@rm -f $$@
+	mkdir -p cache/$$*
+	docker save ${IMAGE}:$$*_python_$1 -o $$@
 
-# Save the env image.
-targets = $(addprefix save_, $(addsuffix _env, $(DISTROS)))
-.PHONY: save_env $(targets)
-save_env: $(targets)
-$(targets): save_%_env: $(addprefix save_%_, $(addsuffix _env, $(LANGUAGES)))
+# Run a container using the <distro>_<lang>_$1 image (debug).
+#$$(info Create targets: $(addprefix sh_, $(addsuffix _cpp_$1, $(DISTROS))))
+cpp_targets_$1 = $(addprefix sh_, $(addsuffix _cpp_$1, $(DISTROS)))
+#$$(info Create targets: $(addprefix sh_, $(addsuffix _dotnet_$1, $(DISTROS))))
+dotnet_targets_$1 = $(addprefix sh_, $(addsuffix _dotnet_$1, $(DISTROS)))
+#$$(info Create targets: $(addprefix sh_, $(addsuffix _java_$1, $(DISTROS))))
+java_targets_$1 = $(addprefix sh_, $(addsuffix _java_$1, $(DISTROS)))
+#$$(info Create targets: $(addprefix sh_, $(addsuffix _python_$1, $(DISTROS))))
+python_targets_$1 = $(addprefix sh_, $(addsuffix _python_$1, $(DISTROS)))
+.PHONY: $$(cpp_targets_$1) $$(dotnet_targets_$1) $$(java_targets_$1) $$(python_targets_$1)
 
-targets = $(addprefix save_, $(addsuffix _env, $(LANGUAGES)))
-.PHONY: $(targets)
-$(targets): save_%_env: $(addprefix save_, $(addsuffix _%_env, $(DISTROS)))
+$$(cpp_targets): sh_%_cpp_$1: %_cpp_$1
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$$*_cpp_$1 ${IMAGE}:$$*_cpp_$1 /bin/sh
+$$(dotnet_targets): sh_%_dotnet_$1: %_dotnet_$1
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$$*_dotnet_$1 ${IMAGE}:$$*_dotnet_$1 /bin/sh
+$$(java_targets): sh_%_java_$1: %_java_$1
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$$*_java_$1 ${IMAGE}:$$*_java_$1 /bin/sh
+$$(python_targets): sh_%_python_$1: %_python_$1
+	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$$*_python_$1 ${IMAGE}:$$*_python_$1 /bin/sh
 
-cpp_targets = $(addprefix save_, $(addsuffix _cpp_env, $(DISTROS)))
-dotnet_targets = $(addprefix save_, $(addsuffix _dotnet_env, $(DISTROS)))
-java_targets = $(addprefix save_, $(addsuffix _java_env, $(DISTROS)))
-python_targets = $(addprefix save_, $(addsuffix _python_env, $(DISTROS)))
-.PHONY: $(cpp_targets) $(dotnet_targets) $(java_targets) $(python_targets)
+# Clean $1 docker images.
+#$$(info Create targets: clean_$1 $(addprefix clean_, $(addsuffix _$1, $(DISTROS))).)
+targets_$1 = $(addprefix clean_, $(addsuffix _$1, $(DISTROS)))
+.PHONY: clean_$1 $(targets_$1)
+clean_$1: $$(targets_$1)
+$$(targets_$1): clean_%_$1: $(addprefix clean_%_, $(addsuffix _$1, $(LANGUAGES)))
 
-$(cpp_targets): save_%_cpp_env: cache/%/docker_cpp_env.tar
-cache/%/docker_cpp_env.tar: %_cpp_env
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_cpp_env -o $@
-$(dotnet_targets): save_%_dotnet_env: cache/%/docker_dotnet_env.tar
-cache/%/docker_dotnet_env.tar: %_dotnet_env
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_dotnet_env -o $@
-$(java_targets): save_%_java_env: cache/%/docker_java_env.tar
-cache/%/docker_java_env.tar: %_java_env
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_java_env -o $@
-$(python_targets): save_%_python_env: cache/%/docker_python_env.tar
-cache/%/docker_python_env.tar: %_python_env
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_python_env -o $@
+#$$(info Create targets: $(addprefix clean_, $(addsuffix _$1, $(LANGUAGES))).)
+targets_$1 = $(addprefix clean_, $(addsuffix _$1, $(LANGUAGES)))
+.PHONY: $$(targets_$1)
+$$(targets_$1): clean_%_$1: $(addprefix clean_, $(addsuffix _%_$1, $(DISTROS)))
 
-# Run a container using the env image (debug).
-cpp_targets = $(addprefix sh_, $(addsuffix _cpp_env, $(DISTROS)))
-dotnet_targets = $(addprefix sh_, $(addsuffix _dotnet_env, $(DISTROS)))
-java_targets = $(addprefix sh_, $(addsuffix _java_env, $(DISTROS)))
-python_targets = $(addprefix sh_, $(addsuffix _python_env, $(DISTROS)))
-.PHONY: $(cpp_targets) $(dotnet_targets) $(java_targets) $(python_targets)
+#$$(info Create targets: $(addprefix clean_, $(addsuffix _cpp_$1, $(DISTROS))))
+cpp_targets_$1 = $(addprefix clean_, $(addsuffix _cpp_$1, $(DISTROS)))
+#$$(info Create targets: $(addprefix clean_, $(addsuffix _dotnet_$1, $(DISTROS))))
+dotnet_targets_$1 = $(addprefix clean_, $(addsuffix _dotnet_$1, $(DISTROS)))
+#$$(info Create targets: $(addprefix clean_, $(addsuffix _java_$1, $(DISTROS))))
+java_targets_$1 = $(addprefix clean_, $(addsuffix _java_$1, $(DISTROS)))
+#$$(info Create targets: $(addprefix clean_, $(addsuffix _python_$1, $(DISTROS))))
+python_targets_$1 = $(addprefix clean_, $(addsuffix _python_$1, $(DISTROS)))
+.PHONY: $$(cpp_targets_$1) $$(dotnet_targets_$1) $$(java_targets_$1) $$(python_targets_$1)
 
-$(cpp_targets): sh_%_cpp_env: %_cpp_env
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_cpp_env ${IMAGE}:$*_cpp_env /bin/sh
-$(dotnet_targets): sh_%_dotnet_env: %_dotnet_env
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_dotnet_env ${IMAGE}:$*_dotnet_env /bin/sh
-$(java_targets): sh_%_java_env: %_java_env
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_java_env ${IMAGE}:$*_java_env /bin/sh
-$(python_targets): sh_%_python_env: %_python_env
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_python_env ${IMAGE}:$*_python_env /bin/sh
+$$(cpp_targets_$1): clean_%_cpp_$1:
+	docker image rm -f ${IMAGE}:$$*_cpp_$1 2>/dev/null
+	rm -f cache/$$*/docker_cpp_$1.tar
+$$(dotnet_targets_$1): clean_%_dotnet_$1:
+	docker image rm -f ${IMAGE}:$$*_dotnet_$1 2>/dev/null
+	rm -f cache/$$*/docker_dotnet_$1.tar
+$$(java_targets_$1): clean_%_java_$1:
+	docker image rm -f ${IMAGE}:$$*_java_$1 2>/dev/null
+	rm -f cache/$$*/docker_java_$1.tar
+$$(python_targets_$1): clean_%_python_$1:
+	docker image rm -f ${IMAGE}:$$*_python_$1 2>/dev/null
+	rm -f cache/$$*/docker_python_$1.tar
+endef
 
-
-## DEVEL ##
-.PHONY: devel
-devel: $(addprefix devel_, $(DISTROS))
-
-distro_targets = $(addprefix devel_, $(DISTROS))
-.PHONY: $(distro_targets)
-$(distro_targets): devel_%: $(addprefix devel_%_, $(LANGUAGES))
-
-lang_targets = $(addprefix devel_, $(LANGUAGES))
-.PHONY: $(lang_targets)
-$(lang_targets): devel_%: $(addsuffix _%, $(addprefix devel_, $(DISTROS)))
-
-distro_cpp_targets = $(addprefix devel_, $(addsuffix _cpp, $(DISTROS)))
-distro_python_targets = $(addprefix devel_, $(addsuffix _python, $(DISTROS)))
-distro_java_targets = $(addprefix devel_, $(addsuffix _java, $(DISTROS)))
-distro_dotnet_targets = $(addprefix devel_, $(addsuffix _dotnet, $(DISTROS)))
-.PHONY: $(distro_cpp_targets) $(distro_python_targets) $(distro_java_targets) $(distro_dotnet_targets)
-$(distro_cpp_targets): devel_%_cpp: cache/%/docker_cpp.tar
-$(distro_python_targets): devel_%_python: cache/%/docker_python.tar
-$(distro_java_targets): devel_%_java: cache/%/docker_java.tar
-$(distro_dotnet_targets): devel_%_dotnet: cache/%/docker_dotnet.tar
-
-# Save the devel image.
-cache/%/docker_cpp.tar: docker/%/Dockerfile ../CMakeLists.txt ../cmake
-	@echo building $@...
-	@docker image rm -f ${IMAGE}:$*_cpp 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=cpp --tag ${IMAGE}:$*_cpp -f $< ..
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_cpp -o $@
-
-cache/%/docker_python.tar: docker/%/Dockerfile ../CMakeLists.txt ../cmake
-	@echo building $@...
-	@docker image rm -f ${IMAGE}:$*_python 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=python --tag ${IMAGE}:$*_python -f $< ..
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_python -o $@
-
-cache/%/docker_java.tar: docker/%/Dockerfile ../CMakeLists.txt ../cmake
-	@echo building $@...
-	@docker image rm -f ${IMAGE}:$*_java 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=java --tag ${IMAGE}:$*_java -f $< ..
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_java -o $@
-
-cache/%/docker_dotnet.tar: docker/%/Dockerfile ../CMakeLists.txt ../cmake
-	@echo building $@...
-	@docker image rm -f ${IMAGE}:$*_dotnet 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=dotnet --tag ${IMAGE}:$*_dotnet -f $< ..
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_dotnet -o $@
-
-# Run a container using the devel image (debug).
-cpp_targets = $(addprefix sh_, $(addsuffix _cpp_devel, $(DISTROS)))
-dotnet_targets = $(addprefix sh_, $(addsuffix _dotnet_devel, $(DISTROS)))
-java_targets = $(addprefix sh_, $(addsuffix _java_devel, $(DISTROS)))
-python_targets = $(addprefix sh_, $(addsuffix _python_devel, $(DISTROS)))
-.PHONY: $(cpp_targets) $(dotnet_targets) $(java_targets) $(python_targets)
-
-$(cpp_targets): sh_%_cpp_devel: %_cpp_devel
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_cpp_devel ${IMAGE}:$*_cpp_devel /bin/sh
-$(dotnet_targets): sh_%_dotnet_devel: %_dotnet_devel
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_dotnet_devel ${IMAGE}:$*_dotnet_devel /bin/sh
-$(java_targets): sh_%_java_devel: %_java_devel
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_java_devel ${IMAGE}:$*_java_devel /bin/sh
-$(python_targets): sh_%_python_devel: %_python_devel
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_python_devel ${IMAGE}:$*_python_devel /bin/sh
-
-
-## BUILD ##
-# Run a container using the build image (debug).
-cpp_targets = $(addprefix sh_, $(addsuffix _cpp_build, $(DISTROS)))
-dotnet_targets = $(addprefix sh_, $(addsuffix _dotnet_build, $(DISTROS)))
-java_targets = $(addprefix sh_, $(addsuffix _java_build, $(DISTROS)))
-python_targets = $(addprefix sh_, $(addsuffix _python_build, $(DISTROS)))
-.PHONY: $(cpp_targets) $(dotnet_targets) $(java_targets) $(python_targets)
-
-$(cpp_targets): sh_%_cpp_build: %_cpp_build
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_cpp_build ${IMAGE}:$*_cpp_build /bin/sh
-$(dotnet_targets): sh_%_dotnet_build: %_dotnet_build
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_dotnet_build ${IMAGE}:$*_dotnet_build /bin/sh
-$(java_targets): sh_%_java_build: %_java_build
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_java_build ${IMAGE}:$*_java_build /bin/sh
-$(python_targets): sh_%_python_build: %_python_build
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_python_build ${IMAGE}:$*_python_build /bin/sh
-
-
-
-
-
-# DOCKER BASH INSTALL (debug)
-distro_cpp_targets = $(addprefix sh_, $(addsuffix _cpp, $(DISTROS)))
-distro_python_targets = $(addprefix sh_, $(addsuffix _python, $(DISTROS)))
-distro_java_targets = $(addprefix sh_, $(addsuffix _java, $(DISTROS)))
-distro_dotnet_targets = $(addprefix sh_, $(addsuffix _dotnet, $(DISTROS)))
-.PHONY: $(distro_cpp_targets) $(distro_python_targets) $(distro_java_targets) $(distro_dotnet_targets)
-
-$(distro_cpp_targets): sh_%_cpp: cache/%/docker_cpp.tar
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_cpp ${IMAGE}:$*_cpp /bin/sh
-$(distro_python_targets): sh_%_python: cache/%/docker_python.tar
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_python ${IMAGE}:$*_python /bin/sh
-$(distro_java_targets): sh_%_java: cache/%/docker_java.tar
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_java ${IMAGE}:$*_java /bin/sh
-$(distro_dotnet_targets): sh_%_dotnet: cache/%/docker_dotnet.tar
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_dotnet ${IMAGE}:$*_dotnet /bin/sh
-
-# TEST DEVEL
-.PHONY: test
-test: $(addprefix test_, $(DISTROS))
-
-distro_targets = $(addprefix test_, $(DISTROS))
-.PHONY: $(distro_targets)
-$(distro_targets): test_%: $(addprefix test_%_, $(LANGUAGES))
-
-lang_targets = $(addprefix test_, $(LANGUAGES))
-.PHONY: $(lang_targets)
-$(lang_targets): test_%: $(addsuffix _%, $(addprefix test_, $(DISTROS)))
-
-distro_cpp_targets = $(addprefix test_, $(addsuffix _cpp, $(DISTROS)))
-distro_python_targets = $(addprefix test_, $(addsuffix _python, $(DISTROS)))
-distro_java_targets = $(addprefix test_, $(addsuffix _java, $(DISTROS)))
-distro_dotnet_targets = $(addprefix test_, $(addsuffix _dotnet, $(DISTROS)))
-.PHONY: $(distro_cpp_targets) $(distro_python_targets) $(distro_java_targets) $(distro_dotnet_targets)
-
-$(distro_cpp_targets): test_%_cpp: cache/%/docker_cpp.tar
-	${DOCKER_RUN_CMD} -t --name ${IMAGE}_$*_cpp ${IMAGE}:$*_cpp cmake --build build --target test -- CTEST_OUTPUT_ON_FAILURE=1
-$(distro_python_targets): test_%_python: cache/%/docker_python.tar
-	${DOCKER_RUN_CMD} -t --name ${IMAGE}_$*_python ${IMAGE}:$*_python cmake --build build --target test -- CTEST_OUTPUT_ON_FAILURE=1
-$(distro_java_targets): test_%_java: cache/%/docker_java.tar
-	${DOCKER_RUN_CMD} -t --name ${IMAGE}_$*_java ${IMAGE}:$*_java cmake --build build --target test -- CTEST_OUTPUT_ON_FAILURE=1
-$(distro_dotnet_targets): test_%_dotnet: cache/%/docker_dotnet.tar
-	${DOCKER_RUN_CMD} -t --name ${IMAGE}_$*_dotnet ${IMAGE}:$*_dotnet cmake --build build --target test -- CTEST_OUTPUT_ON_FAILURE=1
-
-##  INSTALL  ##
-.PHONY: install
-install: $(addprefix install_, $(DISTROS))
-
-distro_targets = $(addprefix install_, $(DISTROS))
-.PHONY: $(distro_targets)
-$(distro_targets): install_%: $(addprefix install_%_, $(LANGUAGES))
-
-lang_targets = $(addprefix install_, $(LANGUAGES))
-.PHONY: $(lang_targets)
-$(lang_targets): install_%: $(addsuffix _%, $(addprefix install_, $(DISTROS)))
-
-distro_cpp_targets = $(addprefix install_, $(addsuffix _cpp, $(DISTROS)))
-distro_python_targets = $(addprefix install_, $(addsuffix _python, $(DISTROS)))
-distro_java_targets = $(addprefix install_, $(addsuffix _java, $(DISTROS)))
-distro_dotnet_targets = $(addprefix install_, $(addsuffix _dotnet, $(DISTROS)))
-.PHONY: $(distro_cpp_targets) $(distro_python_targets) $(distro_java_targets) $(distro_dotnet_targets)
-$(distro_cpp_targets): install_%_cpp: cache/%/docker_install_cpp.tar
-$(distro_python_targets): install_%_python: cache/%/docker_install_python.tar
-$(distro_java_targets): install_%_java: cache/%/docker_install_java.tar
-$(distro_dotnet_targets): install_%_dotnet: cache/%/docker_install_dotnet.tar
-
-cache/%/docker_install_cpp.tar: docker/%/Dockerfile sample_cpp
-	@docker image rm -f ${IMAGE}:$*_install_cpp 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=install_cpp --tag ${IMAGE}:$*_install_cpp -f $< ..
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_install_cpp -o $@
-
-cache/%/docker_install_python.tar: docker/%/Dockerfile sample_python
-	@docker image rm -f ${IMAGE}:$*_install_python 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=install_python --tag ${IMAGE}:$*_install_python -f $< ..
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_install_python -o $@
-
-cache/%/docker_install_java.tar: docker/%/Dockerfile sample_java
-	@docker image rm -f ${IMAGE}:$*_install_java 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=install_java --tag ${IMAGE}:$*_install_java -f $< ..
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_install_java -o $@
-
-cache/%/docker_install_dotnet.tar: docker/%/Dockerfile sample_dotnet
-	@docker image rm -f ${IMAGE}:$*_install_dotnet 2>/dev/null
-	${DOCKER_BUILD_CMD} --target=install_dotnet --tag ${IMAGE}:$*_install_dotnet -f $< ..
-	@rm -f $@
-	mkdir -p cache/$*
-	docker save ${IMAGE}:$*_install_dotnet -o $@
-
-# DOCKER BASH INSTALL (debug)
-distro_cpp_targets = $(addprefix sh_install_, $(addsuffix _cpp, $(DISTROS)))
-.PHONY: $(distro_cpp_targets)
-distro_python_targets = $(addprefix sh_install_, $(addsuffix _python, $(DISTROS)))
-.PHONY: $(distro_python_targets)
-distro_java_targets = $(addprefix sh_install_, $(addsuffix _java, $(DISTROS)))
-.PHONY: $(distro_java_targets)
-distro_dotnet_targets = $(addprefix sh_install_, $(addsuffix _dotnet, $(DISTROS)))
-.PHONY: $(distro_dotnet_targets)
-
-$(distro_cpp_targets): sh_install_%_cpp: cache/%/docker_install_cpp.tar
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_install_cpp ${IMAGE}:$*_install_cpp /bin/sh
-$(distro_python_targets): sh_install_%_python: cache/%/docker_install_python.tar
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_install_python ${IMAGE}:$*_install_python /bin/sh
-$(distro_java_targets): sh_install_%_java: cache/%/docker_install_java.tar
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_install_java ${IMAGE}:$*_install_java /bin/sh
-$(distro_dotnet_targets): sh_install_%_dotnet: cache/%/docker_install_dotnet.tar
-	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$*_install_dotnet ${IMAGE}:$*_install_dotnet /bin/sh
-
-# TEST INSTALL#
-.PHONY: test_install
-test_install: $(addprefix test_install, $(DISTROS))
-
-distro_targets = $(addprefix test_install_, $(DISTROS))
-.PHONY: $(distro_targets)
-$(distro_targets): test_install_%: $(addprefix test_install_%_, cpp)
-
-distro_cpp_targets = $(addprefix test_install_, $(addsuffix _cpp, $(DISTROS)))
-distro_python_targets = $(addprefix test_install_, $(addsuffix _python, $(DISTROS)))
-distro_java_targets = $(addprefix test_install_, $(addsuffix _java, $(DISTROS)))
-distro_dotnet_targets = $(addprefix test_install_, $(addsuffix _dotnet, $(DISTROS)))
-.PHONY: $(distro_cpp_targets) $(distro_python_targets) $(distro_java_targets) $(distro_dotnet_targets)
-
-$(distro_cpp_targets): test_install_%_cpp: cache/%/docker_install_cpp.tar
-	${DOCKER_RUN_CMD} -t --name ${IMAGE}_$*_install_cpp ${IMAGE}:$*_install_cpp /bin/sh -c \
-		"cmake -H. -Bbuild; \
-		cmake --build build --target all; \
-		cmake --build build --target test; \
-		cmake --build build --target install"
-
-$(distro_python_targets): test_install_%_python: cache/%/docker_install_python.tar
-	${DOCKER_RUN_CMD} -t --name ${IMAGE}_$*_install_python ${IMAGE}:$*_install_python /bin/sh -c \
-		"./sample.py"
-
-$(distro_java_targets): test_install_%_java: cache/%/docker_install_java.tar
-	${DOCKER_RUN_CMD} -t --name ${IMAGE}_$*_install_java ${IMAGE}:$*_install_java /bin/sh -c \
-		"java sample.java"
-
-$(distro_dotnet_targets): test_install_%_dotnet: cache/%/docker_install_dotnet.tar
-	${DOCKER_RUN_CMD} -t --name ${IMAGE}_$*_install_dotnet ${IMAGE}:$*_install_dotnet /bin/sh -c \
-		"dotnet build; \
-		dotnet run --project sample.csproj"
+$(foreach stage,$(STAGES),$(eval $(call make-stage-target,$(stage))))
 
 # CLEAN
 targets = $(addprefix clean_, $(DISTROS))
 .PHONY: clean $(targets)
 clean: $(targets)
-	-rmdir cache
-$(targets): clean_%:
 	docker container prune -f
 	docker image prune -f
-	-docker image rm -f ${IMAGE}:$*_python_install 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_python_build 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_python_devel 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_python_env 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_java_install 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_java_build 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_java_devel 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_java_env 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_dotnet_install 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_dotnet_build 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_dotnet_devel 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_dotnet_env 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_cpp_install 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_cpp_build 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_cpp_devel 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_cpp_env 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_swig 2>/dev/null
-	-docker image rm -f ${IMAGE}:$*_base 2>/dev/null
-	-rm -f cache/$*/docker_python_install.tar
-	-rm -f cache/$*/docker_python_build.tar
-	-rm -f cache/$*/docker_python_devel.tar
-	-rm -f cache/$*/docker_python_env.tar
-	-rm -f cache/$*/docker_java_install.tar
-	-rm -f cache/$*/docker_java_build.tar
-	-rm -f cache/$*/docker_java_devel.tar
-	-rm -f cache/$*/docker_java_env.tar
-	-rm -f cache/$*/docker_dotnet_install.tar
-	-rm -f cache/$*/docker_dotnet_build.tar
-	-rm -f cache/$*/docker_dotnet_devel.tar
-	-rm -f cache/$*/docker_dotnet_env.tar
-	-rm -f cache/$*/docker_cpp_install.tar
-	-rm -f cache/$*/docker_cpp_build.tar
-	-rm -f cache/$*/docker_cpp_devel.tar
-	-rm -f cache/$*/docker_cpp_env.tar
-	-rm -f cache/$*/docker_swig.tar
-	-rm -f cache/$*/docker_base.tar
+	-rmdir cache
+$(targets): clean_%: $(addprefix clean_%_, $(PRESTAGES)) $(addprefix clean_%_, $(STAGES))
 	-rmdir cache/$*
 
 .PHONY: distclean
