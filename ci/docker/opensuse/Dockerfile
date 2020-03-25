@@ -10,76 +10,110 @@ RUN zypper update -y \
 ENV CC=gcc CXX=g++
 CMD [ "/bin/sh" ]
 
-
-
-# Add the library src to our build env
-FROM env AS cpp
-# Create lib directory
-WORKDIR /home/lib
-# Bundle lib source
-COPY . .
-# CMake version
-RUN cmake -version
-# CMake configure
-RUN cmake -S. -Bbuild
-# CMake build
-RUN cmake --build build --target all -v
-# CMake build
-RUN cmake --build build --target install
-
-
-
-FROM env AS python
-# Swig install
+FROM base AS swig
 RUN zypper update -y \
 && zypper install -y swig \
 && zypper clean -a
-# Python install
+
+################### C++
+FROM cmake-swig:opensuse_base AS env
+RUN cmake -version
+
+FROM env AS devel
+WORKDIR /home/lib
+COPY . .
+
+FROM devel AS build
+RUN cmake -S. -Bbuild
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM build AS test
+RUN cmake --build build --target test
+
+FROM env AS install_env
+COPY --from=build /usr/local /usr/local/
+
+FROM install_env AS install_devel
+WORKDIR /home/sample
+COPY ci/sample .
+
+FROM install_devel AS install_build
+RUN cmake -S. -Bbuild
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM install_build AS install_test
+RUN cmake --build build --target test
+
+##################### Python
+FROM cmake-swig:opensuse_swig AS env
 RUN zypper update -y \
 && zypper install -y python3 python3-pip python3-devel \
 && zypper clean -a
-# Create lib directory
+
+FROM env AS devel
 WORKDIR /home/lib
-# Bundle lib source
 COPY . .
-# CMake configure
+
+FROM devel AS build
 RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON
-# CMake build
 RUN cmake --build build --target all -v
-# CMake build
 RUN cmake --build build --target install
 
+FROM build AS test
+RUN cmake --build build --target test
 
+FROM env AS install_env
+COPY --from=build /usr/local /usr/local/
 
-FROM env AS java
-# Swig install
-RUN zypper update -y \
-&& zypper install -y swig \
-&& zypper clean -a
-# Java install
+FROM install_env AS install_devel
+WORKDIR /home/sample
+COPY ci/sample .
+
+FROM install_devel AS install_build
+RUN cmake -S. -Bbuild
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM install_build AS install_test
+RUN cmake --build build --target test
+
+###################### JAVA
+FROM cmake-swig:opensuse_swig AS env
 RUN zypper update -y \
 && zypper install -y java-1_8_0-openjdk-devel maven \
 && zypper clean -a
-# Create lib directory
+
+FROM env AS devel
 WORKDIR /home/lib
-# Bundle lib source
 COPY . .
-# CMake configure
+
+FROM devel AS build
 RUN cmake -S. -Bbuild -DBUILD_JAVA=ON
-# CMake build
 RUN cmake --build build --target all -v
-# CMake build
 RUN cmake --build build --target install
 
+FROM build AS test
+RUN cmake --build build --target test
 
+FROM env AS install_env
+COPY --from=build /usr/local /usr/local/
 
+FROM install_env AS install_devel
+WORKDIR /home/sample
+COPY ci/sample .
 
-FROM env AS dotnet
-# Swig install
-RUN zypper update -y \
-&& zypper install -y swig \
-&& zypper clean -a
-# .Net install
+FROM install_devel AS install_build
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM install_build AS install_test
+RUN cmake --build build --target test
+
+###################### dotnet
+FROM cmake-swig:opensuse_swig AS env
 RUN zypper update -y \
 && zypper install -y wget tar libicu-devel
 RUN dotnet_sdk_version=3.1.102 \
@@ -92,23 +126,30 @@ RUN dotnet_sdk_version=3.1.102 \
 && rm dotnet.tar.gz
 # Trigger first run experience by running arbitrary cmd
 RUN dotnet --info
-# Create lib directory
+
+FROM env AS devel
 WORKDIR /home/lib
-# Bundle lib source
 COPY . .
-# CMake configure
+
+FROM devel AS build
 RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
-# CMake build
 RUN cmake --build build --target all -v
-# CMake build
 RUN cmake --build build --target install
 
+FROM build AS test
+RUN cmake --build build --target test
 
+FROM env AS install_env
+COPY --from=build /usr/local /usr/local/
 
-# Create an install image
-FROM env AS install
-# Copy lib from devel to prod
-COPY --from=cpp /usr/local /usr/local/
-# Copy  sample
+FROM install_env AS install_devel
 WORKDIR /home/sample
 COPY ci/sample .
+
+FROM install_devel AS install_build
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM install_build AS install_test
+RUN cmake --build build --target test

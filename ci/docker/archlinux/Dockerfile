@@ -1,92 +1,135 @@
 # Create a virtual environment with all tools installed
 # ref: https://hub.docker.com/_/archlinux/
-FROM archlinux/base AS env
+FROM archlinux/base AS base
 LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
 ENV PATH=/usr/local/bin:$PATH
 RUN pacman -Syu --noconfirm git base-devel cmake
 CMD [ "/bin/sh" ]
 
+FROM base AS swig
+RUN pacman -Syu --noconfirm swig
 
-
-# Add the library src to our build env
-FROM env AS cpp
-# Create lib directory
-WORKDIR /home/lib
-# Bundle lib source
-COPY . .
-# CMake version
+################### C++
+FROM cmake-swig:archlinux_base AS env
 RUN cmake -version
-# CMake configure
+
+FROM env AS devel
+WORKDIR /home/lib
+COPY . .
+
+FROM devel AS build
 RUN cmake -S. -Bbuild
-# CMake build
 RUN cmake --build build --target all -v
-# CMake build
 RUN cmake --build build --target install
 
+FROM build AS test
+RUN cmake --build build --target test
 
+FROM env AS install_env
+COPY --from=build /usr/local /usr/local/
 
-# Add the library src to our build env
-FROM env AS python
-# Swig install
-RUN pacman -Syu --noconfirm swig
-# Python install
-RUN pacman -Syu --noconfirm python python-pip
-# Create lib directory
-WORKDIR /home/lib
-# Bundle lib source
-COPY . .
-# CMake configure
-RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON
-# CMake build
-RUN cmake --build build --target all -v
-# CMake build
-RUN cmake --build build --target install
-
-
-
-# Add the library src to our build env
-FROM env AS java
-# Swig install
-RUN pacman -Syu --noconfirm swig
-# Java install
-RUN pacman -Syu --noconfirm jdk-openjdk maven
-# Create lib directory
-WORKDIR /home/lib
-# Bundle lib source
-COPY . .
-# CMake configure
-RUN cmake -S. -Bbuild -DBUILD_JAVA=ON
-# CMake build
-RUN cmake --build build --target all -v
-# CMake build
-RUN cmake --build build --target install
-
-
-
-# Add the library src to our build env
-FROM env AS dotnet
-# Swig install
-RUN pacman -Syu --noconfirm swig
-# .Net install
-RUN pacman -Syu --noconfirm dotnet-sdk
-# Create lib directory
-WORKDIR /home/lib
-# Bundle lib source
-COPY . .
-# CMake configure
-RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
-# CMake build
-RUN cmake --build build --target all -v
-# CMake build
-RUN cmake --build build --target install
-
-
-
-# Create an install image
-FROM env AS install_cpp
-# Copy lib from devel to prod
-COPY --from=cpp /usr/local /usr/local/
-# Copy  sample
+FROM install_env AS install_devel
 WORKDIR /home/sample
 COPY ci/sample .
+
+FROM install_devel AS install_build
+RUN cmake -S. -Bbuild
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM install_build AS install_test
+RUN cmake --build build --target test
+
+##################### Python
+FROM cmake-swig:archlinux_swig AS env
+RUN pacman -Syu --noconfirm python python-pip
+
+FROM env AS devel
+WORKDIR /home/lib
+COPY . .
+
+FROM devel AS build
+RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM build AS test
+RUN cmake --build build --target test
+
+FROM env AS install_env
+COPY --from=build /usr/local /usr/local/
+
+FROM install_env AS install_devel
+WORKDIR /home/sample
+COPY ci/sample .
+
+FROM install_devel AS install_build
+RUN cmake -S. -Bbuild
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM install_build AS install_test
+RUN cmake --build build --target test
+
+###################### JAVA
+FROM cmake-swig:archlinux_swig AS env
+RUN pacman -Syu --noconfirm jdk-openjdk maven
+
+FROM env AS devel
+WORKDIR /home/lib
+COPY . .
+
+FROM devel AS build
+RUN cmake -S. -Bbuild -DBUILD_JAVA=ON
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM build AS test
+RUN cmake --build build --target test
+
+FROM env AS install_env
+COPY --from=build /usr/local /usr/local/
+
+FROM install_env AS install_devel
+WORKDIR /home/sample
+COPY ci/sample .
+
+FROM install_devel AS install_build
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM install_build AS install_test
+RUN cmake --build build --target test
+
+###################### dotnet
+FROM cmake-swig:archlinux_swig AS env
+RUN pacman -Syu --noconfirm dotnet-sdk
+
+FROM env AS devel
+WORKDIR /home/lib
+COPY . .
+
+FROM devel AS build
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM build AS test
+RUN cmake --build build --target test
+
+FROM env AS install_env
+COPY --from=build /usr/local /usr/local/
+
+FROM install_env AS install_devel
+WORKDIR /home/sample
+COPY ci/sample .
+
+FROM install_devel AS install_build
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install
+
+FROM install_build AS install_test
+RUN cmake --build build --target test
