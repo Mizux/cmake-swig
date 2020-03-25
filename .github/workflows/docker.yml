@@ -1,4 +1,4 @@
-name: Docker CI
+name: Docker
 
 on: [push, pull_request]
 
@@ -8,116 +8,144 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build env image
-      run: make --directory=ci env_alpine
+      run: make --directory=ci alpine_env
+    - name: Build devel project
+      run: make --directory=ci alpine_devel
     - name: Build project
-      run: make --directory=ci devel_alpine
+      run: make --directory=ci alpine_build
     - name: Test C++
-      run: make --directory=ci test_alpine_cpp
+      run: make --directory=ci alpine_cpp_test
     - name: Test Python
-      run: make --directory=ci test_alpine_python
+      run: make --directory=ci alpine_python_test
     - name: Test Java
-      run: make --directory=ci test_alpine_java
+      run: make --directory=ci alpine_java_test
     - name: Test .Net
-      run: make --directory=ci test_alpine_dotnet
+      run: make --directory=ci alpine_dotnet_test
+    - name: Test Install project
+      run: make --directory=ci alpine_install_test
 
   Archlinux:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build env image
-      run: make --directory=ci env_archlinux
+      run: make --directory=ci archlinux_env
+    - name: Build devel project
+      run: make --directory=ci archlinux_devel
     - name: Build project
-      run: make --directory=ci devel_archlinux
+      run: make --directory=ci archlinux_build
     - name: Test C++
-      run: make --directory=ci test_archlinux_cpp
+      run: make --directory=ci archlinux_cpp_test
     - name: Test Python
-      run: make --directory=ci test_archlinux_python
+      run: make --directory=ci archlinux_python_test
     - name: Test Java
-      run: make --directory=ci test_archlinux_java
+      run: make --directory=ci archlinux_java_test
     - name: Test .Net
-      run: make --directory=ci test_archlinux_dotnet
+      run: make --directory=ci archlinux_dotnet_test
+    - name: Test Install project
+      run: make --directory=ci archlinux_install_test
 
   Centos:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build env image
-      run: make --directory=ci env_centos
+      run: make --directory=ci centos_env
+    - name: Build devel project
+      run: make --directory=ci centos_devel
     - name: Build project
-      run: make --directory=ci devel_centos
+      run: make --directory=ci centos_build
     - name: Test C++
-      run: make --directory=ci test_centos_cpp
+      run: make --directory=ci centos_cpp_test
     - name: Test Python
-      run: make --directory=ci test_centos_python
+      run: make --directory=ci centos_python_test
     - name: Test Java
-      run: make --directory=ci test_centos_java
+      run: make --directory=ci centos_java_test
     - name: Test .Net
-      run: make --directory=ci test_centos_dotnet
+      run: make --directory=ci centos_dotnet_test
+    - name: Test Install project
+      run: make --directory=ci centos_install_test
 
   Debian:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build env image
-      run: make --directory=ci env_debian
+      run: make --directory=ci debian_env
+    - name: Build devel project
+      run: make --directory=ci debian_devel
     - name: Build project
-      run: make --directory=ci devel_debian
+      run: make --directory=ci debian_build
     - name: Test C++
-      run: make --directory=ci test_debian_cpp
+      run: make --directory=ci debian_cpp_test
     - name: Test Python
-      run: make --directory=ci test_debian_python
+      run: make --directory=ci debian_python_test
     - name: Test Java
-      run: make --directory=ci test_debian_java
+      run: make --directory=ci debian_java_test
     - name: Test .Net
-      run: make --directory=ci test_debian_dotnet
+      run: make --directory=ci debian_dotnet_test
+    - name: Test Install project
+      run: make --directory=ci debian_install_test
 
   Fedora:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build env image
-      run: make --directory=ci env_fedora
+      run: make --directory=ci fedora_env
+    - name: Build devel project
+      run: make --directory=ci fedora_devel
     - name: Build project
-      run: make --directory=ci devel_fedora
+      run: make --directory=ci fedora_build
     - name: Test C++
-      run: make --directory=ci test_fedora_cpp
+      run: make --directory=ci fedora_cpp_test
     - name: Test Python
-      run: make --directory=ci test_fedora_python
+      run: make --directory=ci fedora_python_test
     - name: Test Java
-      run: make --directory=ci test_fedora_java
+      run: make --directory=ci fedora_java_test
     - name: Test .Net
-      run: make --directory=ci test_fedora_dotnet
+      run: make --directory=ci fedora_dotnet_test
+    - name: Test Install project
+      run: make --directory=ci fedora_install_test
 
   OpenSuse:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build env image
-      run: make --directory=ci env_opensuse
+      run: make --directory=ci opensuse_env
+    - name: Build devel project
+      run: make --directory=ci opensuse_devel
     - name: Build project
-      run: make --directory=ci devel_opensuse
+      run: make --directory=ci opensuse_build
     - name: Test C++
-      run: make --directory=ci test_opensuse_cpp
+      run: make --directory=ci opensuse_cpp_test
     - name: Test Python
-      run: make --directory=ci test_opensuse_python
+      run: make --directory=ci opensuse_python_test
     - name: Test Java
-      run: make --directory=ci test_opensuse_java
+      run: make --directory=ci opensuse_java_test
     - name: Test .Net
-      run: make --directory=ci test_opensuse_dotnet
+      run: make --directory=ci opensuse_dotnet_test
+    - name: Test Install project
+      run: make --directory=ci opensuse_install_test
 
   Ubuntu:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build env image
-      run: make --directory=ci env_ubuntu
+      run: make --directory=ci ubuntu_env
+    - name: Build devel project
+      run: make --directory=ci ubuntu_devel
     - name: Build project
-      run: make --directory=ci devel_ubuntu
+      run: make --directory=ci ubuntu_build
     - name: Test C++
-      run: make --directory=ci test_ubuntu_cpp
+      run: make --directory=ci ubuntu_cpp_test
     - name: Test Python
-      run: make --directory=ci test_ubuntu_python
+      run: make --directory=ci ubuntu_python_test
     - name: Test Java
-      run: make --directory=ci test_ubuntu_java
+      run: make --directory=ci ubuntu_java_test
     - name: Test .Net
-      run: make --directory=ci test_ubuntu_dotnet
+      run: make --directory=ci ubuntu_dotnet_test
+    - name: Test Install project
+      run: make --directory=ci ubuntu_install_test
