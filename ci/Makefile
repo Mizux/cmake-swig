@@ -176,7 +176,7 @@ java_targets_$1 = $(addsuffix _java_$1, $(DISTROS))
 python_targets_$1 = $(addsuffix _python_$1, $(DISTROS))
 .PHONY: $$(cpp_targets_$1) $$(dotnet_targets_$1) $$(java_targets_$1) $$(python_targets_$1)
 
-$$(cpp_targets_$1): %_cpp_$1: docker/%/cpp.Dockerfile
+$$(cpp_targets_$1): %_cpp_$1: docker/%/cpp.Dockerfile %_base
 	#@docker image rm -f ${IMAGE}:$$*_cpp_$1 2>/dev/null
 	${DOCKER_BUILD_CMD} --target=$1 --tag ${IMAGE}:$$*_cpp_$1 -f $$< ..
 $$(dotnet_targets_$1): %_dotnet_$1: docker/%/dotnet.Dockerfile %_swig
