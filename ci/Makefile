@@ -243,13 +243,13 @@ java_targets_$1 = $(addprefix sh_, $(addsuffix _java_$1, $(DISTROS)))
 python_targets_$1 = $(addprefix sh_, $(addsuffix _python_$1, $(DISTROS)))
 .PHONY: $$(cpp_targets_$1) $$(dotnet_targets_$1) $$(java_targets_$1) $$(python_targets_$1)
 
-$$(cpp_targets): sh_%_cpp_$1: %_cpp_$1
+$$(cpp_targets_$1): sh_%_cpp_$1: %_cpp_$1
 	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$$*_cpp_$1 ${IMAGE}:$$*_cpp_$1 /bin/sh
-$$(dotnet_targets): sh_%_dotnet_$1: %_dotnet_$1
+$$(dotnet_targets_$1): sh_%_dotnet_$1: %_dotnet_$1
 	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$$*_dotnet_$1 ${IMAGE}:$$*_dotnet_$1 /bin/sh
-$$(java_targets): sh_%_java_$1: %_java_$1
+$$(java_targets_$1): sh_%_java_$1: %_java_$1
 	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$$*_java_$1 ${IMAGE}:$$*_java_$1 /bin/sh
-$$(python_targets): sh_%_python_$1: %_python_$1
+$$(python_targets_$1): sh_%_python_$1: %_python_$1
 	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$$*_python_$1 ${IMAGE}:$$*_python_$1 /bin/sh
 
 # Clean $1 docker images.
