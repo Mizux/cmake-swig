@@ -9,6 +9,7 @@ jobs:
       matrix:
         distro: [alpine, archlinux, centos, debian, fedora, opensuse, ubuntu]
         lang: [cpp, python, dotnet, java]
+      fail-fast: false
     env:
       DISTRO: ${{ matrix.distro }}
       LANG: ${{ matrix.lang }}
