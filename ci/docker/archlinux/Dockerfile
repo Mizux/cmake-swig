@@ -5,7 +5,7 @@ LABEL maintainer="mizux.dev@gmail.com"
 # Install system build dependencies
 ENV PATH=/usr/local/bin:$PATH
 RUN pacman -Syu --noconfirm git base-devel cmake
-CMD [ "/bin/sh" ]
+CMD [ "/bin/bash" ]
 
 FROM base AS swig
 RUN pacman -Syu --noconfirm swig

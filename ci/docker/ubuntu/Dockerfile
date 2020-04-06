@@ -13,7 +13,7 @@ RUN wget "https://cmake.org/files/v3.16/cmake-3.16.4-Linux-x86_64.sh" \
 && chmod a+x cmake-3.16.4-Linux-x86_64.sh \
 && ./cmake-3.16.4-Linux-x86_64.sh --prefix=/usr/local/ --skip-license \
 && rm cmake-3.16.4-Linux-x86_64.sh
-CMD [ "/bin/sh" ]
+CMD [ "/usr/bin/bash" ]
 
 FROM base AS swig
 RUN apt-get update -qq \

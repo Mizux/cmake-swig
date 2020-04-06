@@ -9,7 +9,7 @@ RUN dnf -y update \
 && dnf -y groupinstall "Development Tools" \
 && dnf -y install gcc-c++ cmake \
 && dnf clean all
-CMD [ "/bin/sh" ]
+CMD [ "/usr/bin/bash" ]
 
 FROM base AS swig
 RUN dnf -y update \
