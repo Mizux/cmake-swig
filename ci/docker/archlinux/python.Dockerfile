@@ -18,7 +18,7 @@ COPY --from=build /usr/local /usr/local/
 
 FROM install_env AS install_devel
 WORKDIR /home/sample
-COPY ci/sample .
+COPY ci/samples/python .
 
 FROM install_devel AS install_build
 RUN cmake -S. -Bbuild

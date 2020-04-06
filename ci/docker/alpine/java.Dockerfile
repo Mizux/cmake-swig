@@ -19,12 +19,10 @@ COPY --from=build /usr/local /usr/local/
 
 FROM install_env AS install_devel
 WORKDIR /home/sample
-COPY ci/sample .
+COPY ci/samples/java .
 
 FROM install_devel AS install_build
-RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
-RUN cmake --build build --target all -v
-RUN cmake --build build --target install
+RUN mvn compile
 
 FROM install_build AS install_test
-RUN cmake --build build --target test
+RUN mvn test
