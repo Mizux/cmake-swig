@@ -5,20 +5,41 @@ using Mizux.CMakeSwig.Foo;
 using Mizux.CMakeSwig.Bar;
 using Mizux.CMakeSwig.FooBar;
 
-namespace Mizux.Sample {
+namespace Mizux.Sample.Tests {
   public class FooTest {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void GetterTest(bool callGC) {
+    public void IntegerTest(bool callGC) {
       // Instantiate Foo
-      Foo obj = new Foo(42);
+      Foo obj = new Foo();
 
       if (callGC) {
         GC.Collect();
       }
 
-      Assert.Equal(42, obj.GetValue());
+      obj.setInt(42);
+      Assert.Equal(42, obj.getInt());
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Integer64Test(bool callGC) {
+      // Instantiate Foo
+      Foo obj = new Foo();
+
+      if (callGC) {
+        GC.Collect();
+      }
+
+      long a = 2147483647;
+      obj.setInt64(a);
+      Assert.Equal(a, obj.getInt64());
+
+      long b = 2147483648;
+      obj.setInt64(b);
+      Assert.Equal(b, obj.getInt64());
     }
   }
 
@@ -26,15 +47,36 @@ namespace Mizux.Sample {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void GetterTest(bool callGC) {
+    public void IntegerTest(bool callGC) {
       // Instantiate Bar
-      Bar obj = new Bar(42);
+      Bar obj = new Bar();
 
       if (callGC) {
         GC.Collect();
       }
 
-      Assert.Equal(42, obj.GetValue());
+      obj.setInt(42);
+      Assert.Equal(42, obj.getInt());
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Integer64Test(bool callGC) {
+      // Instantiate Bar
+      Bar obj = new Bar();
+
+      if (callGC) {
+        GC.Collect();
+      }
+
+      long a = 2147483647;
+      obj.setInt64(a);
+      Assert.Equal(a, obj.getInt64());
+
+      long b = 2147483648;
+      obj.setInt64(b);
+      Assert.Equal(b, obj.getInt64());
     }
   }
 
@@ -42,15 +84,35 @@ namespace Mizux.Sample {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void GetterTest(bool callGC) {
+    public void IntegerTest(bool callGC) {
       // Instantiate FooBar
-      FooBar obj = new FooBar(42);
+      FooBar obj = new FooBar();
 
       if (callGC) {
         GC.Collect();
       }
 
-      Assert.Equal(42, obj.GetValue());
+      obj.setFooInt(42);
+      obj.setBarFooInt(97);
+      Assert.Equal(42+97, obj.getInt());
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Integer64Test(bool callGC) {
+      // Instantiate FooBar
+      FooBar obj = new FooBar();
+
+      if (callGC) {
+        GC.Collect();
+      }
+
+      long a = 1073741824;
+      long b = 1073741825;
+      obj.setFooInt64(a);
+      obj.setBarInt64(b);
+      Assert.Equal(2147483649, obj.getInt64());
     }
   }
-} // namespace Mizux.Sample
+} // namespace Mizux.Sample.Tests
