@@ -8,6 +8,9 @@ swig_add_library(java_FooBar
   OUTPUT_DIR ${PROJECT_BINARY_DIR}/java/net/mizux/cmakeswig/foobar
 	SOURCES	foobar.i)
 
-set_property(TARGET java_FooBar PROPERTY SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON)
+set_target_properties(java_FooBar PROPERTIES
+  SWIG_INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/java
+  SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON
+  POSITION_INDEPENDENT_CODE ON)
 target_include_directories(java_FooBar PRIVATE ${JNI_INCLUDE_DIRS})
 target_link_libraries(java_FooBar PRIVATE CMakeSwig::FooBar)
