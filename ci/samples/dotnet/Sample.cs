@@ -18,8 +18,8 @@ namespace Mizux.Sample.Tests {
         GC.Collect();
       }
 
-      obj.setInt(42);
-      Assert.Equal(42, obj.getInt());
+      obj.SetInt(42);
+      Assert.Equal(42, obj.GetInt());
     }
 
     [Theory]
@@ -34,12 +34,12 @@ namespace Mizux.Sample.Tests {
       }
 
       long a = 2147483647;
-      obj.setInt64(a);
-      Assert.Equal(a, obj.getInt64());
+      obj.SetInt64(a);
+      Assert.Equal(a, obj.GetInt64());
 
       long b = 2147483648;
-      obj.setInt64(b);
-      Assert.Equal(b, obj.getInt64());
+      obj.SetInt64(b);
+      Assert.Equal(b, obj.GetInt64());
     }
   }
 
@@ -55,8 +55,8 @@ namespace Mizux.Sample.Tests {
         GC.Collect();
       }
 
-      obj.setInt(42);
-      Assert.Equal(42, obj.getInt());
+      obj.SetInt(42);
+      Assert.Equal(42, obj.GetInt());
     }
 
     [Theory]
@@ -71,12 +71,12 @@ namespace Mizux.Sample.Tests {
       }
 
       long a = 2147483647;
-      obj.setInt64(a);
-      Assert.Equal(a, obj.getInt64());
+      obj.SetInt64(a);
+      Assert.Equal(a, obj.GetInt64());
 
       long b = 2147483648;
-      obj.setInt64(b);
-      Assert.Equal(b, obj.getInt64());
+      obj.SetInt64(b);
+      Assert.Equal(b, obj.GetInt64());
     }
   }
 
@@ -92,9 +92,9 @@ namespace Mizux.Sample.Tests {
         GC.Collect();
       }
 
-      obj.setFooInt(42);
-      obj.setBarFooInt(97);
-      Assert.Equal(42+97, obj.getInt());
+      obj.SetFooInt(42);
+      obj.SetBarInt(97);
+      Assert.Equal(42+97, obj.GetInt());
     }
 
     [Theory]
@@ -110,9 +110,9 @@ namespace Mizux.Sample.Tests {
 
       long a = 1073741824;
       long b = 1073741825;
-      obj.setFooInt64(a);
-      obj.setBarInt64(b);
-      Assert.Equal(2147483649, obj.getInt64());
+      obj.SetFooInt64(a);
+      obj.SetBarInt64(b);
+      Assert.Equal(2147483649, obj.GetInt64());
     }
   }
 } // namespace Mizux.Sample.Tests
