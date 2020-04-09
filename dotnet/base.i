@@ -1,4 +1,5 @@
 %include "stdint.i"
+%include "typemaps.i"
 
 #if defined(SWIGCSHARP)
 #if defined(SWIGWORDSIZE64)
