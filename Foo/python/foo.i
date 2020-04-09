@@ -17,9 +17,16 @@
 %unignore foo::Foo;
 %unignore foo::Foo::hello(int);
 %unignore foo::Foo::hello(int64_t);
-%rename ("toString") foo::Foo::operator();
+
+%rename ("get_int") foo::Foo::getInt();
+%rename ("set_int") foo::Foo::setInt(int);
+
+%rename ("get_int64") foo::Foo::getInt64();
+%rename ("set_int64") foo::Foo::setInt64(int64_t);
+
+%rename ("__str__") foo::Foo::operator();
 
 // Process symbols in header
 %include "foo/Foo.hpp"
 
-%rename("%s") ""; // unignore all
+%unignore ""; // unignore all
