@@ -18,11 +18,11 @@
 %unignore foobar::FooBar::hello(int);
 %unignore foobar::FooBar::hello(int64_t);
 
-%rename ("get_int") foobar::FooBar::getInt();
+%rename ("get_int") foobar::FooBar::getInt() const;
 %rename ("set_int") foobar::FooBar::setBarInt(int);
 %rename ("set_int") foobar::FooBar::setFooInt(int);
 
-%rename ("get_int64") foobar::FooBar::getInt64();
+%rename ("get_int64") foobar::FooBar::getInt64() const;
 %rename ("set_int64") foobar::FooBar::setBarInt64(int64_t);
 %rename ("set_int64") foobar::FooBar::setFooInt64(int64_t);
 

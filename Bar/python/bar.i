@@ -18,10 +18,10 @@
 %unignore bar::Bar::hello(int);
 %unignore bar::Bar::hello(int64_t);
 
-%rename ("get_int") bar::Bar::getInt();
+%rename ("get_int") bar::Bar::getInt() const;
 %rename ("set_int") bar::Bar::setInt(int);
 
-%rename ("get_int64") bar::Bar::getInt64();
+%rename ("get_int64") bar::Bar::getInt64() const;
 %rename ("set_int64") bar::Bar::setInt64(int64_t);
 
 %rename ("__str__") bar::Bar::operator();

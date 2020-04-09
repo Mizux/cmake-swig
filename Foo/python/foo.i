@@ -18,10 +18,10 @@
 %unignore foo::Foo::hello(int);
 %unignore foo::Foo::hello(int64_t);
 
-%rename ("get_int") foo::Foo::getInt();
+%rename ("get_int") foo::Foo::getInt() const;
 %rename ("set_int") foo::Foo::setInt(int);
 
-%rename ("get_int64") foo::Foo::getInt64();
+%rename ("get_int64") foo::Foo::getInt64() const;
 %rename ("set_int64") foo::Foo::setInt64(int64_t);
 
 %rename ("__str__") foo::Foo::operator();
