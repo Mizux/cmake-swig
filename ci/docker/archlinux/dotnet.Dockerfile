@@ -2,7 +2,7 @@ FROM cmake-swig:archlinux_swig AS env
 RUN pacman -Syu --noconfirm dotnet-sdk
 
 FROM env AS devel
-WORKDIR /home/lib
+WORKDIR /home/project
 COPY . .
 
 FROM devel AS build

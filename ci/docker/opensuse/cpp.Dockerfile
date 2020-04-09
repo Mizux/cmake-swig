@@ -2,7 +2,7 @@ FROM cmake-swig:opensuse_base AS env
 RUN cmake -version
 
 FROM env AS devel
-WORKDIR /home/lib
+WORKDIR /home/project
 COPY . .
 
 FROM devel AS build
