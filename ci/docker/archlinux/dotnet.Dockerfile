@@ -1,5 +1,7 @@
 FROM cmake-swig:archlinux_swig AS env
 RUN pacman -Syu --noconfirm dotnet-sdk
+# Trigger first run experience by running arbitrary cmd
+RUN dotnet --info
 
 FROM env AS devel
 WORKDIR /home/project

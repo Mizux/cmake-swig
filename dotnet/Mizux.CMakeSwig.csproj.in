@@ -63,8 +63,8 @@
     <RuntimeOsx Include="@DOTNET_PACKAGES_DIR@/Mizux.CMakeSwig.runtime.osx-x64.*.nupkg"/>
     <RuntimeWin Include="@DOTNET_PACKAGES_DIR@/Mizux.CMakeSwig.runtime.win-x64.*.nupkg"/>
     <PackageReference Include="Mizux.CMakeSwig.runtime.linux-x64" Version="@PROJECT_VERSION@" Condition="Exists('@(RuntimeLinux)')"/>
-    <PackageReference Include="Mizux.CMakeSwig.runtime.osx-x64" Version="@PROJECT_VERSION@" Condition="Exists('@(RuntimeOsx)')"/>
-    <PackageReference Include="Mizux.CMakeSwig.runtime.win-x64" Version="@PROJECT_VERSION@" Condition="Exists('@(RuntimeWin)')"/>
+    <PackageReference Include="Mizux.CMakeSwig.runtime.osx-x64"   Version="@PROJECT_VERSION@" Condition="Exists('@(RuntimeOsx)')"  />
+    <PackageReference Include="Mizux.CMakeSwig.runtime.win-x64"   Version="@PROJECT_VERSION@" Condition="Exists('@(RuntimeWin)')"  />
   </ItemGroup>
 </Project>
 
