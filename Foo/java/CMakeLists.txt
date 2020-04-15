@@ -3,9 +3,9 @@ set_property(SOURCE foo.i PROPERTY COMPILE_OPTIONS
   -package net.mizux.cmakeswig.foo)
 swig_add_library(java_Foo
   TYPE SHARED
-	LANGUAGE java
+  LANGUAGE java
   OUTPUT_DIR ${PROJECT_BINARY_DIR}/java/net/mizux/cmakeswig/foo
-	SOURCES	foo.i)
+  SOURCES foo.i)
 
 set_target_properties(java_Foo PROPERTIES
   SWIG_INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/java

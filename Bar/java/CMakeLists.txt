@@ -1,12 +1,11 @@
 set_property(SOURCE bar.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE bar.i PROPERTY COMPILE_OPTIONS
-  -package net.mizux.cmakeswig.bar
-  )
+  -package net.mizux.cmakeswig.bar)
 swig_add_library(java_Bar
   TYPE SHARED
-	LANGUAGE java
+  LANGUAGE java
   OUTPUT_DIR ${PROJECT_BINARY_DIR}/java/net/mizux/cmakeswig/bar
-	SOURCES	bar.i)
+  SOURCES bar.i)
 
 set_target_properties(java_Bar PROPERTIES
   SWIG_INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/java

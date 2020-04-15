@@ -1,12 +1,11 @@
 set_property(SOURCE foobar.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE foobar.i PROPERTY COMPILE_OPTIONS
-  -package net.mizux.cmakeswig.foobar
-  )
+  -package net.mizux.cmakeswig.foobar)
 swig_add_library(java_FooBar
   TYPE SHARED
-	LANGUAGE java
+  LANGUAGE java
   OUTPUT_DIR ${PROJECT_BINARY_DIR}/java/net/mizux/cmakeswig/foobar
-	SOURCES	foobar.i)
+  SOURCES foobar.i)
 
 set_target_properties(java_FooBar PROPERTIES
   SWIG_INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/java
