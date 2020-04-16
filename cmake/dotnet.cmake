@@ -65,7 +65,7 @@ else()
 endif()
 set(CMAKE_SWIG_DOTNET_NATIVE ${CMAKE_SWIG_DOTNET}.runtime.${RUNTIME_IDENTIFIER})
 
-file(GENERATE OUTPUT dotnet/$<$<BOOL:${GENERATOR_IS_MULTI_CONFIG}>:$<CONFIG>/>replace_runtime.cmake
+file(GENERATE OUTPUT dotnet/$<CONFIG>/replace_runtime.cmake
   CONTENT
   "FILE(READ ${PROJECT_SOURCE_DIR}/dotnet/${CMAKE_SWIG_DOTNET}.runtime.csproj.in input)
   STRING(REPLACE \"@PROJECT_VERSION@\" \"${PROJECT_VERSION}\" input \"\${input}\")
@@ -82,7 +82,7 @@ file(GENERATE OUTPUT dotnet/$<$<BOOL:${GENERATOR_IS_MULTI_CONFIG}>:$<CONFIG>/>re
 add_custom_command(
   OUTPUT dotnet/${CMAKE_SWIG_DOTNET_NATIVE}/${CMAKE_SWIG_DOTNET_NATIVE}.csproj
   COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SWIG_DOTNET_NATIVE}
-  COMMAND ${CMAKE_COMMAND} -P $<$<BOOL:${GENERATOR_IS_MULTI_CONFIG}>:$<CONFIG>/>replace_runtime.cmake
+  COMMAND ${CMAKE_COMMAND} -P ./$<CONFIG>/replace_runtime.cmake
   WORKING_DIRECTORY dotnet
   )
 
@@ -97,7 +97,7 @@ add_custom_target(dotnet_native
   )
 
 # Pure .Net Package
-file(GENERATE OUTPUT dotnet/$<$<BOOL:${GENERATOR_IS_MULTI_CONFIG}>:$<CONFIG>/>replace.cmake
+file(GENERATE OUTPUT dotnet/$<CONFIG>/replace.cmake
   CONTENT
   "FILE(READ ${PROJECT_SOURCE_DIR}/dotnet/${CMAKE_SWIG_DOTNET}.csproj.in input)
   STRING(REPLACE \"@PROJECT_VERSION@\" \"${PROJECT_VERSION}\" input \"\${input}\")
@@ -109,7 +109,7 @@ file(GENERATE OUTPUT dotnet/$<$<BOOL:${GENERATOR_IS_MULTI_CONFIG}>:$<CONFIG>/>re
 add_custom_command(
   OUTPUT dotnet/${CMAKE_SWIG_DOTNET}/${CMAKE_SWIG_DOTNET}.csproj
   COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SWIG_DOTNET}
-  COMMAND ${CMAKE_COMMAND} -P $<$<BOOL:${GENERATOR_IS_MULTI_CONFIG}>:$<CONFIG>/>replace.cmake
+  COMMAND ${CMAKE_COMMAND} -P ./$<CONFIG>/replace.cmake
   WORKING_DIRECTORY dotnet
   )
 
