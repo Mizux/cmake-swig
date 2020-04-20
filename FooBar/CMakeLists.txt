@@ -1,21 +1,17 @@
 add_library(FooBar "")
+
 target_sources(FooBar
-  PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/foobar/FooBar.hpp>
-    $<INSTALL_INTERFACE:include/foobar/FooBar.hpp>
   PRIVATE
-    src/FooBar.cpp
-  )
+    include/foobar/FooBar.hpp
+    src/FooBar.cpp)
 target_include_directories(FooBar
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-  )
+    $<INSTALL_INTERFACE:include>)
 target_compile_features(FooBar PUBLIC cxx_std_11)
 set_target_properties(FooBar PROPERTIES
   VERSION ${PROJECT_VERSION}
-  PUBLIC_HEADER $<TARGET_PROPERTY:FooBar,INTERFACE_SOURCES>
-  )
+  PUBLIC_HEADER include/foobar/FooBar.hpp)
 # note: macOS is APPLE and also UNIX !
 if(APPLE)
   set_target_properties(FooBar PROPERTIES
