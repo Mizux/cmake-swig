@@ -9,7 +9,7 @@ swig_add_library(pyFoo
 target_include_directories(pyFoo
   PRIVATE
   ../include
-  ${PYTHON_INCLUDE_DIRS}
+  ${Python_INCLUDE_DIRS}
   )
 set_property(TARGET pyFoo PROPERTY SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON)
 
@@ -34,5 +34,5 @@ target_link_libraries(pyFoo PRIVATE Foo)
 # i.e. we can't use: $<$<PLATFORM_ID:Windows>:${PYTHON_LIBRARIES}>
 # see: https://cmake.org/cmake/help/git-stage/command/target_link_libraries.html#command:target_link_libraries
 if(MSVC)
-  target_link_libraries(pyFoo PRIVATE ${PYTHON_LIBRARIES})
+  target_link_libraries(pyFoo PRIVATE ${Python_LIBRARIES})
 endif()

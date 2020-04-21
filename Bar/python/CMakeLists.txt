@@ -8,7 +8,7 @@ swig_add_library(pyBar
 target_include_directories(pyBar
 	PRIVATE
 	../include
-	${PYTHON_INCLUDE_DIRS}
+	${Python_INCLUDE_DIRS}
 	)
 set_property(TARGET pyBar PROPERTY SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON)
 
@@ -33,5 +33,5 @@ target_link_libraries(pyBar	PRIVATE	Bar)
 # i.e. we can't use: $<$<PLATFORM_ID:Windows>:${PYTHON_LIBRARIES}>
 # see: https://cmake.org/cmake/help/git-stage/command/target_link_libraries.html#command:target_link_libraries
 if(MSVC)
-  target_link_libraries(pyBar	PRIVATE	${PYTHON_LIBRARIES})
+  target_link_libraries(pyBar	PRIVATE	${Python_LIBRARIES})
 endif()
