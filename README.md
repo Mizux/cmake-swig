@@ -53,6 +53,8 @@
 <a href="doc/python.md">Python 3</a> |
 <a href="doc/dotnet.md">.Net Core</a> |
 <a href="doc/java.md">Java</a> |
+<a href="ci/README.md">CI</a> |
+<a href="#license">License</a> |
 </nav>
 
 This is a complete example of how to create a Modern [CMake](https://cmake.org/) C++ Project
@@ -127,7 +129,7 @@ The project layout is as follow:
   * [src](FooBarApp/src) private folder.
     * [src/main.cpp](FooBarApp/src/main.cpp)
 
-# License
+# [License](#license)
 
 Apache 2. See the LICENSE file for details.
 
