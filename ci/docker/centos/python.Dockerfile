@@ -1,8 +1,8 @@
 FROM cmake-swig:centos_swig AS env
-RUN yum -y update \
-&& yum -y install python36-devel \
-&& yum clean all \
-&& rm -rf /var/cache/yum
+RUN dnf -y update \
+&& dnf -y install python36-devel \
+&& dnf clean all \
+&& rm -rf /var/cache/dnf
 
 FROM env AS devel
 WORKDIR /home/project
