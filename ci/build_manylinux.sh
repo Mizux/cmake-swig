@@ -29,12 +29,12 @@ for PYROOT in /opt/python/*; do
   BUILD_DIR="build_$PYTAG"
   rm -rf "${BUILD_DIR}"
 
-	LIB="${PYROOT}/lib/libpython$(python -V | grep -o "[0-9]\+.[0-9]\+.[0-9]\+").so"
-	touch "$LIB"
+  LIB="${PYROOT}/lib/libpython$(python -V | grep -o "[0-9]\+.[0-9]\+.[0-9]\+").so"
+  touch "$LIB"
   cmake -S. "-B${BUILD_DIR}" \
     -DBUILD_PYTHON=ON \
     -DPython_FIND_VIRTUALENV=ONLY \
-		-DPython_LIBRARY="${LIB}"
+    -DPython_LIBRARY="${LIB}"
 
   cmake --build "${BUILD_DIR}" -v
 
