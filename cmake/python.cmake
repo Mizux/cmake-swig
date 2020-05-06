@@ -37,58 +37,15 @@ endforeach()
 #######################
 ## Python Packaging  ##
 #######################
-# To use a cmake generator expression (aka $<>), it must be processed at build time
-# i.e. inside a add_custom_command()
-# This command will depend on TARGET(s) in cmake generator expression
-add_custom_command(OUTPUT
-  python/setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "from setuptools import find_packages, setup" > setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "from setuptools.dist import Distribution" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "class BinaryDistribution(Distribution):" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  def is_pure(self):" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "    return False" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  def has_ext_modules(self):" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "    return True" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "from setuptools.command.install import install" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "class InstallPlatlib(install):" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "    def finalize_options(self):" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "        install.finalize_options(self)" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "        self.install_lib=self.install_platlib" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "setup(" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  name='${PROJECT_NAME}'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  version='${PROJECT_VERSION}'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  author='Mizux'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  author_email='\"Mizux Seiha\" <mizux.dev@gmail.com>'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  url='https://github.com/Mizux/cmake-swig'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  distclass=BinaryDistribution," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  cmdclass={'install': InstallPlatlib}," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  packages=find_packages()," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  package_data={" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  '${PROJECT_NAME}':[$<$<NOT:$<PLATFORM_ID:Windows>>:'.libs/*'>]," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  '${PROJECT_NAME}.Foo':['$<TARGET_FILE_NAME:pyFoo>']," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  '${PROJECT_NAME}.Bar':['$<TARGET_FILE_NAME:pyBar>']," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  '${PROJECT_NAME}.FooBar':['$<TARGET_FILE_NAME:pyFooBar>']," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  }," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  include_package_data=True," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  classifiers=[" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  'Development Status :: 5 - Production/Stable'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  'Intended Audience :: Developers'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  'License :: OSI Approved :: Apache Software License'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  'Operating System :: POSIX :: Linux'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  'Operating System :: MacOS :: MacOS X'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  'Operating System :: Microsoft :: Windows'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  'Programming Language :: Python'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  'Programming Language :: C++'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  'Topic :: Scientific/Engineering'," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  'Topic :: Software Development :: Libraries :: Python Modules'" >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo "  ]," >> setup.py
-  COMMAND ${CMAKE_COMMAND} -E echo ")" >> setup.py
-  COMMENT "Generate setup.py at build time (to use generator expression)"
-  WORKING_DIRECTORY python
-  VERBATIM)
+# setup.py.in contains cmake variable e.g. @PROJECT_NAME@ and
+# generator expression e.g. $<TARGET_FILE_NAME:pyFoo>
+configure_file(
+	python/setup.py.in
+	${CMAKE_CURRENT_BINARY_DIR}/python/setup.py.in
+	@ONLY)
+file(GENERATE
+	OUTPUT python/$<CONFIG>/setup.py
+	INPUT ${CMAKE_CURRENT_BINARY_DIR}/python/setup.py.in)
 
 # Find if python module MODULE_NAME is available,
 # if not install it to the Python user install directory.
@@ -116,7 +73,7 @@ search_python_module(setuptools)
 search_python_module(wheel)
 
 add_custom_target(python_package ALL
-  DEPENDS python/setup.py
+	COMMAND ${CMAKE_COMMAND} -E copy $<CONFIG>/setup.py setup.py
   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/python/__init__.py.in ${PROJECT_NAME}/__init__.py
   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/python/__init__.py.in ${PROJECT_NAME}/Foo/__init__.py
   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/python/__init__.py.in ${PROJECT_NAME}/Bar/__init__.py
