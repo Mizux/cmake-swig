@@ -1,10 +1,10 @@
 set_property(SOURCE bar.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE bar.i PROPERTY COMPILE_OPTIONS
-  -package net.mizux.cmakeswig.bar)
+  -package org.mizux.cmake-swig.bar)
 swig_add_library(java_Bar
   TYPE SHARED
   LANGUAGE java
-  OUTPUT_DIR ${PROJECT_BINARY_DIR}/java/net/mizux/cmakeswig/bar
+  OUTPUT_DIR ${PROJECT_BINARY_DIR}/java/org/mizux/cmake-swig/bar
   SOURCES bar.i)
 
 set_target_properties(java_Bar PROPERTIES

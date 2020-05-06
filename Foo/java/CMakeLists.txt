@@ -1,10 +1,10 @@
 set_property(SOURCE foo.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE foo.i PROPERTY COMPILE_OPTIONS
-  -package net.mizux.cmakeswig.foo)
+  -package org.mizux.cmake-swig.foo)
 swig_add_library(java_Foo
   TYPE SHARED
   LANGUAGE java
-  OUTPUT_DIR ${PROJECT_BINARY_DIR}/java/net/mizux/cmakeswig/foo
+  OUTPUT_DIR ${PROJECT_BINARY_DIR}/java/org/mizux/cmake-swig/foo
   SOURCES foo.i)
 
 set_target_properties(java_Foo PROPERTIES
