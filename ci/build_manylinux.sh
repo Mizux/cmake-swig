@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-set -x
-set -eo pipefail
+set -euxo pipefail
 
 # Downgrade auditwheel
+# see: https://github.com/pypa/auditwheel/issues/137
 #/opt/_internal/cpython-3.7.7/bin/pip install auditwheel==2.0.0
 
 SKIP_PLATFORMS=(cp27-cp27m cp27-cp27mu cp34-cp34m)
@@ -29,12 +29,12 @@ for PYROOT in /opt/python/*; do
   BUILD_DIR="build_$PYTAG"
   rm -rf "${BUILD_DIR}"
 
+	LIB="${PYROOT}/lib/libpython$(python -V | grep -o "[0-9]\+.[0-9]\+.[0-9]\+").so"
+	touch "$LIB"
   cmake -S. "-B${BUILD_DIR}" \
     -DBUILD_PYTHON=ON \
-    -DPython_FIND_VIRTUALENV=ONLY
-    #-DPython_ROOT_DIR="${PYROOT}"
-    #"-DPYTHON_LIBRARY=${PYROOT}/lib/" \
-    #"-DPYTHON_INCLUDE_DIR=${PYROOT}/include/python*"
+    -DPython_FIND_VIRTUALENV=ONLY \
+		-DPython_LIBRARY="${LIB}"
 
   cmake --build "${BUILD_DIR}" -v
 
