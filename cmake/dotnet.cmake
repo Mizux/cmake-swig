@@ -43,16 +43,17 @@ set(CMAKE_SWIG_DOTNET Mizux.CMakeSwig)
 foreach(SUBPROJECT IN ITEMS Foo Bar FooBar)
   add_subdirectory(${SUBPROJECT}/dotnet)
   target_link_libraries(mizux-cmakeswig-native PRIVATE dotnet_${SUBPROJECT})
-  #target_sources(mizux-cmakeswig-native PRIVATE $<TARGET_OBJECTS:dotnet_${SUBPROJECT}>)
-  #add_dependencies(mizux-cmakeswig-native dotnet_${SUBPROJECT})
 endforeach()
-
 
 ############################
 ##  .Net Runtime Package  ##
 ############################
-file(COPY dotnet/logo.png DESTINATION dotnet)
-file(COPY dotnet/Directory.Build.props DESTINATION dotnet)
+file(COPY
+	${PROJECT_SOURCE_DIR}/dotnet/logo.png
+	DESTINATION dotnet)
+file(COPY
+	${PROJECT_SOURCE_DIR}/dotnet/Directory.Build.props
+	DESTINATION dotnet)
 
 if(APPLE)
   set(RUNTIME_IDENTIFIER osx-x64)
