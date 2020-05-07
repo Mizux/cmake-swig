@@ -1,4 +1,4 @@
-%module cmakeswig_foobar
+%module main
 
 %include "std_string.i"
 %include "base.i"
@@ -20,11 +20,11 @@ namespace foobar {
 %unignore FooBar::hello(int);
 %unignore FooBar::hello(int64_t);
 
-%unignore FooBar::getInt();
+%unignore FooBar::getInt() const;
 %unignore FooBar::setBarInt(int);
 %unignore FooBar::setFooInt(int);
 
-%unignore FooBar::getInt64();
+%unignore FooBar::getInt64() const;
 %unignore FooBar::setBarInt64(int64_t);
 %unignore FooBar::setFooInt64(int64_t);
 

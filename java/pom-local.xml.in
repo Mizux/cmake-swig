@@ -48,6 +48,21 @@
 	<maven.compiler.target>1.8</maven.compiler.target>
 </properties>
 
+<dependencies>
+	<dependency>
+		<groupId>@CMAKE_SWIG_JAVA@</groupId>
+		<artifactId>cmakeswig-@NATIVE_IDENTIFIER@</artifactId>
+		<version>@PROJECT_VERSION@</version>
+		<type>jar</type>
+		<scope>runtime</scope>
+	</dependency>
+	<dependency>
+		<groupId>net.java.dev.jna</groupId>
+		<artifactId>jna-platform</artifactId>
+		<version>5.5.0</version>
+	</dependency>
+</dependencies>
+
 <build>
 	<plugins>
 		<plugin>

@@ -1,4 +1,4 @@
-%module cmakeswig_bar
+%module main
 
 %include "std_string.i"
 %include "base.i"
@@ -20,10 +20,10 @@ namespace bar {
 %unignore Bar::hello(int);
 %unignore Bar::hello(int64_t);
 
-%unignore Bar::getInt();
+%unignore Bar::getInt() const;
 %unignore Bar::setInt(int);
 
-%unignore Bar::getInt64();
+%unignore Bar::getInt64() const;
 %unignore Bar::setInt64(int64_t);
 
 %rename ("toString") Bar::operator();

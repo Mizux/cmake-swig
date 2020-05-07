@@ -1,4 +1,4 @@
-%module cmakeswig_foo
+%module main
 
 %include "std_string.i"
 %include "base.i"
@@ -20,10 +20,10 @@ namespace foo {
 %unignore Foo::hello(int);
 %unignore Foo::hello(int64_t);
 
-%unignore Foo::getInt();
+%unignore Foo::getInt() const;
 %unignore Foo::setInt(int);
 
-%unignore Foo::getInt64();
+%unignore Foo::getInt64() const;
 %unignore Foo::setInt64(int64_t);
 
 %rename ("toString") Foo::operator();

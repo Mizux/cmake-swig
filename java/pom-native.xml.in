@@ -6,7 +6,7 @@
 <modelVersion>4.0.0</modelVersion>
 
 <groupId>@CMAKE_SWIG_JAVA@</groupId>
-<artifactId>cmakeswig-java</artifactId>
+<artifactId>cmakeswig-@NATIVE_IDENTIFIER@</artifactId>
 <version>@PROJECT_VERSION@</version>
 <packaging>jar</packaging>
 
@@ -54,6 +54,11 @@
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-source-plugin</artifactId>
 			<version>3.2.0</version>
+			<configuration>
+				<excludes>
+					<exclude>**/*.cxx</exclude>
+				</excludes>
+			</configuration>
 			<executions>
 				<execution>
 					<id>attach-sources</id>
@@ -71,7 +76,7 @@
 				<execution>
 					<id>attach-javadocs</id>
 					<goals>
-						<goal>jar</goal>
+						<goal>javadoc-no-fork</goal>
 					</goals>
 				</execution>
 			</executions>

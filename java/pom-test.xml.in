@@ -6,7 +6,7 @@
 <modelVersion>4.0.0</modelVersion>
 
 <groupId>@CMAKE_SWIG_JAVA@</groupId>
-<artifactId>cmakeswig-java</artifactId>
+<artifactId>cmakeswig-test</artifactId>
 <version>@PROJECT_VERSION@</version>
 <packaging>jar</packaging>
 
@@ -47,6 +47,22 @@
 	<maven.compiler.source>1.8</maven.compiler.source>
 	<maven.compiler.target>1.8</maven.compiler.target>
 </properties>
+
+<dependencies>
+	<dependency>
+		<groupId>@CMAKE_SWIG_JAVA@</groupId>
+		<artifactId>cmakeswig-java</artifactId>
+		<version>@PROJECT_VERSION@</version>
+		<type>jar</type>
+		<scope>compile</scope>
+	</dependency>
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.13</version>
+		<scope>test</scope>
+	</dependency>
+</dependencies>
 
 <build>
 	<plugins>
