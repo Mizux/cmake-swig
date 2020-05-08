@@ -58,5 +58,7 @@ set(CMAKE_INSTALL_RPATH "$ORIGIN:$ORIGIN/../Foo:$ORIGIN/../Bar")
 
 For `FooBarApp` which depend on `FooBar`:
 ```cmake
-set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$ORIGIN/../FooBar")
+include(GNUInstallDirs)
+...
+set(CMAKE_INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}:$ORIGIN/../FooBar")
 ```
