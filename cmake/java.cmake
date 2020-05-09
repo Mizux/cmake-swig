@@ -30,7 +30,13 @@ find_package(JNI REQUIRED)
 message(STATUS "Found JNI: ${JNI_FOUND}")
 
 # Find maven
-find_program(MAVEN_EXECUTABLE mvn)
+# On windows mvn spawn a process while mvn.cmd is a blocking command
+if(UNIX)
+	find_program(MAVEN_EXECUTABLE mvn)
+else()
+	find_program(MAVEN_EXECUTABLE mvn.cmd)
+endif()
+
 if(NOT MAVEN_EXECUTABLE)
   message(FATAL_ERROR "Check for maven Program: not found")
 else()
