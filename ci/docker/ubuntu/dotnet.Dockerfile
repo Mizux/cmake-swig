@@ -1,8 +1,8 @@
 FROM cmake-swig:ubuntu_swig AS env
-# see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-ubuntu-1910
+# see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-ubuntu-2004
 RUN apt-get update -qq \
 && apt-get install -yq wget apt-transport-https \
-&& wget -q https://packages.microsoft.com/config/ubuntu/19.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+&& wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
 && dpkg -i packages-microsoft-prod.deb \
 && apt-get update -qq \
 && apt-get install -yq dotnet-sdk-3.1 \
