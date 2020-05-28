@@ -3,10 +3,10 @@ set_property(SOURCE foo.i PROPERTY COMPILE_OPTIONS
   -namespace ${CMAKE_SWIG_DOTNET}.Foo
   -dllimport mizux-cmakeswig-native)
 swig_add_library(dotnet_Foo
-	TYPE OBJECT
-	LANGUAGE csharp
+  TYPE OBJECT
+  LANGUAGE csharp
   OUTPUT_DIR ${PROJECT_BINARY_DIR}/dotnet/${PROJECT_NAME}/Foo
-	SOURCES	foo.i)
+  SOURCES	foo.i)
 
 set_target_properties(dotnet_Foo PROPERTIES
   SWIG_INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/dotnet

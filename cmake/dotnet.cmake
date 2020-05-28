@@ -49,11 +49,11 @@ endforeach()
 ##  .Net Runtime Package  ##
 ############################
 file(COPY
-	${PROJECT_SOURCE_DIR}/dotnet/logo.png
-	DESTINATION dotnet)
+  ${PROJECT_SOURCE_DIR}/dotnet/logo.png
+  DESTINATION dotnet)
 file(COPY
-	${PROJECT_SOURCE_DIR}/dotnet/Directory.Build.props
-	DESTINATION dotnet)
+  ${PROJECT_SOURCE_DIR}/dotnet/Directory.Build.props
+  DESTINATION dotnet)
 
 if(APPLE)
   set(RUNTIME_IDENTIFIER osx-x64)

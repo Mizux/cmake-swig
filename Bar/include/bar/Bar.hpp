@@ -20,11 +20,11 @@ class Bar {
    * @{ */
 
   /*! @brief Static method of Bar class.
-	 * @param level Scope level.*/
+   * @param level Scope level.*/
   static void hello(int level);
 
   /*! @brief Static method of Bar class.
-	 * @param level Scope level.*/
+   * @param level Scope level.*/
   static void hello(int64_t level);
 
   //! @}
@@ -57,7 +57,7 @@ class Bar {
   std::string operator()() const;
 
  private:
-  int _intValue = 0;
+  int     _intValue   = 0;
   int64_t _int64Value = 0;
 };
 } // namespace bar

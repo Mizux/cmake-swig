@@ -26,8 +26,8 @@ void Bar::hello(int64_t level) {
 }
 
 std::string Bar::operator()() const {
-  return std::string{"\"Bar\":{\"int\":"} + std::to_string(_intValue) + ",\"int64\":" + std::to_string(_int64Value) +
-         "}";
+  return std::string{"\"Bar\":{\"int\":"} + std::to_string(_intValue) +
+         ",\"int64\":" + std::to_string(_int64Value) + "}";
 }
 
 int Bar::getInt() const {

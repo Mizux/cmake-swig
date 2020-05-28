@@ -5,7 +5,7 @@ swig_add_library(jniFooBar
   TYPE OBJECT
   LANGUAGE java
   OUTPUT_DIR
-	${PROJECT_BINARY_DIR}/java/${CMAKE_SWIG_JAVA}/src/main/java/org/mizux/cmakeswig/foobar
+  ${PROJECT_BINARY_DIR}/java/${CMAKE_SWIG_JAVA}/src/main/java/org/mizux/cmakeswig/foobar
   SOURCES foobar.i)
 
 set_target_properties(jniFooBar PROPERTIES

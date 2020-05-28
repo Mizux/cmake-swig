@@ -17,10 +17,10 @@ void fooHello(int64_t level);
 class Foo {
  public:
   /*! @defgroup StaticMembers Static members
-	 * @{ */
+   * @{ */
 
   /*! @brief Static method of Foo class.
-	 * @param level Scope level.*/
+   * @param level Scope level.*/
   static void hello(int level);
 
   /*! @brief Static method of Foo class.
@@ -57,7 +57,7 @@ class Foo {
   std::string operator()() const;
 
  private:
-  int _intValue = 0;
+  int     _intValue   = 0;
   int64_t _int64Value = 0;
 };
 } // namespace foo

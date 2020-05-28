@@ -26,8 +26,8 @@ void Foo::hello(int64_t level) {
 }
 
 std::string Foo::operator()() const {
-  return std::string{"\"Foo\":{\"int\":"} + std::to_string(_intValue) + ",\"int64\":" + std::to_string(_int64Value) +
-         "}";
+  return std::string{"\"Foo\":{\"int\":"} + std::to_string(_intValue) +
+         ",\"int64\":" + std::to_string(_int64Value) + "}";
 }
 
 int Foo::getInt() const {

@@ -1,11 +1,11 @@
 set_property(SOURCE bar.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE bar.i PROPERTY COMPILE_OPTIONS
-	-package ${CMAKE_SWIG_JAVA}.bar)
+  -package ${CMAKE_SWIG_JAVA}.bar)
 swig_add_library(jniBar
   TYPE OBJECT
   LANGUAGE java
   OUTPUT_DIR
-	${PROJECT_BINARY_DIR}/java/${CMAKE_SWIG_JAVA}/src/main/java/org/mizux/cmakeswig/bar
+  ${PROJECT_BINARY_DIR}/java/${CMAKE_SWIG_JAVA}/src/main/java/org/mizux/cmakeswig/bar
   SOURCES bar.i)
 
 set_target_properties(jniBar PROPERTIES

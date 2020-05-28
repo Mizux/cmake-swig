@@ -32,9 +32,9 @@ message(STATUS "Found JNI: ${JNI_FOUND}")
 # Find maven
 # On windows mvn spawn a process while mvn.cmd is a blocking command
 if(UNIX)
-	find_program(MAVEN_EXECUTABLE mvn)
+  find_program(MAVEN_EXECUTABLE mvn)
 else()
-	find_program(MAVEN_EXECUTABLE mvn.cmd)
+  find_program(MAVEN_EXECUTABLE mvn.cmd)
 endif()
 
 if(NOT MAVEN_EXECUTABLE)
