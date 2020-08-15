@@ -18,16 +18,16 @@ RUN wget "https://cmake.org/files/v3.18/cmake-3.18.1-Linux-x86_64.sh" \
 # CMake version
 RUN cmake -version
 
-# Install Swig 4.0.1
-RUN wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz" \
-&& tar xvf swig-4.0.1.tar.gz \
-&& rm swig-4.0.1.tar.gz \
-&& cd swig-4.0.1 \
+# Install SWIG 4.0.2
+RUN wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.2/swig-4.0.2.tar.gz" \
+&& tar xvf swig-4.0.2.tar.gz \
+&& rm swig-4.0.2.tar.gz \
+&& cd swig-4.0.2 \
 && ./configure --prefix=/usr \
 && make -j 4 \
 && make install \
 && cd .. \
-&& rm -rf swig-4.0.1
+&& rm -rf swig-4.0.2
 
 FROM env AS devel
 WORKDIR /home/project
