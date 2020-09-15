@@ -1,11 +1,11 @@
 set_property(SOURCE foo.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE foo.i PROPERTY COMPILE_OPTIONS
-  -package ${CMAKE_SWIG_JAVA}.foo)
+  -package ${JAVA_PACKAGE}.foo)
 swig_add_library(jniFoo
   TYPE OBJECT
   LANGUAGE java
   OUTPUT_DIR
-  ${PROJECT_BINARY_DIR}/java/${CMAKE_SWIG_JAVA}/src/main/java/org/mizux/cmakeswig/foo
+  ${PROJECT_BINARY_DIR}/java/${JAVA_PROJECT}/${JAVA_PACKAGE_PATH}/foo
   SOURCES foo.i)
 
 set_target_properties(jniFoo PROPERTIES

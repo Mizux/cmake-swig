@@ -15,13 +15,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.Objects;
 
-/**
- * @author Mizux
- */
+/** Load native libraries needed for using javanative-java.*/
 public class Loader {
-  /**
-   * @brief Try to locate the native libraries directory.
-   */
+  /** Try to locate the native libraries directory.*/
   private static URI getNativeResourceURI() throws IOException {
     ClassLoader loader = Loader.class.getClassLoader();
     String resource = Platform.RESOURCE_PREFIX + "/";
@@ -45,8 +41,7 @@ public class Loader {
     void accept(Path path) throws T;
   }
 
-  /**
-   * @brief Extract native resources in a temp directory.
+  /** Extract native resources in a temp directory.
    * @param resourceURI Native resource location.
    * @return The directory path containing all extracted libraries.
    */
@@ -80,17 +75,22 @@ public class Loader {
     return tempPath;
   }
 
+  /** Unpack and Load the native libraries needed for using ortools-java.*/
+  private static boolean loaded = false;
   public static void loadNativeLibraries() {
-    try {
-      URI resourceURI = getNativeResourceURI();
-      Path tempPath = unpackNativeResources(resourceURI);
-      // Load the native library
-      System.load(
-          tempPath.resolve(Platform.RESOURCE_PREFIX)
-          .resolve(System.mapLibraryName("jnicmakeswig"))
-          .toString());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    if(!loaded) {
+      try {
+        URI resourceURI = getNativeResourceURI();
+        Path tempPath = unpackNativeResources(resourceURI);
+        // Load the native library
+        System.load(
+            tempPath.resolve(Platform.RESOURCE_PREFIX)
+            .resolve(System.mapLibraryName("jnicmakeswig"))
+            .toString());
+        loaded = true;
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 }

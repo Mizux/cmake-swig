@@ -5,8 +5,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 <modelVersion>4.0.0</modelVersion>
 
-<groupId>@CMAKE_SWIG_JAVA@</groupId>
-<artifactId>cmakeswig-@NATIVE_IDENTIFIER@</artifactId>
+<groupId>@JAVA_PACKAGE@</groupId>
+<artifactId>@JAVA_NATIVE_PROJECT@</artifactId>
 <version>@PROJECT_VERSION@</version>
 <packaging>jar</packaging>
 

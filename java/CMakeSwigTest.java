@@ -4,12 +4,13 @@ import org.mizux.cmakeswig.Loader;
 import org.mizux.cmakeswig.bar.Bar;
 import org.mizux.cmakeswig.foo.Foo;
 import org.mizux.cmakeswig.foobar.FooBar;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author Mizux
- */
-public class Test {
-  private static void testBar() {
+/** @author Mizux */
+public class CMakeSwigTest {
+  @Test
+  public void testBar() {
+    Loader.loadNativeLibraries();
     try {
       Bar.hello(1);
       Bar b = new Bar();
@@ -20,7 +21,9 @@ public class Test {
     }
   }
 
-  private static void testFoo() {
+  @Test
+  public void testFoo() {
+    Loader.loadNativeLibraries();
     try {
       Foo.hello(1);
       Foo f = new Foo();
@@ -31,7 +34,9 @@ public class Test {
     }
   }
 
-  private static void testFooBar() {
+  @Test
+  public void testFooBar() {
+    Loader.loadNativeLibraries();
     try {
       FooBar.hello(1);
       FooBar fb = new FooBar();
@@ -41,13 +46,6 @@ public class Test {
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
-  }
-
-  public static void main(String[] args) {
-    Loader.loadNativeLibraries();
-    testBar();
-    testFoo();
-    testFooBar();
   }
 }
 
