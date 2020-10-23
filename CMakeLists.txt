@@ -96,7 +96,7 @@ if(BUILD_TESTING)
   FetchContent_Declare(
     Catch2
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG master
+    GIT_TAG devel
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE
     )
