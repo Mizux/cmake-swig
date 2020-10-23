@@ -2,11 +2,11 @@
 |-------|-------|---------|
 | [![Status][dotnet_linux_svg]][dotnet_linux_link] | [![Status][dotnet_osx_svg]][dotnet_osx_link] | [![Status][dotnet_win_svg]][dotnet_win_link] |
 
-[dotnet_linux_svg]: https://github.com/Mizux/cmake-swig/workflows/.Net%20Linux%20CI/badge.svg
+[dotnet_linux_svg]: https://github.com/Mizux/cmake-swig/workflows/.Net%20Linux%20CI/badge.svg?branch=master
 [dotnet_linux_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"net+Linux+CI"
-[dotnet_osx_svg]: https://github.com/Mizux/cmake-swig/workflows/.Net%20MacOS%20CI/badge.svg
+[dotnet_osx_svg]: https://github.com/Mizux/cmake-swig/workflows/.Net%20MacOS%20CI/badge.svg?branch=master
 [dotnet_osx_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"net+MacOS+CI"
-[dotnet_win_svg]: https://github.com/Mizux/cmake-swig/workflows/.Net%20Windows%20CI/badge.svg
+[dotnet_win_svg]: https://github.com/Mizux/cmake-swig/workflows/.Net%20Windows%20CI/badge.svg?branch=master
 [dotnet_win_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"net+Windows+CI"
 
 
