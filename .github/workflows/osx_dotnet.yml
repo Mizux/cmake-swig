@@ -1,6 +1,11 @@
 name: .Net MacOS CI
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  schedule:
+    # min hours day(month) month day(week)
+    - cron: '0 0 7,22 * *'
 
 jobs:
   # Building using the github runner environement directly.
