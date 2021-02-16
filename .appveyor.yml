@@ -39,3 +39,4 @@ build_script:
 
 test_script:
   - cmake --build build --config %configuration% --target RUN_TESTS -- %MSBUILD_FLAGS%
+
