@@ -34,6 +34,7 @@ add_subdirectory(FooBar)
 add_subdirectory(FooBarApp)
 
 # Install
+include(GNUInstallDirs)
 install(EXPORT CMakeSwigTargets
   NAMESPACE CMakeSwig::
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeSwig
