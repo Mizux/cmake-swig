@@ -1,3 +1,5 @@
+message(STATUS "Getting SWIG: ...")
+
 # Download and unpack swig at configure time
 configure_file(${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt.swig swig-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
@@ -13,4 +15,7 @@ if(result)
   message(FATAL_ERROR "Build step for swig failed: ${result}")
 endif()
 
+# Define SWIG_EXECUTABLE (used as "hint" by FindSWIG)
 set(SWIG_EXECUTABLE ${CMAKE_BINARY_DIR}/swig/swig.exe)
+
+message(STATUS "Getting SWIG: ...DONE")

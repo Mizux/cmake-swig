@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 
 project(swig-download NONE)
 
 include(ExternalProject)
   ExternalProject_Add(SWIG_project
-      URL "http://prdownloads.sourceforge.net/swig/swigwin-4.0.1.zip"
+      URL "http://prdownloads.sourceforge.net/swig/swigwin-4.0.2.zip"
       BUILD_IN_SOURCE 1
       SOURCE_DIR "${CMAKE_BINARY_DIR}/swig"
       UPDATE_COMMAND ""
