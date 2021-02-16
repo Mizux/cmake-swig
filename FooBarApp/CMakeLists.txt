@@ -1,8 +1,7 @@
 add_executable(FooBarApp "")
 target_sources(FooBarApp
   PRIVATE
-    src/main.cpp
-  )
+    src/main.cpp)
 target_compile_features(FooBarApp PUBLIC cxx_std_11)
 set_target_properties(FooBarApp PROPERTIES
   VERSION ${PROJECT_VERSION})
@@ -14,13 +13,12 @@ elseif(UNIX AND NOT APPLE)
   set_target_properties(FooBarApp PROPERTIES
     INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
 endif()
-target_link_libraries(FooBarApp
-  PRIVATE
-  ${PROJECT_NAME}::FooBar
-  )
+target_link_libraries(FooBarApp PRIVATE ${PROJECT_NAME}::FooBar)
 add_executable(${PROJECT_NAME}::FooBarApp ALIAS FooBarApp)
 
-add_test(NAME cxx_FooBarApp_test COMMAND FooBarApp)
+if(BUILD_TESTING)
+  add_test(NAME cxx_FooBarApp_test COMMAND FooBarApp)
+endif()
 
 # Install
 include(GNUInstallDirs)
