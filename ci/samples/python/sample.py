@@ -1,4 +1,12 @@
-import CMakeSwig.Foo.pyFoo as foo
+#!/usr/bin/env python3
+'''Test API'''
+
+import cmakeswig.Foo.pyFoo as foo
+import cmakeswig.Bar.pyBar as bar
+import cmakeswig.FooBar.pyFooBar as foobar
+
+
+'''Test Foo'''
 print(f'pyFoo: ${dir(foo)}')
 foo.fooHello(1)
 foo.fooHello(2147483647) # max int
@@ -10,7 +18,8 @@ f.hello(1)
 f.hello(2147483647)
 f.hello(2147483647+1)
 
-import CMakeSwig.Bar.pyBar as bar
+
+'''Test Bar'''
 print(f'pyBar: ${dir(bar)}')
 bar.barHello(1)
 bar.barHello(2147483647) # max int
@@ -22,7 +31,8 @@ b.hello(1)
 b.hello(2147483647)
 b.hello(2147483647+1)
 
-import CMakeSwig.FooBar.pyFooBar as foobar
+
+'''Test FooBar'''
 print(f'pyFooBar: ${dir(foobar)}')
 foobar.foobarHello(1)
 foobar.foobarHello(2147483647) # max int

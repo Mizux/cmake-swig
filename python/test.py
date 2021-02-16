@@ -6,6 +6,7 @@ import cmakeswig.Foo.pyFoo as foo
 import cmakeswig.Bar.pyBar as bar
 import cmakeswig.FooBar.pyFooBar as foobar
 
+
 class TestFoo(unittest.TestCase):
     '''Test Foo'''
     def test_free_function(self):
@@ -20,6 +21,7 @@ class TestFoo(unittest.TestCase):
         f.hello(1)
         f.hello(2147483647)
         f.hello(2147483647+1)
+
 
 class TestBar(unittest.TestCase):
     '''Test Bar'''
