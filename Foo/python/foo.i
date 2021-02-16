@@ -11,20 +11,22 @@
 %define %unignore %rename("%s") %enddef
 
 %unignore foo;
-%unignore foo::fooHello(int);
-%unignore foo::fooHello(int64_t);
+namespace foo {
+%unignore fooHello(int);
+%unignore fooHello(int64_t);
 
-%unignore foo::Foo;
-%unignore foo::Foo::hello(int);
-%unignore foo::Foo::hello(int64_t);
+%unignore Foo;
+%unignore Foo::hello(int);
+%unignore Foo::hello(int64_t);
 
-%rename ("get_int") foo::Foo::getInt() const;
-%rename ("set_int") foo::Foo::setInt(int);
+%rename ("get_int") Foo::getInt() const;
+%rename ("set_int") Foo::setInt(int);
 
-%rename ("get_int64") foo::Foo::getInt64() const;
-%rename ("set_int64") foo::Foo::setInt64(int64_t);
+%rename ("get_int64") Foo::getInt64() const;
+%rename ("set_int64") Foo::setInt64(int64_t);
 
-%rename ("__str__") foo::Foo::operator();
+%rename ("__str__") Foo::operator();
+} // namespace foo
 
 // Process symbols in header
 %include "foo/Foo.hpp"
