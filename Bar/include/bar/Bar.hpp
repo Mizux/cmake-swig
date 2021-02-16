@@ -5,50 +5,50 @@
 
 //! @namespace bar The Bar namespace
 namespace bar {
-/*! @brief Free function in bar namespace.
- * @param level Scope level.*/
+//! @brief Free function in bar namespace.
+//! @param[in] level Scope level.
 void barHello(int level);
 
-/*! @brief Free function in bar namespace.
- * @param level Scope level.*/
+//! @brief Free function in bar namespace.
+//! @param[in] level Scope level.
 void barHello(int64_t level);
 
 //! @brief Class Bar.
 class Bar {
  public:
-  /*! @defgroup StaticMembers Static members
-   * @{ */
+  //! @defgroup StaticMembers Static members
+  //! @{
 
-  /*! @brief Static method of Bar class.
-   * @param level Scope level.*/
+  //! @brief Static method of Bar class.
+  //! @param[in] level Scope level.
   static void hello(int level);
 
-  /*! @brief Static method of Bar class.
-   * @param level Scope level.*/
+  //! @brief Static method of Bar class.
+  //! @param[in] level Scope level.
   static void hello(int64_t level);
 
   //! @}
 
-  /*! @defgroup IntegerMembers Integer members
-   * @{ */
+  //! @defgroup IntegerMembers Integer members
+  //! @{
 
-  /*! @brief Method (getter) of Bar class.
-   * @return A member value.*/
+  //! @brief Method (getter) of Bar class.
+  //! @return A member value.
   int getInt() const;
-  /*! @brief Method (setter) of Bar class.
-   * @param input A member value.*/
+  //! @brief Method (setter) of Bar class.
+  //! @param[in] input A member value.
   void setInt(int input);
 
   //! @}
 
-  /*! @defgroup Int64Members Long Integer members
-   * @{ */
+  //! @defgroup Int64Members Long Integer members
+  //! @{
 
-  /*! @brief Method (getter) of Bar class.
-   * @return A member value.*/
+  //! @brief Method (getter) of Bar class.
+  //! @return A member value.
   int64_t getInt64() const;
-  /*! @brief Method (setter) of Bar class.
-   * @param input A member value.*/
+  //! @brief Method (setter) of Bar class.
+  //! @param[in] input A member value.
   void setInt64(int64_t input);
 
   //! @}
