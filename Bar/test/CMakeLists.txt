@@ -1,4 +1,4 @@
-set(NAME Bar_UT)
+set(NAME Bar_test)
 
 file(GLOB _SRCS "src/*.[hc]pp")
 
@@ -14,7 +14,5 @@ elseif(UNIX AND NOT APPLE)
   set_target_properties(${NAME} PROPERTIES
     INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
 endif()
-target_link_libraries(${NAME}
-  PRIVATE
-  Catch2 ${PROJECT_NAME}::Bar)
-add_test(NAME ${NAME} COMMAND ${NAME})
+target_link_libraries(${NAME} PRIVATE Catch2 ${PROJECT_NAME}::Bar)
+add_test(NAME cxx_${NAME} COMMAND ${NAME})
