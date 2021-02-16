@@ -1,8 +1,8 @@
 FROM cmake-swig:fedora_swig AS env
 RUN dnf -y update \
-&& dnf -y install java-1.8.0-openjdk-devel maven \
+&& dnf -y install java-11-openjdk-devel maven \
 && dnf clean all
-ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 
 FROM env AS devel
 WORKDIR /home/project
