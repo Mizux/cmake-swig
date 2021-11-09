@@ -129,11 +129,18 @@ The project layout is as follow:
   * [src](FooBarApp/src) private folder.
     * [src/main.cpp](FooBarApp/src/main.cpp)
 
-# [License](#license)
+## [C++ Project Build](#build)
+To build the C++ project, as usual:
+```sh
+cmake -S. -Bbuild
+cmake --build build
+```
+
+## [License](#license)
 
 Apache 2. See the LICENSE file for details.
 
-# Disclaimer
+## Disclaimer
 
 This is not an official Google product, it is just code that happens to be
 owned by Google.

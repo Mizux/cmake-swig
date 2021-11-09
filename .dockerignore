@@ -1,24 +1,25 @@
 # Project Files unneeded by docker
-ci/cache
-ci/docker
 ci/Makefile
+ci/docker
+ci/doc
+ci/cache
 .git
 .gitignore
 .github
 .dockerignore
-.travis.yml
-.appveyor.yml
 .clang-format
+.appveyor.yml
+.travis.yml
 AUTHORS
 CONTRIBUTING.md
-CONTRIBUTHORS
-INSTALL
+CONTRIBUTORS
 LICENSE
 README.md
 doc
 
 # Native cmake build
 build/
+build*/
 
 # Editor directories and files
 *.user
