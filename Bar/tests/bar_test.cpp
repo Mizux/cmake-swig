@@ -1,7 +1,8 @@
-#include <bar/Bar.hpp>
-#include <catch2/catch_all.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <iostream>
 #include <numeric>
+
+#include <bar/Bar.hpp>
 
 namespace bar {
 

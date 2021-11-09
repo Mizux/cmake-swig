@@ -8,16 +8,14 @@ target_include_directories(Bar
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
-target_compile_features(Bar PUBLIC cxx_std_11)
+target_compile_features(Bar PUBLIC cxx_std_17)
 set_target_properties(Bar PROPERTIES
   VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER include/bar/Bar.hpp)
 #target_link_libraries(Bar PUBLIC ...)
 add_library(${PROJECT_NAME}::Bar ALIAS Bar)
 
-if(BUILD_TESTING)
-  add_subdirectory(test)
-endif()
+add_subdirectory(tests)
 
 # Install
 include(GNUInstallDirs)

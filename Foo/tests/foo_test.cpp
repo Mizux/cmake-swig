@@ -1,7 +1,8 @@
-#include <catch2/catch_all.hpp>
-#include <foo/Foo.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <iostream>
 #include <numeric>
+
+#include <foo/Foo.hpp>
 
 namespace foo {
 

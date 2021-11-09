@@ -1,7 +1,8 @@
-#include <catch2/catch_all.hpp>
-#include <foobar/FooBar.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <iostream>
 #include <numeric>
+
+#include <foobar/FooBar.hpp>
 
 namespace foobar {
 

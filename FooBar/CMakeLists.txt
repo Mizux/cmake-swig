@@ -8,7 +8,7 @@ target_include_directories(FooBar
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
-target_compile_features(FooBar PUBLIC cxx_std_11)
+target_compile_features(FooBar PUBLIC cxx_std_17)
 set_target_properties(FooBar PROPERTIES
   VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER include/foobar/FooBar.hpp)
@@ -27,9 +27,7 @@ target_link_libraries(FooBar
   )
 add_library(${PROJECT_NAME}::FooBar ALIAS FooBar)
 
-if(BUILD_TESTING)
-  add_subdirectory(test)
-endif()
+add_subdirectory(tests)
 
 # Install
 include(GNUInstallDirs)
