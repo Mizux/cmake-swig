@@ -1,41 +1,15 @@
 # This file is just an orchestration
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.16)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Apple: Don't modify install_name when touching RPATH.
-if(POLICY CMP0068)
-  cmake_policy(SET CMP0068 NEW)
-endif()
-
-# Define file(GENERATE) behavior for relative paths.
-if(POLICY CMP0070)
-  cmake_policy(SET CMP0070 NEW)
-endif()
-
-# target_sources: use absolute path for INTERFACE_SOURCES.
-if(POLICY CMP0076)
-  cmake_policy(SET CMP0076 NEW)
-endif()
-
-# option() honors normal variables.
-# see: https://cmake.org/cmake/help/git-stage/policy/CMP0077.html
-if(POLICY CMP0077)
-  cmake_policy(SET CMP0077 NEW)
-endif()
-
-# SWIG: use standard target name.
-if(POLICY CMP0078)
-  cmake_policy(SET CMP0078 NEW)
-endif()
-
-# SWIG: use SWIG_MODULE_NAME property.
-if(POLICY CMP0086)
-  cmake_policy(SET CMP0086 NEW)
-endif()
+option(CMAKE_EXPORT_COMPILE_COMMANDS "Export compile command" TRUE)
 
 project(CMakeSwig VERSION 1.0 LANGUAGES CXX)
-message(STATUS "project: ${PROJECT_NAME}")
-message(STATUS "version: ${PROJECT_VERSION}")
+set(PROJECT_NAMESPACE CMakeSwig)
+message(STATUS "${PROJECT_NAME} version: ${PROJECT_VERSION}")
+#message(STATUS "major: ${PROJECT_VERSION_MAJOR}")
+#message(STATUS "minor: ${PROJECT_VERSION_MINOR}")
+#message(STATUS "patch: ${PROJECT_VERSION_PATCH}")
 
 # Force default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
