@@ -5,8 +5,6 @@
 .gitignore
 .github
 .clang-format
-.appveyor.yml
-.travis.yml
 
 ci/Makefile
 ci/docker

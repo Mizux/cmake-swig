@@ -41,9 +41,8 @@ help:
 	@echo -e "\t\t${BOLD}fedora${RESET} (latest)"
 	@echo -e "\t\t${BOLD}opensuse${RESET} (tumbleweed)"
 	@echo -e "\t\t${BOLD}ubuntu${RESET} (rolling)"
-	@echo -e "\te.g. 'make test_ubuntu'"
 	@echo
-	@echo -e "\t${BOLD}<prestage>${RESET}:"
+	@echo -e "\tWith ${BOLD}<prestage>${RESET}:"
 	@echo -e "\t\t${BOLD}base${RESET} (need by cpp)"
 	@echo -e "\t\t${BOLD}swig${RESET} (need by .Net, Java and Python)"
 	@echo -e "\te.g. 'make base'"
@@ -55,7 +54,7 @@ help:
 	@echo -e "\t\t${BOLD}dotnet${RESET} (.Net Core >= 2.1)"
 	@echo -e "\te.g. 'make devel_cpp'"
 	@echo
-	@echo -e "\t${BOLD}<stage>${RESET}:"
+	@echo -e "\tWith ${BOLD}<stage>${RESET}:"
 	@echo -e "\t\t${BOLD}env${RESET}"
 	@echo -e "\t\t${BOLD}devel${RESET}"
 	@echo -e "\t\t${BOLD}build${RESET}"
@@ -64,7 +63,7 @@ help:
 	@echo -e "\t\t${BOLD}install_devel${RESET}"
 	@echo -e "\t\t${BOLD}install_build${RESET}"
 	@echo -e "\t\t${BOLD}install_test${RESET}"
-	@echo -e "\te.g. 'make build'"
+	@echo -e "\te.g. 'make ubuntu_test'"
 	@echo
 	@echo
 	@echo -e "\t${BOLD}clean${RESET}: Remove cache and docker image."
@@ -78,7 +77,7 @@ help:
 # Need to add cmd_distro to PHONY otherwise target are ignored since they do not
 # contain recipe (using FORCE do not work here)
 .PHONY: all
-all: devel
+all: build
 
 # Delete all implicit rules to speed up makefile
 MAKEFLAGS += --no-builtin-rules
@@ -94,15 +93,12 @@ IMAGE := ${PROJECT}
 
 ifdef NOCACHE
 DOCKER_BUILD_CMD := docker build --no-cache
+DOCKER_BUILDX_CMD := docker buildx build --no-cache
 else
 DOCKER_BUILD_CMD := docker build
+DOCKER_BUILDX_CMD := docker buildx build
 endif
-
 DOCKER_RUN_CMD := docker run --rm --init --net=host
-
-# Currently supported distro
-DISTROS = alpine archlinux centos debian fedora opensuse ubuntu
-LANGUAGES = cpp python java dotnet
 
 # $* stem
 # $< first prerequist
@@ -111,6 +107,8 @@ LANGUAGES = cpp python java dotnet
 ###############
 ## PRESTAGES ##
 ###############
+# Currently supported distro
+DISTROS = alpine archlinux centos debian fedora opensuse ubuntu
 PRESTAGES = base swig
 define make-prestage-target
 #$$(info STAGE: $1)
@@ -138,7 +136,7 @@ sh_targets_$1 = $(addprefix sh_, $(addsuffix _$1, $(DISTROS)))
 $$(sh_targets_$1): sh_%_$1: %_$1
 	${DOCKER_RUN_CMD} -it --name ${IMAGE}_$$*_$1 ${IMAGE}:$$*_$1
 
-#$$(info Create targets: $(addprefix clean_, $(addsuffix _$1, $(DISTROS))).)
+#$$(info Create targets: clean_$1 $(addprefix clean_, $(addsuffix _$1, $(DISTROS))).)
 clean_targets_$1 = $(addprefix clean_, $(addsuffix _$1, $(DISTROS)))
 .PHONY: clean_$1 $$(clean_targets_$1)
 clean_$1: $$(clean_targets_$1)
@@ -152,6 +150,7 @@ $(foreach stage,$(PRESTAGES),$(eval $(call make-prestage-target,$(stage))))
 ############
 ## STAGES ##
 ############
+LANGUAGES = cpp python java dotnet
 STAGES = env devel build test install_env install_devel install_build install_test
 define make-stage-target
 #$$(info STAGE: $1)
@@ -290,15 +289,14 @@ endef
 
 $(foreach stage,$(STAGES),$(eval $(call make-stage-target,$(stage))))
 
-# CLEAN
-targets = $(addprefix clean_, $(DISTROS))
-.PHONY: clean $(targets)
-clean: $(targets)
+###########
+## CLEAN ##
+###########
+.PHONY: clean
+clean: clean_native
 	docker container prune -f
 	docker image prune -f
 	-rmdir cache
-$(targets): clean_%: $(addprefix clean_%_, $(PRESTAGES)) $(addprefix clean_%_, $(STAGES))
-	-rmdir cache/$*
 
 .PHONY: distclean
 distclean: clean
