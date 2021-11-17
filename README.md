@@ -48,11 +48,11 @@
 # Introduction
 <nav for="language"> |
 <a href="#codemap">Codemap</a> |
-<a href="doc/cpp.md">C++</a> |
-<a href="doc/swig.md">Swig</a> |
-<a href="doc/python.md">Python 3</a> |
-<a href="doc/dotnet.md">.Net Core</a> |
-<a href="doc/java.md">Java</a> |
+<a href="docs/cpp.md">C++</a> |
+<a href="docs/swig.md">Swig</a> |
+<a href="docs/python.md">Python 3</a> |
+<a href="docs/dotnet.md">.Net Core</a> |
+<a href="docs/java.md">Java</a> |
 <a href="ci/README.md">CI</a> |
 <a href="#license">License</a> |
 </nav>
@@ -62,8 +62,8 @@ with the [SWIG](http://www.swig.org) code generator to generate wrapper and pack
 
 This project should run on GNU/Linux, MacOS and Windows.
 
-You can find detailed documentation for [C++](doc/cpp.md), [Swig](doc/swig.md),
-[Python 3](doc/python.md), [.Net Core](doc/dotnet.md) and [Java](doc/java.md).
+You can find detailed documentation for [C++](docs/cpp.md), [Swig](docs/swig.md),
+[Python 3](docs/python.md), [.Net Core](docs/dotnet.md) and [Java](docs/java.md).
 
 note: You should read **C++** and **Swig** first since since other languages are
 just swig generated wrappers from the C++.
