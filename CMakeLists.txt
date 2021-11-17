@@ -58,7 +58,7 @@ else()
   endforeach()
 endif()
 
-# By default only the ortools C++ library is built.
+# By default only the CMakeSwig C++ library is built.
 option(BUILD_CXX "Build C++ library" ON)
 message(STATUS "Build C++ library: ${BUILD_CXX}")
 

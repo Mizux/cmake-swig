@@ -1,5 +1,4 @@
-add_library(Foo "")
-
+add_library(Foo)
 target_sources(Foo
   PRIVATE
     include/foo/Foo.hpp
@@ -13,16 +12,12 @@ set_target_properties(Foo PROPERTIES
   VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER include/foo/Foo.hpp)
 #target_link_libraries(Foo PUBLIC ...)
-add_library(${PROJECT_NAME}::Foo ALIAS Foo)
+add_library(${PROJECT_NAMESPACE}::Foo ALIAS Foo)
 
 add_subdirectory(tests)
 
 # Install
-include(GNUInstallDirs)
 install(TARGETS Foo
   EXPORT ${PROJECT_NAME}Targets
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/foo
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  #RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )

@@ -5,11 +5,14 @@
 #include <foobar/FooBar.hpp>
 
 int main(int /*argc*/, char** /*argv*/) {
-  foo::fooHello(0);
-  bar::barHello(0);
-  foobar::foobarHello(1);
+  foo::freeFunction(0);
+  bar::freeFunction(1);
+  foobar::freeFunction(2);
   std::cout << std::endl;
-  foobar::FooBar::hello(int{1});
+
+  foo::Foo::staticFunction(int{0});
+  bar::Bar::staticFunction(int{1});
+  foobar::FooBar::staticFunction(int{2});
   std::cout << std::endl;
 
   return 0;
