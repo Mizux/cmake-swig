@@ -1,15 +1,19 @@
+.dockerignore
+
 # Project Files unneeded by docker
-ci/Makefile
-ci/docker
-ci/doc
-ci/cache
 .git
 .gitignore
 .github
-.dockerignore
 .clang-format
 .appveyor.yml
 .travis.yml
+
+ci/Makefile
+ci/docker
+ci/docs
+ci/cache
+ci/export
+
 AUTHORS
 CONTRIBUTING.md
 CONTRIBUTORS
