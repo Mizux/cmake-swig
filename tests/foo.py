@@ -4,7 +4,7 @@
 import unittest
 import pythonnative
 from pythonnative.foo import pyFoo
-#import pythonnative.Foo.pyFoo as foo
+#import pythonnative.foo.pyFoo as foo
 
 if __debug__:
     print(f'version: {pythonnative.__version__}')

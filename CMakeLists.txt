@@ -85,6 +85,8 @@ include(python)
 include(java)
 include(dotnet)
 
+add_subdirectory(tests)
+
 option(BUILD_EXAMPLES "Build examples" ON)
 message(STATUS "Build examples: ${BUILD_EXAMPLES}")
 add_subdirectory(examples)
