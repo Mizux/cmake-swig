@@ -13,7 +13,7 @@ set_target_properties(Bar PROPERTIES
   VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER include/bar/Bar.hpp)
 #target_link_libraries(Bar PUBLIC ...)
-add_library(${PROJECT_NAME}::Bar ALIAS Bar)
+add_library(${PROJECT_NAMESPACE}::Bar ALIAS Bar)
 
 add_subdirectory(tests)
 

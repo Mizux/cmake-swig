@@ -22,10 +22,10 @@ elseif(UNIX)
 endif()
 target_link_libraries(FooBar
   PUBLIC
-  ${PROJECT_NAME}::Foo
-  ${PROJECT_NAME}::Bar
+  ${PROJECT_NAMESPACE}::Foo
+  ${PROJECT_NAMESPACE}::Bar
   )
-add_library(${PROJECT_NAME}::FooBar ALIAS FooBar)
+add_library(${PROJECT_NAMESPACE}::FooBar ALIAS FooBar)
 
 add_subdirectory(tests)
 
