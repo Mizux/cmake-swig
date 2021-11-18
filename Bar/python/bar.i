@@ -1,7 +1,17 @@
 %module pyBar
 
 %include "stdint.i"
+%include "std_vector.i"
 %include "std_string.i"
+%include "std_pair.i"
+
+%template(StringVector) std::vector<std::string>;
+%template(StringJaggedArray) std::vector<std::vector<std::string>>;
+
+%template(IntPair) std::pair<int, int>;
+%template(PairVector) std::vector<std::pair<int, int>>;
+%template(PairJaggedArray) std::vector<std::vector<std::pair<int, int>>>;
+
 // Add necessary symbols to generated header
 %{
 #include <bar/Bar.hpp>
@@ -11,20 +21,38 @@
 %define %unignore %rename("%s") %enddef
 
 %unignore bar;
-%unignore bar::barHello(int);
-%unignore bar::barHello(int64_t);
+namespace bar {
+%rename("string_vector_output") stringVectorOutput(int);
+%rename("string_vector_input") stringVectorInput(std::vector<std::string>);
+%rename("string_vector_ref_input") stringVectorRefInput(const std::vector<std::string>&);
 
-%unignore bar::Bar;
-%unignore bar::Bar::hello(int);
-%unignore bar::Bar::hello(int64_t);
+%rename("string_jagged_array_output") stringJaggedArrayOutput(int);
+%rename("string_jagged_array_input") stringJaggedArrayInput(std::vector<std::vector<std::string>>);
+%rename("string_jagged_array_ref_input") stringJaggedArrayRefInput(const std::vector<std::vector<std::string>>&);
 
-%rename ("get_int") bar::Bar::getInt() const;
-%rename ("set_int") bar::Bar::setInt(int);
+%rename("pair_vector_output") pairVectorOutput(int);
+%rename("pair_vector_input") pairVectorInput(std::vector<std::pair<int, int>>);
+%rename("pair_vector_ref_input") pairVectorRefInput(const std::vector<std::pair<int, int>>&);
 
-%rename ("get_int64") bar::Bar::getInt64() const;
-%rename ("set_int64") bar::Bar::setInt64(int64_t);
+%rename("pair_jagged_array_output") pairJaggedArrayOutput(int);
+%rename("pair_jagged_array_input") pairJaggedArrayInput(std::vector<std::vector<std::pair<int, int>>>);
+%rename("pair_jagged_array_ref_input") pairJaggedArrayRefInput(const std::vector<std::vector<std::pair<int, int>>>&);
 
-%rename ("__str__") bar::Bar::operator();
+%rename("free_function") freeFunction(int);
+%rename("free_function") freeFunction(int64_t);
+
+%unignore Bar;
+%rename ("static_function") Bar::staticFunction(int);
+%rename ("static_function") Bar::staticFunction(int64_t);
+
+%rename ("get_int") Bar::getInt() const;
+%rename ("set_int") Bar::setInt(int);
+
+%rename ("get_int64") Bar::getInt64() const;
+%rename ("set_int64") Bar::setInt64(int64_t);
+
+%rename ("__str__") Bar::operator();
+} // namespace bar
 
 // Process symbols in header
 %include "bar/Bar.hpp"

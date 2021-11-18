@@ -1,5 +1,5 @@
 # This file is just an orchestration
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.18)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Export compile command" TRUE)
@@ -81,6 +81,9 @@ if(WIN32 AND (BUILD_PYTHON OR BUILD_JAVA OR BUILD_DOTNET))
   message(STATUS "Getting SWIG: ...DONE")
 endif()
 
+option(FETCH_PYTHON_DEPS "Install python required modules if not available" ON)
+message(STATUS "Python fetch dependencies: ${FETCH_PYTHON_DEPS}")
+
 include(python)
 include(java)
 include(dotnet)
@@ -90,3 +93,4 @@ add_subdirectory(tests)
 option(BUILD_EXAMPLES "Build examples" ON)
 message(STATUS "Build examples: ${BUILD_EXAMPLES}")
 add_subdirectory(examples)
+

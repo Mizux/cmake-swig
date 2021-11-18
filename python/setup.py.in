@@ -24,9 +24,9 @@ setup(
   packages=find_packages(),
   package_data={
   '@PYTHON_PROJECT@':[$<$<NOT:$<PLATFORM_ID:Windows>>:'.libs/*'>],
-  '@PYTHON_PROJECT@.Foo':['$<TARGET_FILE_NAME:pyFoo>'],
-  '@PYTHON_PROJECT@.Bar':['$<TARGET_FILE_NAME:pyBar>'],
-  '@PYTHON_PROJECT@.FooBar':['$<TARGET_FILE_NAME:pyFooBar>'],
+  '@PYTHON_PROJECT@.foo':['$<TARGET_FILE_NAME:pyFoo>'],
+  '@PYTHON_PROJECT@.bar':['$<TARGET_FILE_NAME:pyBar>'],
+  '@PYTHON_PROJECT@.foobar':['$<TARGET_FILE_NAME:pyFooBar>'],
   },
   include_package_data=True,
   classifiers=[
