@@ -46,14 +46,18 @@
 [appveyor_link]: https://ci.appveyor.com/project/Mizux/cmake-swig/branch/master
 
 # Introduction
-<nav for="language"> |
+<nav for="project"> |
+<a href="#requirement">Requirement</a> |
 <a href="#codemap">Codemap</a> |
+<a href="#dependencies">Dependencies</a> |
+<a href="#build">Build</a> |
 <a href="docs/cpp.md">C++</a> |
 <a href="docs/swig.md">Swig</a> |
 <a href="docs/python.md">Python 3</a> |
 <a href="docs/dotnet.md">.Net Core</a> |
 <a href="docs/java.md">Java</a> |
 <a href="ci/README.md">CI</a> |
+<a href="#appendices">Appendices</a> |
 <a href="#license">License</a> |
 </nav>
 
@@ -68,11 +72,21 @@ You can find detailed documentation for [C++](docs/cpp.md), [Swig](docs/swig.md)
 note: You should read **C++** and **Swig** first since since other languages are
 just swig generated wrappers from the C++.
 
-# [Codemap](#codemap)
+## Requirement
+You'll need:
+
+* "CMake >= 3.18".
+* "Python >= 3.6" and python module 'pip' (ed "setuptools" and "wheel" will be
+ auto installed on demand).
+
+## Codemap
 The project layout is as follow:
 
 * [CMakeLists.txt](CMakeLists.txt) Top-level for [CMake](https://cmake.org/cmake/help/latest/) based build.
 * [cmake](cmake) Subsidiary CMake files.
+  * [python.cmake](cmake/python.cmake) All internall Python CMake stuff.
+  * [dotnet.cmake](cmake/dotnet.cmake) All internall .Net CMake stuff.
+  * [java.cmake](cmake/java.cmake) All internall Java CMake stuff.
 
 * [ci](ci) Root directory for continuous integration.
 
@@ -81,6 +95,8 @@ The project layout is as follow:
   * [include](Foo/include) public folder.
     * [foo](Foo/include/foo)
       * [Foo.hpp](Foo/include/foo/Foo.hpp)
+  * [src](Foo/src) private folder.
+    * [src/Foo.cpp](Foo/src/Foo.cpp)
   * [python](Foo/python)
     * [CMakeLists.txt](Foo/python/CMakeLists.txt) for `Foo` Python.
     * [foo.i](Foo/python/foo.i) SWIG Python wrapper.
@@ -90,13 +106,13 @@ The project layout is as follow:
   * [java](Foo/java)
     * [CMakeLists.txt](Foo/java/CMakeLists.txt) for `Foo` Java.
     * [java/foo.i](Foo/java/foo.i) SWIG Java wrapper.
-  * [src](Foo/src) private folder.
-    * [src/Foo.cpp](Foo/src/Foo.cpp)
 * [Bar](Bar) Root directory for `Bar` library.
   * [CMakeLists.txt](Bar/CMakeLists.txt) for `Bar`.
   * [include](Bar/include) public folder.
     * [bar](Bar/include/bar)
       * [Bar.hpp](Bar/include/bar/Bar.hpp)
+  * [src](Bar/src) private folder.
+    * [src/Bar.cpp](Bar/src/Bar.cpp)
   * [python](Bar/python)
     * [CMakeLists.txt](Bar/python/CMakeLists.txt) for `Bar` Python.
     * [bar.i](Bar/python/bar.i) SWIG Python wrapper.
@@ -106,13 +122,13 @@ The project layout is as follow:
   * [java](Bar/java)
     * [CMakeLists.txt](Bar/java/CMakeLists.txt) for `Bar` Java.
     * [java/bar.i](Bar/java/bar.i) SWIG Java wrapper.
-  * [src](Bar/src) private folder.
-    * [src/Bar.cpp](Bar/src/Bar.cpp)
 * [FooBar](FooBar) Root directory for `FooBar` library.
   * [CMakeLists.txt](FooBar/CMakeLists.txt) for `FooBar`.
   * [include](FooBar/include) public folder.
     * [foobar](FooBar/include/foobar)
       * [FooBar.hpp](FooBar/include/foobar/FooBar.hpp)
+  * [src](FooBar/src) private folder.
+    * [src/FooBar.cpp](FooBar/src/FooBar.cpp)
   * [python](FooBar/python)
     * [CMakeLists.txt](FooBar/python/CMakeLists.txt) for `FooBar` Python.
     * [foobar.i](FooBar/python/foobar.i) SWIG Python wrapper.
@@ -122,26 +138,55 @@ The project layout is as follow:
   * [java](FooBar/java)
     * [CMakeLists.txt](FooBar/java/CMakeLists.txt) for `FooBar` Java.
     * [java/foobar.i](FooBar/java/foobar.i) SWIG Java wrapper.
-  * [src](FooBar/src) private folder.
-    * [src/FooBar.cpp](FooBar/src/FooBar.cpp)
 * [FooBarApp](FooBarApp) Root directory for `FooBarApp` executable.
   * [CMakeLists.txt](FooBarApp/CMakeLists.txt) for `FooBarApp`.
   * [src](FooBarApp/src) private folder.
     * [src/main.cpp](FooBarApp/src/main.cpp)
 
-## [C++ Project Build](#build)
+* [python](python) Root directory for Python template files
+  * [`setup.py.in`](python/setup.py.in) setup.py template for the Python native package.
+
+## Dependencies
+To complexify a little, the CMake project is composed of three libraries (Foo, Bar and FooBar)
+with the following dependencies:  
+```sh
+Foo:
+Bar:
+FooBar: PUBLIC Foo PRIVATE Bar
+```
+
+## Build
 To build the C++ project, as usual:
 ```sh
 cmake -S. -Bbuild
 cmake --build build
 ```
 
-## [License](#license)
+## Appendices
+Few links on the subject...
 
+### Resources
+Project layout:
+* The Pitchfork Layout Revision 1 (cxx-pflR1)
+CMake:
+* https://llvm.org/docs/CMakePrimer.html
+* https://cliutils.gitlab.io/modern-cmake/
+* https://cgold.readthedocs.io/en/latest/
+Python:
+* [Packaging Python Project](https://packaging.python.org/tutorials/packaging-projects/)
+* [PEP 600  Future 'manylinux' Platform Tags](https://www.python.org/dev/peps/pep-0600/)
+
+### Misc
+Image has been generated using [plantuml](http://plantuml.com/):
+```bash
+plantuml -Tsvg docs/{file}.dot
+```
+So you can find the dot source files in [docs](docs).
+
+## License
 Apache 2. See the LICENSE file for details.
 
 ## Disclaimer
-
 This is not an official Google product, it is just code that happens to be
 owned by Google.
 
