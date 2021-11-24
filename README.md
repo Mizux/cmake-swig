@@ -145,6 +145,8 @@ The project layout is as follow:
 
 * [python](python) Root directory for Python template files
   * [`setup.py.in`](python/setup.py.in) setup.py template for the Python native package.
+* [dotnet](dotnet) Root directory for .Net template files
+* [java](java) Root directory for Java template files
 
 ## Dependencies
 To complexify a little, the CMake project is composed of three libraries (Foo, Bar and FooBar)
@@ -168,10 +170,12 @@ Few links on the subject...
 ### Resources
 Project layout:
 * The Pitchfork Layout Revision 1 (cxx-pflR1)
+
 CMake:
 * https://llvm.org/docs/CMakePrimer.html
 * https://cliutils.gitlab.io/modern-cmake/
 * https://cgold.readthedocs.io/en/latest/
+
 Python:
 * [Packaging Python Project](https://packaging.python.org/tutorials/packaging-projects/)
 * [PEP 600  Future 'manylinux' Platform Tags](https://www.python.org/dev/peps/pep-0600/)
