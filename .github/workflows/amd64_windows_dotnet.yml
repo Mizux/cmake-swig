@@ -9,12 +9,10 @@ on:
 
 jobs:
   # Building using the github runner environement directly.
-  build:
+  visual-studio:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Check cmake
-      run: cmake --version
     - name: Install SWIG 4.0.2
       run: |
         (New-Object System.Net.WebClient).DownloadFile("http://prdownloads.sourceforge.net/swig/swigwin-4.0.2.zip","swigwin-4.0.2.zip");
@@ -24,11 +22,13 @@ jobs:
       run: swig -version
     - name: Check dotnet
       run: dotnet --info
+    - name: Check cmake
+      run: cmake --version
     - name: Configure
-      run: cmake -S. -Bbuild -G "Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=Release -DBUILD_DOTNET=ON
+      run: cmake -S. -Bbuild -G "Visual Studio 16 2019" -DCMAKE_CONFIGURATION_TYPES=Release -DBUILD_DOTNET=ON
     - name: Build
-      run: cmake --build build --config Release --target ALL_BUILD -- /verbosity:normal /maxcpucount
+      run: cmake --build build --config Release --target ALL_BUILD -v
     - name: Test
-      run: cmake --build build --config Release --target RUN_TESTS -- /verbosity:normal /maxcpucount
+      run: cmake --build build --config Release --target RUN_TESTS -v
     - name: Install
-      run: cmake --build build --config Release --target INSTALL -- /verbosity:normal /maxcpucount
+      run: cmake --build build --config Release --target INSTALL -v

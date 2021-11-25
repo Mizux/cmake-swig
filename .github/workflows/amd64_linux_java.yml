@@ -9,23 +9,110 @@ on:
 
 jobs:
   # Building using the github runner environement directly.
-  build:
+  ninja:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Swig install
-      run: sudo apt install -y swig
+    - name: Install Ninja
+      run: |
+        sudo apt-get update
+        sudo apt-get install ninja-build
+    - name: Uninstall preinstalled swig3.0
+      run: |
+        swig -version;
+        sudo apt remove -y swig swig3.0
+    - name: Install SWIG 4.0.2
+      run: |
+        wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.2/swig-4.0.2.tar.gz";
+        tar xvf swig-4.0.2.tar.gz;
+        rm swig-4.0.2.tar.gz;
+        cd swig-4.0.2;
+        ./configure --prefix=/usr;
+        make -j8;
+        sudo make install;
+        cd ..;
+        rm -rf swig-4.0.2;
     - name: Check swig
       run: swig -version
-    - name: Check java
-      run: java -version
+    - name: Check mvn
+      run: mvn --version
     - name: Check cmake
       run: cmake --version
     - name: Configure
-      run: cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release -DBUILD_JAVA=ON
+      run: cmake -S. -Bbuild -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DBUILD_JAVA=ON -DSKIP_GPG=ON
+    - name: Build
+      run: cmake --build build --target all -v
+    - name: Test
+      run: cmake --build build --target test -v
+    - name: Install
+      run: cmake --build build --target install -v
+  ninja-multi:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Ninja
+      run: |
+        sudo apt-get update
+        sudo apt-get install ninja-build
+    - name: Uninstall preinstalled swig3.0
+      run: |
+        swig -version;
+        sudo apt remove -y swig swig3.0
+    - name: Install SWIG 4.0.2
+      run: |
+        wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.2/swig-4.0.2.tar.gz";
+        tar xvf swig-4.0.2.tar.gz;
+        rm swig-4.0.2.tar.gz;
+        cd swig-4.0.2;
+        ./configure --prefix=/usr;
+        make -j8;
+        sudo make install;
+        cd ..;
+        rm -rf swig-4.0.2;
+    - name: Check swig
+      run: swig -version
+    - name: Check mvn
+      run: mvn --version
+    - name: Check cmake
+      run: cmake --version
+    - name: Configure
+      run: cmake -S. -Bbuild -G "Ninja Multi-Config" -DCMAKE_INSTALL_PREFIX=install -DBUILD_JAVA=ON -DSKIP_GPG=ON
     - name: Build
       run: cmake --build build --config Release --target all -v
     - name: Test
       run: cmake --build build --config Release --target test -v
     - name: Install
-      run: cmake --build build --config Release --target install -v -- DESTDIR=install
+      run: cmake --build build --config Release --target install -v
+  make:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Uninstall preinstalled swig3.0
+      run: |
+        swig -version;
+        sudo apt remove -y swig swig3.0
+    - name: Install SWIG 4.0.2
+      run: |
+        wget "https://downloads.sourceforge.net/project/swig/swig/swig-4.0.2/swig-4.0.2.tar.gz";
+        tar xvf swig-4.0.2.tar.gz;
+        rm swig-4.0.2.tar.gz;
+        cd swig-4.0.2;
+        ./configure --prefix=/usr;
+        make -j8;
+        sudo make install;
+        cd ..;
+        rm -rf swig-4.0.2;
+    - name: Check swig
+      run: swig -version
+    - name: Check mvn
+      run: mvn --version
+    - name: Check cmake
+      run: cmake --version
+    - name: Configure
+      run: cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DBUILD_JAVA=ON -DSKIP_GPG=ON
+    - name: Build
+      run: cmake --build build --target all -v
+    - name: Test
+      run: cmake --build build --target test -v
+    - name: Install
+      run: cmake --build build --target install -v
