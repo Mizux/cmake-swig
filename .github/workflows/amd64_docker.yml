@@ -1,4 +1,5 @@
-name: Docker
+# ref: https://github.com/docker-library/official-images
+name: amd64 Docker
 
 on:
   push:
@@ -20,6 +21,10 @@ jobs:
       LANG: ${{ matrix.lang }}
     steps:
     - uses: actions/checkout@v2
+    - name: Check docker
+      run: |
+        docker info
+        docker buildx ls
     - name: Build base image
       run: make --directory=ci ${DISTRO}_base
     - name: Build env image
@@ -31,11 +36,11 @@ jobs:
     - name: Test project
       run: make --directory=ci ${DISTRO}_${LANG}_test
 
-    - name: Build env Install
+    - name: Build install env image
       run: make --directory=ci ${DISTRO}_${LANG}_install_env
-    - name: Build devel Install
+    - name: Build install devel project
       run: make --directory=ci ${DISTRO}_${LANG}_install_devel
-    - name: Build Install
+    - name: Build install project
       run: make --directory=ci ${DISTRO}_${LANG}_install_build
-    - name: Test Install
+    - name: Test install project
       run: make --directory=ci ${DISTRO}_${LANG}_install_test

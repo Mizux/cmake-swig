@@ -1,4 +1,4 @@
-name: Python Linux CI
+name: amd64 macOS Java
 
 on:
   push:
@@ -10,20 +10,22 @@ on:
 jobs:
   # Building using the github runner environement directly.
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - name: Check cmake
       run: cmake --version
     - name: Swig install
-      run: sudo apt install -y swig
+      run: brew install swig
     - name: Check swig
       run: swig -version
+    - name: Check java
+      run: java -version
     - name: Configure
-      run: cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON
+      run: cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release -DBUILD_JAVA=ON
     - name: Build
       run: cmake --build build --config Release --target all -v
     - name: Test
-      run: cmake --build build --config Release --target test -v
+      run: CTEST_OUTPUT_ON_FAILURE=1 cmake --build build --config Release --target test -v
     - name: Install
       run: cmake --build build --config Release --target install -v -- DESTDIR=install

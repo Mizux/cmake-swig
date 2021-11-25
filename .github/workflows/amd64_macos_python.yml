@@ -1,4 +1,4 @@
-name: Java MacOS CI
+name: amd64 macOS Python
 
 on:
   push:
@@ -19,13 +19,11 @@ jobs:
       run: brew install swig
     - name: Check swig
       run: swig -version
-    - name: Check java
-      run: java -version
     - name: Configure
-      run: cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release -DBUILD_JAVA=ON
+      run: cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON
     - name: Build
       run: cmake --build build --config Release --target all -v
     - name: Test
-      run: CTEST_OUTPUT_ON_FAILURE=1 cmake --build build --config Release --target test -v
+      run: cmake --build build --config Release --target test -v
     - name: Install
       run: cmake --build build --config Release --target install -v -- DESTDIR=install
