@@ -65,6 +65,7 @@ note: You should read **C++** and **Swig** first since since other languages are
 just swig generated wrappers from the C++.
 
 ## Requirement
+
 You'll need:
 
 * "CMake >= 3.18".
@@ -72,6 +73,7 @@ You'll need:
  auto installed on demand).
 
 ## Codemap
+
 The project layout is as follow:
 
 * [CMakeLists.txt](CMakeLists.txt) Top-level for [CMake](https://cmake.org/cmake/help/latest/) based build.
@@ -157,6 +159,7 @@ cmake --build build
 ```
 
 ## Appendices
+
 Few links on the subject...
 
 ### Resources
@@ -172,6 +175,22 @@ Python:
 * [Packaging Python Project](https://packaging.python.org/tutorials/packaging-projects/)
 * [PEP 600  Future 'manylinux' Platform Tags](https://www.python.org/dev/peps/pep-0600/)
 
+.Net:
+* [.NET Core RID Catalog](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog)
+* [Creating native packages](https://docs.microsoft.com/en-us/nuget/create-packages/native-packages)
+* [Blog on Nuget Rid Graph](https://natemcmaster.com/blog/2016/05/19/nuget3-rid-graph/)
+
+* [Common MSBuild project properties](https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2017)
+* [MSBuild well-known item metadata](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-well-known-item-metadata?view=vs-2017)
+* [Additions to the csproj format for .NET Core](https://docs.microsoft.com/en-us/dotnet/core/tools/csproj)
+
+### Issues
+
+Some issue related to this process
+* [Nuget needs to support dependencies specific to target runtime #1660](https://github.com/NuGet/Home/issues/1660)
+* [Improve documentation on creating native packages #238](https://github.com/NuGet/docs.microsoft.com-nuget/issues/238)
+* [Guide for packaging C# library using P/Invoke](https://github.com/NuGet/Home/issues/8623)
+
 ### Misc
 Image has been generated using [plantuml](http://plantuml.com/):
 ```bash
@@ -180,9 +199,10 @@ plantuml -Tsvg docs/{file}.dot
 So you can find the dot source files in [docs](docs).
 
 ## License
+
 Apache 2. See the LICENSE file for details.
 
 ## Disclaimer
+
 This is not an official Google product, it is just code that happens to be
 owned by Google.
-
