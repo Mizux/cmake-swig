@@ -12,4 +12,4 @@ set_target_properties(dotnet_FooBar PROPERTIES
   SWIG_INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/dotnet
   SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON
   POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(dotnet_FooBar PRIVATE CMakeSwig::FooBar)
+target_link_libraries(dotnet_FooBar PRIVATE ${PROJECT_NAMESPACE}::FooBar)

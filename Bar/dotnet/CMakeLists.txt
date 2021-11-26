@@ -12,4 +12,4 @@ set_target_properties(dotnet_Bar PROPERTIES
   SWIG_INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/dotnet
   SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON
   POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(dotnet_Bar PRIVATE CMakeSwig::Bar)
+target_link_libraries(dotnet_Bar PRIVATE ${PROJECT_NAMESPACE}::Bar)
