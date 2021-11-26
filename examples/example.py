@@ -1,9 +1,9 @@
-import pythonnative
-from pythonnative.foo import pyFoo
-from pythonnative.bar import pyBar
-from pythonnative.foobar import pyFooBar
+import cmakeswig
+from cmakeswig.foo import pyFoo
+from cmakeswig.bar import pyBar
+from cmakeswig.foobar import pyFooBar
 
-print(f'version: {pythonnative.__version__}')
+print(f'version: {cmakeswig.__version__}')
 
 # foo
 print(f'Foo: {dir(pyFoo.Foo)}')
