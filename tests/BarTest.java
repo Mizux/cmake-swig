@@ -1,16 +1,16 @@
-package org.mizux.javanative;
+package org.mizux.cmakeswig;
 
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 
-import org.mizux.javanative.Loader;
-import org.mizux.javanative.bar.Bar;
-import org.mizux.javanative.bar.Globals;
-import org.mizux.javanative.bar.StringVector;
-import org.mizux.javanative.bar.StringJaggedArray;
-import org.mizux.javanative.bar.IntPair;
-import org.mizux.javanative.bar.PairVector;
-import org.mizux.javanative.bar.PairJaggedArray;
+import org.mizux.cmakeswig.Loader;
+import org.mizux.cmakeswig.bar.Bar;
+import org.mizux.cmakeswig.bar.Globals;
+import org.mizux.cmakeswig.bar.StringVector;
+import org.mizux.cmakeswig.bar.StringJaggedArray;
+import org.mizux.cmakeswig.bar.IntPair;
+import org.mizux.cmakeswig.bar.PairVector;
+import org.mizux.cmakeswig.bar.PairJaggedArray;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

@@ -1,9 +1,9 @@
-package org.mizux.javanative.examples;
+package org.mizux.cmakeswig.examples;
 
-import org.mizux.javanative.Loader;
-import org.mizux.javanative.bar.Bar;
-import org.mizux.javanative.foo.Foo;
-import org.mizux.javanative.foobar.FooBar;
+import org.mizux.cmakeswig.Loader;
+import org.mizux.cmakeswig.bar.Bar;
+import org.mizux.cmakeswig.foo.Foo;
+import org.mizux.cmakeswig.foobar.FooBar;
 
 public final class Example {
   public static void main(String[] args) {
