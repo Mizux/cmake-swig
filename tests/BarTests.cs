@@ -1,15 +1,15 @@
 using System;
 using Xunit;
-using Mizux.CMakeSwig;
+using Mizux.CMakeSwig.Bar;
 
 namespace Mizux.CMakeSwig.Tests {
-  public class FooTest {
+  public class BarTest {
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public void IntegerTest(bool callGC) {
-      // Instantiate Foo
-      Foo.Foo obj = new Foo.Foo();
+      // Instantiate Bar
+      Bar.Bar obj = new Bar.Bar();
 
       if (callGC) {
         GC.Collect();
@@ -23,8 +23,8 @@ namespace Mizux.CMakeSwig.Tests {
     [InlineData(false)]
     [InlineData(true)]
     public void Integer64Test(bool callGC) {
-      // Instantiate Foo
-      Foo.Foo obj = new Foo.Foo();
+      // Instantiate Bar
+      Bar.Bar obj = new Bar.Bar();
 
       if (callGC) {
         GC.Collect();

@@ -1,12 +1,11 @@
 set_property(SOURCE foo.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE foo.i PROPERTY COMPILE_OPTIONS
-  -namespace ${DOTNET_PROJECT}
+  -namespace ${DOTNET_PROJECT}.Foo
   -dllimport mizux-cmakeswig-native)
 swig_add_library(dotnet_Foo
   TYPE OBJECT
   LANGUAGE csharp
-  OUTPUT_DIR
-  ${PROJECT_BINARY_DIR}/dotnet/${DOTNET_PROJECT}/Foo
+  OUTPUT_DIR ${PROJECT_BINARY_DIR}/dotnet/${DOTNET_PROJECT}/Foo
   SOURCES foo.i)
 
 set_target_properties(dotnet_Foo PROPERTIES
