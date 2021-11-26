@@ -2,14 +2,14 @@
 '''Test APIs'''
 
 import unittest
-import pythonnative
-from pythonnative.bar import pyBar
-#import pythonnative.bar.pyBar as bar
+import cmakeswig
+from cmakeswig.bar import pyBar
+#import cmakeswig.bar.pyBar as bar
 
 if __debug__:
-    print(f'version: {pythonnative.__version__}')
-    print(f'pythonnative: ${dir(pythonnative)}')
-    print(f'pythonnative.bar: ${dir(pythonnative.bar)}')
+    print(f'version: {cmakeswig.__version__}')
+    print(f'cmakeswig: ${dir(cmakeswig)}')
+    print(f'cmakeswig.bar: ${dir(cmakeswig.bar)}')
     print(f'pyBar: ${dir(pyBar)}')
 
 

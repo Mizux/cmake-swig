@@ -2,14 +2,14 @@
 '''Test APIs'''
 
 import unittest
-import pythonnative
-from pythonnative.foobar import pyFooBar
-#import pythonnative.foobar.pyFooBar as foobar
+import cmakeswig
+from cmakeswig.foobar import pyFooBar
+#import cmakeswig.foobar.pyFooBar as foobar
 
 if __debug__:
-    print(f'version: {pythonnative.__version__}')
-    print(f'pythonnative: ${dir(pythonnative)}')
-    print(f'pythonnative.foobar: ${dir(pythonnative.foobar)}')
+    print(f'version: {cmakeswig.__version__}')
+    print(f'cmakeswig: ${dir(cmakeswig)}')
+    print(f'cmakeswig.foobar: ${dir(cmakeswig.foobar)}')
     print(f'pyFooBar: ${dir(pyFooBar)}')
 
 
