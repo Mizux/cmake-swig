@@ -62,12 +62,12 @@ endif()
 option(BUILD_CXX "Build C++ library" ON)
 message(STATUS "Build C++ library: ${BUILD_CXX}")
 
-option(BUILD_PYTHON "Build Python Library" OFF)
-message(STATUS "Build Python: ${BUILD_PYTHON}")
-option(BUILD_JAVA "Build Java Library" OFF)
-message(STATUS "Build Java: ${BUILD_JAVA}")
 option(BUILD_DOTNET "Build .NET Library" OFF)
 message(STATUS "Build .Net: ${BUILD_DOTNET}")
+option(BUILD_JAVA "Build Java Library" OFF)
+message(STATUS "Build Java: ${BUILD_JAVA}")
+option(BUILD_PYTHON "Build Python Library" OFF)
+message(STATUS "Build Python: ${BUILD_PYTHON}")
 
 # Disable CTest targets
 set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
@@ -75,21 +75,21 @@ include(CTest)
 
 include(cpp)
 
-if(WIN32 AND (BUILD_PYTHON OR BUILD_JAVA OR BUILD_DOTNET))
+if(WIN32 AND (BUILD_DOTNET OR BUILD_JAVA OR BUILD_PYTHON))
   message(STATUS "Getting SWIG: ...")
   include(swig)
   message(STATUS "Getting SWIG: ...DONE")
 endif()
 
+include(dotnet)
 
 option(SKIP_GPG "Skip gpg sign" ON)
 message(STATUS "Maven skip GPG sign: ${SKIP_GPG}")
 include(java)
+
 option(FETCH_PYTHON_DEPS "Install python required modules if not available" ON)
 message(STATUS "Python fetch dependencies: ${FETCH_PYTHON_DEPS}")
-
 include(python)
-include(dotnet)
 
 add_subdirectory(tests)
 
