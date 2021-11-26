@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <RuntimeIdentifier>@RUNTIME_IDENTIFIER@</RuntimeIdentifier>
     <AssemblyName>mizux-cmakeswig-native</AssemblyName>
     <Version>@PROJECT_VERSION@</Version>
@@ -11,8 +11,8 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
 
     <!-- Pack Option -->
-    <Title>@CMAKE_SWIG_DOTNET@ @RUNTIME_IDENTIFIER@ v@PROJECT_VERSION@</Title>
-    <PackageId>@CMAKE_SWIG_DOTNET_NATIVE@</PackageId>
+    <Title>@DOTNET@ @RUNTIME_IDENTIFIER@ v@PROJECT_VERSION@</Title>
+    <PackageId>@DOTNET_NATIVE_PROJECT@</PackageId>
 
     <!-- Signing -->
     <SignAssembly>false</SignAssembly>
@@ -22,12 +22,12 @@
 
   <ItemGroup>
     <!-- Native library must be in native directory... -->
-    <Content Include="@Foo@;@Bar@;@FooBar@">
+    <Content Include="$<TARGET_FILE:Bar>;$<TARGET_FILE:Foo>;$<TARGET_FILE:FooBar>">
       <PackagePath>runtimes/@RUNTIME_IDENTIFIER@/native/%(Filename)%(Extension)</PackagePath>
       <Pack>true</Pack>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="@native@">
+    <Content Include="$<TARGET_FILE:mizux-dotnetnative-native>">
       <PackagePath>runtimes/@RUNTIME_IDENTIFIER@/native/%(Filename)%(Extension)</PackagePath>
       <Pack>true</Pack>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
