@@ -5,10 +5,6 @@ endif()
 # Use latest UseSWIG module (3.14) and Python3 module (3.18)
 cmake_minimum_required(VERSION 3.18)
 
-if(NOT TARGET ${PROJECT_NAMESPACE}::FooBar)
-  message(FATAL_ERROR "Python: missing FooBar TARGET")
-endif()
-
 # Will need swig
 set(CMAKE_SWIG_FLAGS)
 find_package(SWIG REQUIRED)
