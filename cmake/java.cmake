@@ -2,13 +2,6 @@ if(NOT BUILD_JAVA)
   return()
 endif()
 
-# Use latest UseSWIG module
-cmake_minimum_required(VERSION 3.14)
-
-if(NOT TARGET CMakeSwig::FooBar)
-  message(FATAL_ERROR "Java: missing FooBar TARGET")
-endif()
-
 # Will need swig
 set(CMAKE_SWIG_FLAGS)
 find_package(SWIG REQUIRED)
@@ -22,12 +15,9 @@ if(UNIX AND NOT APPLE)
   list(APPEND CMAKE_SWIG_FLAGS "-DSWIGWORDSIZE64")
 endif()
 
-# Find java
+# Find Java and JNI
 find_package(Java COMPONENTS Development REQUIRED)
-message(STATUS "Found Java: ${Java_JAVA_EXECUTABLE} (found version \"${Java_VERSION_STRING}\")")
-
 find_package(JNI REQUIRED)
-message(STATUS "Found JNI: ${JNI_FOUND}")
 
 # Find maven
 # On windows mvn spawn a process while mvn.cmd is a blocking command
@@ -36,32 +26,25 @@ if(UNIX)
 else()
   find_program(MAVEN_EXECUTABLE mvn.cmd)
 endif()
-
 if(NOT MAVEN_EXECUTABLE)
   message(FATAL_ERROR "Check for maven Program: not found")
 else()
   message(STATUS "Found Maven: ${MAVEN_EXECUTABLE}")
 endif()
 
-# Create the native library
-add_library(jnicmakeswig SHARED "")
-set_target_properties(jnicmakeswig PROPERTIES
-  POSITION_INDEPENDENT_CODE ON)
-# note: macOS is APPLE and also UNIX !
-if(APPLE)
-  set_target_properties(jnicmakeswig PROPERTIES
-    INSTALL_RPATH "@loader_path")
-elseif(UNIX)
-  set_target_properties(jnicmakeswig PROPERTIES INSTALL_RPATH "$ORIGIN")
-endif()
+# Needed by java/CMakeLists.txt
+set(JAVA_DOMAIN_NAME "mizux")
+set(JAVA_DOMAIN_EXTENSION "org")
 
-# Swig wrap all libraries
-# Needed by */java/CMakeLists.txt
-set(JAVA_PACKAGE org.mizux.cmakeswig)
-set(JAVA_PACKAGE_PATH src/main/java/org/mizux/cmakeswig)
-set(JAVA_RESOURCES_PATH src/main/resources)
+set(JAVA_GROUP "${JAVA_DOMAIN_EXTENSION}.${JAVA_DOMAIN_NAME}")
+set(JAVA_ARTIFACT "cmakeswig")
+
+set(JAVA_PACKAGE "${JAVA_GROUP}.${JAVA_ARTIFACT}")
+set(JAVA_PACKAGE_SRC_PATH src/main/java/${JAVA_DOMAIN_EXTENSION}/${JAVA_DOMAIN_NAME}/${JAVA_ARTIFACT})
+set(JAVA_PACKAGE_TEST_PATH src/test/java/${JAVA_DOMAIN_EXTENSION}/${JAVA_DOMAIN_NAME}/${JAVA_ARTIFACT})
+set(JAVA_PACKAGE_RESOURCES_PATH src/main/resources)
 if(APPLE)
-  set(NATIVE_IDENTIFIER darwin)
+  set(NATIVE_IDENTIFIER darwin-x86-64)
 elseif(UNIX)
   set(NATIVE_IDENTIFIER linux-x86-64)
 elseif(WIN32)
@@ -69,95 +52,200 @@ elseif(WIN32)
 else()
   message(FATAL_ERROR "Unsupported system !")
 endif()
-set(JAVA_NATIVE_PROJECT cmakeswig-${NATIVE_IDENTIFIER})
-set(JAVA_PROJECT cmakeswig-java)
+set(JAVA_NATIVE_PROJECT ${JAVA_ARTIFACT}-${NATIVE_IDENTIFIER})
+set(JAVA_PROJECT ${JAVA_ARTIFACT}-java)
+
+# Create the native library
+add_library(jni${JAVA_ARTIFACT} SHARED "")
+set_target_properties(jni${JAVA_ARTIFACT} PROPERTIES
+  POSITION_INDEPENDENT_CODE ON)
+# note: macOS is APPLE and also UNIX !
+if(APPLE)
+  set_target_properties(jni${JAVA_ARTIFACT} PROPERTIES INSTALL_RPATH "@loader_path")
+  # Xcode fails to build if library doesn't contains at least one source file.
+  if(XCODE)
+    file(GENERATE
+      OUTPUT ${PROJECT_BINARY_DIR}/jni${JAVA_ARTIFACT}/version.cpp
+      CONTENT "namespace {char* version = \"${PROJECT_VERSION}\";}")
+    target_sources(jni${JAVA_ARTIFACT} PRIVATE ${PROJECT_BINARY_DIR}/jni${JAVA_ARTIFACT}/version.cpp)
+  endif()
+elseif(UNIX)
+  set_target_properties(jni${JAVA_ARTIFACT} PROPERTIES INSTALL_RPATH "$ORIGIN")
+endif()
 
 # Swig wrap all libraries
 foreach(SUBPROJECT IN ITEMS Foo Bar FooBar)
   add_subdirectory(${SUBPROJECT}/java)
-  target_link_libraries(jnicmakeswig PRIVATE jni${SUBPROJECT})
+  target_link_libraries(jni${JAVA_ARTIFACT} PRIVATE jni${SUBPROJECT})
 endforeach()
+
+#################################
+##  Java Native Maven Package  ##
+#################################
+set(JAVA_NATIVE_PROJECT_PATH ${PROJECT_BINARY_DIR}/java/${JAVA_NATIVE_PROJECT})
+file(MAKE_DIRECTORY ${JAVA_NATIVE_PROJECT_PATH}/${JAVA_PACKAGE_RESOURCES_PATH}/${JAVA_NATIVE_PROJECT})
+
+configure_file(
+  ${PROJECT_SOURCE_DIR}/java/pom-native.xml.in
+  ${JAVA_NATIVE_PROJECT_PATH}/pom.xml
+  @ONLY)
+
+add_custom_target(java_native_package
+  DEPENDS
+  ${JAVA_NATIVE_PROJECT_PATH}/pom.xml
+  COMMAND ${CMAKE_COMMAND} -E copy
+    $<TARGET_FILE:jni${JAVA_ARTIFACT}>
+    $<$<NOT:$<PLATFORM_ID:Windows>>:$<TARGET_SONAME_FILE:Foo>>
+    $<$<NOT:$<PLATFORM_ID:Windows>>:$<TARGET_SONAME_FILE:Bar>>
+    $<$<NOT:$<PLATFORM_ID:Windows>>:$<TARGET_SONAME_FILE:FooBar>>
+    ${JAVA_PACKAGE_RESOURCES_PATH}/${JAVA_NATIVE_PROJECT}/
+  COMMAND ${MAVEN_EXECUTABLE} compile -B
+  COMMAND ${MAVEN_EXECUTABLE} package -B $<$<BOOL:${BUILD_FAT_JAR}>:-Dfatjar=true>
+  COMMAND ${MAVEN_EXECUTABLE} install -B $<$<BOOL:${SKIP_GPG}>:-Dgpg.skip=true>
+  BYPRODUCTS
+    ${JAVA_NATIVE_PROJECT_PATH}/target
+  WORKING_DIRECTORY ${JAVA_NATIVE_PROJECT_PATH})
 
 ##########################
 ##  Java Maven Package  ##
 ##########################
-configure_file(
-  ${PROJECT_SOURCE_DIR}/java/pom-native.xml.in
-  ${PROJECT_BINARY_DIR}/java/pom-native.xml.in
-  @ONLY)
+set(JAVA_PROJECT_PATH ${PROJECT_BINARY_DIR}/java/${JAVA_PROJECT})
+file(MAKE_DIRECTORY ${JAVA_PROJECT_PATH}/${JAVA_PACKAGE_SRC_PATH})
 
-add_custom_command(
-  OUTPUT java/${JAVA_NATIVE_PROJECT}/pom.xml
-  DEPENDS ${PROJECT_BINARY_DIR}/java/pom-native.xml.in
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${JAVA_NATIVE_PROJECT}
-  COMMAND ${CMAKE_COMMAND} -E copy ./pom-native.xml.in ${JAVA_NATIVE_PROJECT}/pom.xml
-  BYPRODUCTS
-  java/${JAVA_NATIVE_PROJECT}
-  WORKING_DIRECTORY java)
-
-add_custom_target(java_native_package
-  DEPENDS
-  java/${JAVA_NATIVE_PROJECT}/pom.xml
-  COMMAND ${CMAKE_COMMAND} -E remove_directory src
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${JAVA_RESOURCES_PATH}/${NATIVE_IDENTIFIER}
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Foo> ${JAVA_RESOURCES_PATH}/${NATIVE_IDENTIFIER}/
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Bar> ${JAVA_RESOURCES_PATH}/${NATIVE_IDENTIFIER}/
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:FooBar> ${JAVA_RESOURCES_PATH}/${NATIVE_IDENTIFIER}/
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:jnicmakeswig> ${JAVA_RESOURCES_PATH}/${NATIVE_IDENTIFIER}/
-  COMMAND ${MAVEN_EXECUTABLE} compile
-  COMMAND ${MAVEN_EXECUTABLE} package
-  COMMAND ${MAVEN_EXECUTABLE} install
-  WORKING_DIRECTORY java/${JAVA_NATIVE_PROJECT})
-
-# Pure Java Package
 configure_file(
   ${PROJECT_SOURCE_DIR}/java/pom-local.xml.in
-  ${PROJECT_BINARY_DIR}/java/pom-local.xml.in
+  ${JAVA_PROJECT_PATH}/pom.xml
   @ONLY)
 
-add_custom_command(
-  OUTPUT java/${JAVA_PROJECT}/pom.xml
-  DEPENDS ${PROJECT_BINARY_DIR}/java/pom-local.xml.in
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${JAVA_PROJECT}
-  COMMAND ${CMAKE_COMMAND} -E copy ./pom-local.xml.in ${JAVA_PROJECT}/pom.xml
-  BYPRODUCTS
-  java/${JAVA_PROJECT}
-  WORKING_DIRECTORY java)
+file(GLOB_RECURSE java_files RELATIVE ${PROJECT_SOURCE_DIR}/java "java/*.java")
+#message(WARNING "list: ${java_files}")
+set(JAVA_SRCS)
+foreach(JAVA_FILE IN LISTS java_files)
+  #message(STATUS "java: ${JAVA_FILE}")
+  set(JAVA_OUT ${JAVA_PROJECT_PATH}/${JAVA_PACKAGE_SRC_PATH}/${JAVA_FILE})
+  #message(STATUS "java out: ${JAVA_OUT}")
+  add_custom_command(
+    OUTPUT ${JAVA_OUT}
+    COMMAND ${CMAKE_COMMAND} -E copy
+      ${PROJECT_SOURCE_DIR}/java/${JAVA_FILE}
+      ${JAVA_OUT}
+      DEPENDS ${PROJECT_SOURCE_DIR}/java/${JAVA_FILE}
+    COMMENT "Copy Java file ${JAVA_FILE}"
+    VERBATIM)
+  list(APPEND JAVA_SRCS ${JAVA_OUT})
+endforeach()
 
 add_custom_target(java_package ALL
   DEPENDS
-  java/${JAVA_PROJECT}/pom.xml
-  COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/java/Loader.java ${JAVA_PACKAGE_PATH}/
-  COMMAND ${MAVEN_EXECUTABLE} compile
-  COMMAND ${MAVEN_EXECUTABLE} package
-  COMMAND ${MAVEN_EXECUTABLE} install
-  WORKING_DIRECTORY java/${JAVA_PROJECT})
+  ${JAVA_PROJECT_PATH}/pom.xml
+  ${JAVA_SRCS}
+  COMMAND ${MAVEN_EXECUTABLE} compile -B
+  COMMAND ${MAVEN_EXECUTABLE} package -B $<$<BOOL:${BUILD_FAT_JAR}>:-Dfatjar=true>
+  COMMAND ${MAVEN_EXECUTABLE} install -B $<$<BOOL:${SKIP_GPG}>:-Dgpg.skip=true>
+  BYPRODUCTS
+    ${JAVA_PROJECT_PATH}/target
+  WORKING_DIRECTORY ${JAVA_PROJECT_PATH})
 add_dependencies(java_package java_native_package)
 
-############
-##  Test  ##
-############
-if(BUILD_TESTING)
-  set(TEST_PATH ${PROJECT_BINARY_DIR}/java/Test)
-  set(JAVA_TEST_PATH src/test/java/org/mizux/cmakeswig)
+#################
+##  Java Test  ##
+#################
+# add_java_test()
+# CMake function to generate and build java test.
+# Parameters:
+#  the java filename
+# e.g.:
+# add_java_test(FooTests.java)
+function(add_java_test FILE_NAME)
+  message(STATUS "Configuring test ${FILE_NAME}: ...")
+  get_filename_component(TEST_NAME ${FILE_NAME} NAME_WE)
+  get_filename_component(COMPONENT_DIR ${FILE_NAME} DIRECTORY)
+  get_filename_component(COMPONENT_NAME ${COMPONENT_DIR} NAME)
 
-  file(COPY ${PROJECT_SOURCE_DIR}/java/CMakeSwigTest.java
-    DESTINATION ${TEST_PATH}/${JAVA_TEST_PATH})
+  set(JAVA_TEST_PATH ${PROJECT_BINARY_DIR}/java/${COMPONENT_NAME}/${TEST_NAME})
+  message(STATUS "build path: ${JAVA_TEST_PATH}/${JAVA_PACKAGE_TEST_PATH}")
+  file(MAKE_DIRECTORY ${JAVA_TEST_PATH}/${JAVA_PACKAGE_TEST_PATH})
 
-  set(JAVA_TEST_PROJECT cmakeswig-test)
+  add_custom_command(
+    OUTPUT ${JAVA_TEST_PATH}/${JAVA_PACKAGE_TEST_PATH}/${TEST_NAME}.java
+    COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME} ${JAVA_TEST_PATH}/${JAVA_PACKAGE_TEST_PATH}
+    MAIN_DEPENDENCY ${FILE_NAME}
+    VERBATIM
+  )
+
+  string(TOLOWER ${TEST_NAME} JAVA_TEST_PROJECT)
   configure_file(
     ${PROJECT_SOURCE_DIR}/java/pom-test.xml.in
-    ${TEST_PATH}/pom.xml
+    ${JAVA_TEST_PATH}/pom.xml
     @ONLY)
 
-  add_custom_target(java_test_Test ALL
-    DEPENDS ${TEST_PATH}/pom.xml
-    COMMAND ${MAVEN_EXECUTABLE} compile
-    WORKING_DIRECTORY ${TEST_PATH})
-  add_dependencies(java_test_Test java_package)
+  add_custom_target(java_${COMPONENT_NAME}_${TEST_NAME} ALL
+    DEPENDS
+      ${JAVA_TEST_PATH}/pom.xml
+      ${JAVA_TEST_PATH}/${JAVA_PACKAGE_TEST_PATH}/${TEST_NAME}.java
+    COMMAND ${MAVEN_EXECUTABLE} compile -B
+    BYPRODUCTS
+      ${JAVA_TEST_PATH}/target
+    WORKING_DIRECTORY ${JAVA_TEST_PATH})
+  add_dependencies(java_${COMPONENT_NAME}_${TEST_NAME} java_package)
 
+  if(BUILD_TESTING)
   add_test(
-    NAME java_CMakeSwigTest
+      NAME java_${COMPONENT_NAME}_${TEST_NAME}
     COMMAND ${MAVEN_EXECUTABLE} test
-    WORKING_DIRECTORY ${TEST_PATH})
+      WORKING_DIRECTORY ${JAVA_TEST_PATH})
 endif()
+  message(STATUS "Configuring test ${FILE_NAME}: ...DONE")
+endfunction()
+
+####################
+##  Java Example  ##
+####################
+# add_java_example()
+# CMake function to generate and build java example.
+# Parameters:
+#  the java filename
+# e.g.:
+# add_java_example(Foo.java)
+function(add_java_example FILE_NAME)
+  message(STATUS "Configuring example ${FILE_NAME}: ...")
+  get_filename_component(EXAMPLE_NAME ${FILE_NAME} NAME_WE)
+  get_filename_component(COMPONENT_DIR ${FILE_NAME} DIRECTORY)
+  get_filename_component(COMPONENT_NAME ${COMPONENT_DIR} NAME)
+
+  set(JAVA_EXAMPLE_PATH ${PROJECT_BINARY_DIR}/java/${COMPONENT_NAME}/${EXAMPLE_NAME})
+  message(STATUS "build path: ${JAVA_EXAMPLE_PATH}/${JAVA_PACKAGE_SRC_PATH}")
+  file(MAKE_DIRECTORY ${JAVA_EXAMPLE_PATH}/${JAVA_PACKAGE_SRC_PATH})
+
+  add_custom_command(
+    OUTPUT ${JAVA_EXAMPLE_PATH}/${JAVA_PACKAGE_SRC_PATH}/${EXAMPLE_NAME}.java
+    COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME} ${JAVA_EXAMPLE_PATH}/${JAVA_PACKAGE_SRC_PATH}
+    MAIN_DEPENDENCY ${FILE_NAME}
+    VERBATIM
+  )
+
+  string(TOLOWER ${EXAMPLE_NAME} JAVA_EXAMPLE_PROJECT)
+  set(JAVA_MAIN_CLASS "${JAVA_PACKAGE}.${COMPONENT_NAME}.${EXAMPLE_NAME}")
+  configure_file(
+    ${PROJECT_SOURCE_DIR}/java/pom-example.xml.in
+    ${JAVA_EXAMPLE_PATH}/pom.xml
+    @ONLY)
+
+  add_custom_target(java_${COMPONENT_NAME}_${EXAMPLE_NAME} ALL
+    DEPENDS
+      ${JAVA_EXAMPLE_PATH}/pom.xml
+      ${JAVA_EXAMPLE_PATH}/${JAVA_PACKAGE_SRC_PATH}/${EXAMPLE_NAME}.java
+    COMMAND ${MAVEN_EXECUTABLE} compile -B
+    BYPRODUCTS
+      ${JAVA_EXAMPLE_PATH}/target
+    WORKING_DIRECTORY ${JAVA_EXAMPLE_PATH})
+  add_dependencies(java_${COMPONENT_NAME}_${EXAMPLE_NAME} java_package)
+
+  if(BUILD_TESTING)
+    add_test(
+      NAME java_${COMPONENT_NAME}_${EXAMPLE_NAME}
+      COMMAND ${MAVEN_EXECUTABLE} exec:java
+      WORKING_DIRECTORY ${JAVA_EXAMPLE_PATH})
+  endif()
+  message(STATUS "Configuring example ${FILE_NAME}: ...DONE")
+endfunction()

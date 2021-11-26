@@ -5,7 +5,7 @@ swig_add_library(jniBar
   TYPE OBJECT
   LANGUAGE java
   OUTPUT_DIR
-  ${PROJECT_BINARY_DIR}/java/${JAVA_PROJECT}/${JAVA_PACKAGE_PATH}/bar
+  ${PROJECT_BINARY_DIR}/java/${JAVA_PROJECT}/${JAVA_PACKAGE_SRC_PATH}/bar
   SOURCES bar.i)
 
 set_target_properties(jniBar PROPERTIES
@@ -13,4 +13,4 @@ set_target_properties(jniBar PROPERTIES
   SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON
   POSITION_INDEPENDENT_CODE ON)
 target_include_directories(jniBar PRIVATE ${JNI_INCLUDE_DIRS})
-target_link_libraries(jniBar PRIVATE CMakeSwig::Bar)
+target_link_libraries(jniBar PRIVATE ${PROJECT_NAMESPACE}::Bar)

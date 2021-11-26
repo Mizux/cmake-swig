@@ -81,11 +81,14 @@ if(WIN32 AND (BUILD_PYTHON OR BUILD_JAVA OR BUILD_DOTNET))
   message(STATUS "Getting SWIG: ...DONE")
 endif()
 
+
+option(SKIP_GPG "Skip gpg sign" ON)
+message(STATUS "Maven skip GPG sign: ${SKIP_GPG}")
+include(java)
 option(FETCH_PYTHON_DEPS "Install python required modules if not available" ON)
 message(STATUS "Python fetch dependencies: ${FETCH_PYTHON_DEPS}")
 
 include(python)
-include(java)
 include(dotnet)
 
 add_subdirectory(tests)

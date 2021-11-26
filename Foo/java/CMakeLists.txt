@@ -5,7 +5,7 @@ swig_add_library(jniFoo
   TYPE OBJECT
   LANGUAGE java
   OUTPUT_DIR
-  ${PROJECT_BINARY_DIR}/java/${JAVA_PROJECT}/${JAVA_PACKAGE_PATH}/foo
+  ${PROJECT_BINARY_DIR}/java/${JAVA_PROJECT}/${JAVA_PACKAGE_SRC_PATH}/foo
   SOURCES foo.i)
 
 set_target_properties(jniFoo PROPERTIES
@@ -13,4 +13,4 @@ set_target_properties(jniFoo PROPERTIES
   SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON
   POSITION_INDEPENDENT_CODE ON)
 target_include_directories(jniFoo PRIVATE ${JNI_INCLUDE_DIRS})
-target_link_libraries(jniFoo PRIVATE CMakeSwig::Foo)
+target_link_libraries(jniFoo PRIVATE ${PROJECT_NAMESPACE}::Foo)

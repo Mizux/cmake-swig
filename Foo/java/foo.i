@@ -1,7 +1,16 @@
-%module main
+%module Globals
 
+%include "std_vector.i"
 %include "std_string.i"
+%include "std_pair.i"
 %include "base.i"
+
+%template(StringVector) std::vector<std::string>;
+%template(StringJaggedArray) std::vector<std::vector<std::string>>;
+
+%template(IntPair) std::pair<int, int>;
+%template(PairVector) std::vector<std::pair<int, int>>;
+%template(PairJaggedArray) std::vector<std::vector<std::pair<int, int>>>;
 
 // Add necessary symbols to generated header
 %{
@@ -13,12 +22,28 @@
 
 %unignore foo;
 namespace foo {
-%unignore fooHello(int);
-%unignore fooHello(int64_t);
+%unignore stringVectorOutput(int);
+%unignore stringVectorInput(std::vector<std::string>);
+%unignore stringVectorRefInput(const std::vector<std::string>&);
+
+%unignore stringJaggedArrayOutput(int);
+%unignore stringJaggedArrayInput(std::vector<std::vector<std::string>>);
+%unignore stringJaggedArrayRefInput(const std::vector<std::vector<std::string>>&);
+
+%unignore pairVectorOutput(int);
+%unignore pairVectorInput(std::vector<std::pair<int, int>>);
+%unignore pairVectorRefInput(const std::vector<std::pair<int, int>>&);
+
+%unignore pairJaggedArrayOutput(int);
+%unignore pairJaggedArrayInput(std::vector<std::vector<std::pair<int, int>>>);
+%unignore pairJaggedArrayRefInput(const std::vector<std::vector<std::pair<int, int>>>&);
+
+%unignore freeFunction(int);
+%unignore freeFunction(int64_t);
 
 %unignore Foo;
-%unignore Foo::hello(int);
-%unignore Foo::hello(int64_t);
+%unignore Foo::staticFunction(int);
+%unignore Foo::staticFunction(int64_t);
 
 %unignore Foo::getInt() const;
 %unignore Foo::setInt(int);
