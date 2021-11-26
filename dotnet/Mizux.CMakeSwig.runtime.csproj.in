@@ -27,7 +27,7 @@
       <Pack>true</Pack>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$<TARGET_FILE:mizux-dotnetnative-native>">
+    <Content Include="$<TARGET_FILE:mizux-cmakeswig-native>">
       <PackagePath>runtimes/@RUNTIME_IDENTIFIER@/native/%(Filename)%(Extension)</PackagePath>
       <Pack>true</Pack>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
