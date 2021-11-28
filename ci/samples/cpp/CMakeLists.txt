@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.15)
 project(Sample VERSION 1.0.0 LANGUAGES CXX)
 
 include(CTest)
@@ -10,7 +10,10 @@ set_target_properties(sample PROPERTIES
   CXX_STANDARD 11
   CXX_STANDARD_REQUIRED ON
   VERSION ${PROJECT_VERSION})
-target_link_libraries(sample PRIVATE CMakeSwig::FooBar)
+target_link_libraries(sample PRIVATE
+  cs::Bar
+  cs::Foo
+  cs::FooBar)
 
 if(BUILD_TESTING)
   add_test(NAME sample_UT COMMAND sample)
