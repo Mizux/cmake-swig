@@ -42,6 +42,17 @@
   <url>http://github.com/mizux/cmake-swig/issues</url>
 </issueManagement>
 
+<distributionManagement>
+  <snapshotRepository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+</distributionManagement>
+
 <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   <maven.compiler.source>1.8</maven.compiler.source>
@@ -51,21 +62,21 @@
 <dependencies>
   <dependency>
     <groupId>@JAVA_PACKAGE@</groupId>
-    <artifactId>cmakeswig-linux-x64</artifactId>
+    <artifactId>cmakeswig-linux-x86-64</artifactId>
     <version>@PROJECT_VERSION@</version>
     <type>jar</type>
     <scope>runtime</scope>
   </dependency>
   <dependency>
     <groupId>@JAVA_PACKAGE@</groupId>
-    <artifactId>cmakeswig-osx-x64</artifactId>
+    <artifactId>cmakeswig-darwin-x86-64</artifactId>
     <version>@PROJECT_VERSION@</version>
     <type>jar</type>
     <scope>runtime</scope>
   </dependency>
   <dependency>
     <groupId>@JAVA_PACKAGE@</groupId>
-    <artifactId>cmakeswig-win-x64</artifactId>
+    <artifactId>cmakeswig-win32-x86-64</artifactId>
     <version>@PROJECT_VERSION@</version>
     <type>jar</type>
     <scope>runtime</scope>
@@ -73,7 +84,7 @@
   <dependency>
     <groupId>net.java.dev.jna</groupId>
     <artifactId>jna-platform</artifactId>
-    <version>5.5.0</version>
+    <version>5.8.0</version>
   </dependency>
 </dependencies>
 
@@ -96,6 +107,12 @@
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-javadoc-plugin</artifactId>
       <version>3.2.0</version>
+      <configuration>
+        <detectJavaApiLink>false</detectJavaApiLink>
+        <source>${maven.compiler.source}</source>
+        <target>${maven.compiler.target}</target>
+        <additionalJOption>-Xdoclint:none</additionalJOption>
+      </configuration>
       <executions>
         <execution>
           <id>attach-javadocs</id>
@@ -105,6 +122,60 @@
         </execution>
       </executions>
     </plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-gpg-plugin</artifactId>
+      <version>1.6</version>
+      <executions>
+        <execution>
+          <id>sign-artifacts</id>
+          <phase>verify</phase>
+          <goals>
+            <goal>sign</goal>
+          </goals>
+          <configuration>
+            <gpgArguments>
+              @GPG_ARGS@
+            </gpgArguments>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
   </plugins>
 </build>
+
+<profiles>
+  <profile>
+    <id>build-fat-jar</id>
+    <activation>
+      <property>
+        <name>fatjar</name>
+        <value>true</value>
+      </property>
+    </activation>
+    <build>
+      <plugins>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <configuration>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+            <appendAssemblyId>false</appendAssemblyId>
+          </configuration>
+          <executions>
+            <execution>
+              <id>make-assembly</id> <!-- this is used for inheritance merges -->
+              <phase>package</phase> <!-- bind to the packaging phase -->
+              <goals>
+                <goal>single</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+</profiles>
+
 </project>
