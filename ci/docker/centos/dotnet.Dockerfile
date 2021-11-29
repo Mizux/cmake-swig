@@ -31,4 +31,4 @@ FROM install_devel AS install_build
 RUN dotnet build
 
 FROM install_build AS install_test
-RUN dotnet test
+RUN dotnet run
