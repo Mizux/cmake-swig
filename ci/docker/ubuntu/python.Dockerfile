@@ -1,6 +1,6 @@
 FROM cmake-swig:ubuntu_swig AS env
 RUN apt-get update -qq \
-&& apt-get install -yq python3-dev python3-pip \
+&& DEBIAN_FRONTEND=noninteractive apt-get install -yq python3-dev python3-pip \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
