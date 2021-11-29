@@ -3,17 +3,24 @@
     <OutputType>Exe</OutputType>
     <LangVersion>7.3</LangVersion>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <!-- see https://github.com/dotnet/docs/issues/12237 -->
     <RollForward>LatestMajor</RollForward>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <AssemblyName>Mizux.Sample</AssemblyName>
-    <Version>1.0.0</Version>
+    <AssemblyName>Mizux.CMakeSwig.Sample</AssemblyName>
+    <Version>1.0</Version>
 
     <!-- Nuget Properties -->
-    <Description>Simple App consuming CMakeSwig package</Description>
+    <Description>Simple App consuming Mizux.CMakeSwig package</Description>
 
     <!-- Pack Option -->
-    <IsPackable>false</IsPackable>
+    <IsPackable>true</IsPackable>
+    <Title>Mizux.CMakeSwig.Example v1.0</Title>
+    <PackageId>Mizux.CMakeSwig.Sample</PackageId>
+    <PackageTags>sample</PackageTags>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <!-- Signing -->
     <SignAssembly>false</SignAssembly>
@@ -33,6 +40,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mizux.CMakeSwig" Version="*" />
+    <Compile Include="Sample.cs" />
+    <PackageReference Include="Mizux.CMakeSwig" Version="1.0.*" />
   </ItemGroup>
 </Project>
