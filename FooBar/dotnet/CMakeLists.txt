@@ -5,7 +5,7 @@ set_property(SOURCE foobar.i PROPERTY COMPILE_OPTIONS
 swig_add_library(dotnet_FooBar
   TYPE OBJECT
   LANGUAGE csharp
-  OUTPUT_DIR ${PROJECT_BINARY_DIR}/dotnet/${DOTNET_PROJECT}/FooBar
+  OUTPUT_DIR ${DOTNET_PROJECT_DIR}/FooBar
   SOURCES foobar.i)
 
 set_target_properties(dotnet_FooBar PROPERTIES

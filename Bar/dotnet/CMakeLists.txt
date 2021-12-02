@@ -5,7 +5,7 @@ set_property(SOURCE bar.i PROPERTY COMPILE_OPTIONS
 swig_add_library(dotnet_Bar
   TYPE OBJECT
   LANGUAGE csharp
-  OUTPUT_DIR ${PROJECT_BINARY_DIR}/dotnet/${DOTNET_PROJECT}/Bar
+  OUTPUT_DIR ${DOTNET_PROJECT_DIR}/Bar
   SOURCES bar.i)
 
 set_target_properties(dotnet_Bar PROPERTIES

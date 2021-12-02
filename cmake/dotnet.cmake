@@ -57,7 +57,14 @@ else()
   message(FATAL_ERROR "Unsupported system !")
 endif()
 set(DOTNET_NATIVE_PROJECT ${DOTNET_PACKAGE}.runtime.${RUNTIME_IDENTIFIER})
+message(STATUS ".Net runtime project: ${DOTNET_NATIVE_PROJECT}")
+set(DOTNET_NATIVE_PROJECT_DIR ${PROJECT_BINARY_DIR}/dotnet/${DOTNET_NATIVE_PROJECT})
+message(STATUS ".Net runtime project build path: ${DOTNET_NATIVE_PROJECT_DIR}")
+
 set(DOTNET_PROJECT ${DOTNET_PACKAGE})
+message(STATUS ".Net project: ${DOTNET_PROJECT}")
+set(DOTNET_PROJECT_DIR ${PROJECT_BINARY_DIR}/dotnet/${DOTNET_PROJECT})
+message(STATUS ".Net project build path: ${DOTNET_PROJECT_DIR}")
 
 # Swig wrap all libraries
 foreach(SUBPROJECT IN ITEMS Foo Bar FooBar)
@@ -72,30 +79,26 @@ configure_file(${PROJECT_SOURCE_DIR}/dotnet/Directory.Build.props.in dotnet/Dire
 ############################
 ##  .Net Runtime Package  ##
 ############################
-message(STATUS ".Net runtime project: ${DOTNET_NATIVE_PROJECT}")
-set(DOTNET_NATIVE_PATH ${PROJECT_BINARY_DIR}/dotnet/${DOTNET_NATIVE_PROJECT})
-message(STATUS ".Net runtime project build path: ${DOTNET_NATIVE_PATH}")
-
 # *.csproj.in contains:
 # CMake variable(s) (@PROJECT_NAME@) that configure_file() can manage and
 # generator expression ($<TARGET_FILE:...>) that file(GENERATE) can manage.
 configure_file(
   ${PROJECT_SOURCE_DIR}/dotnet/${DOTNET_PACKAGE}.runtime.csproj.in
-  ${DOTNET_NATIVE_PATH}/${DOTNET_NATIVE_PROJECT}.csproj.in
+  ${DOTNET_NATIVE_PROJECT_DIR}/${DOTNET_NATIVE_PROJECT}.csproj.in
   @ONLY)
 file(GENERATE
-  OUTPUT ${DOTNET_NATIVE_PATH}/$<CONFIG>/${DOTNET_NATIVE_PROJECT}.csproj.in
-  INPUT ${DOTNET_NATIVE_PATH}/${DOTNET_NATIVE_PROJECT}.csproj.in)
+  OUTPUT ${DOTNET_NATIVE_PROJECT_DIR}/$<CONFIG>/${DOTNET_NATIVE_PROJECT}.csproj.in
+  INPUT ${DOTNET_NATIVE_PROJECT_DIR}/${DOTNET_NATIVE_PROJECT}.csproj.in)
 
 add_custom_command(
-  OUTPUT ${DOTNET_NATIVE_PATH}/${DOTNET_NATIVE_PROJECT}.csproj
-  DEPENDS ${DOTNET_NATIVE_PATH}/$<CONFIG>/${DOTNET_NATIVE_PROJECT}.csproj.in
+  OUTPUT ${DOTNET_NATIVE_PROJECT_DIR}/${DOTNET_NATIVE_PROJECT}.csproj
+  DEPENDS ${DOTNET_NATIVE_PROJECT_DIR}/$<CONFIG>/${DOTNET_NATIVE_PROJECT}.csproj.in
   COMMAND ${CMAKE_COMMAND} -E copy ./$<CONFIG>/${DOTNET_NATIVE_PROJECT}.csproj.in ${DOTNET_NATIVE_PROJECT}.csproj
-  WORKING_DIRECTORY ${DOTNET_NATIVE_PATH}
+  WORKING_DIRECTORY ${DOTNET_NATIVE_PROJECT_DIR}
   )
 
 add_custom_target(dotnet_native_package
-  DEPENDS ${DOTNET_NATIVE_PATH}/${DOTNET_NATIVE_PROJECT}.csproj
+  DEPENDS ${DOTNET_NATIVE_PROJECT_DIR}/${DOTNET_NATIVE_PROJECT}.csproj
   COMMAND ${CMAKE_COMMAND} -E make_directory packages
   COMMAND ${DOTNET_EXECUTABLE} build -c Release ${DOTNET_NATIVE_PROJECT}/${DOTNET_NATIVE_PROJECT}.csproj
   COMMAND ${DOTNET_EXECUTABLE} pack -c Release ${DOTNET_NATIVE_PROJECT}/${DOTNET_NATIVE_PROJECT}.csproj
@@ -109,24 +112,20 @@ add_dependencies(dotnet_native_package mizux-cmakeswig-native)
 ####################
 ##  .Net Package  ##
 ####################
-message(STATUS ".Net project: ${DOTNET_PROJECT}")
-set(DOTNET_PATH ${PROJECT_BINARY_DIR}/dotnet/${DOTNET_PROJECT})
-message(STATUS ".Net project build path: ${DOTNET_PATH}")
-
 configure_file(
   ${PROJECT_SOURCE_DIR}/dotnet/${DOTNET_PROJECT}.csproj.in
-  ${DOTNET_PATH}/${DOTNET_PROJECT}.csproj.in
+  ${DOTNET_PROJECT_DIR}/${DOTNET_PROJECT}.csproj.in
   @ONLY)
 
 add_custom_command(
-  OUTPUT ${DOTNET_PATH}/${DOTNET_PROJECT}.csproj
-  DEPENDS ${DOTNET_PATH}/${DOTNET_PROJECT}.csproj.in
+  OUTPUT ${DOTNET_PROJECT_DIR}/${DOTNET_PROJECT}.csproj
+  DEPENDS ${DOTNET_PROJECT_DIR}/${DOTNET_PROJECT}.csproj.in
   COMMAND ${CMAKE_COMMAND} -E copy ${DOTNET_PROJECT}.csproj.in ${DOTNET_PROJECT}.csproj
-  WORKING_DIRECTORY ${DOTNET_PATH}
+  WORKING_DIRECTORY ${DOTNET_PROJECT_DIR}
   )
 
 add_custom_target(dotnet_package ALL
-  DEPENDS ${DOTNET_PATH}/${DOTNET_PROJECT}.csproj
+  DEPENDS ${DOTNET_PROJECT_DIR}/${DOTNET_PROJECT}.csproj
   COMMAND ${DOTNET_EXECUTABLE} build -c Release ${DOTNET_PROJECT}/${DOTNET_PROJECT}.csproj
   COMMAND ${DOTNET_EXECUTABLE} pack -c Release ${DOTNET_PROJECT}/${DOTNET_PROJECT}.csproj
   BYPRODUCTS
@@ -152,32 +151,32 @@ function(add_dotnet_test FILE_NAME)
   get_filename_component(COMPONENT_DIR ${FILE_NAME} DIRECTORY)
   get_filename_component(COMPONENT_NAME ${COMPONENT_DIR} NAME)
 
-  set(DOTNET_TEST_PATH ${PROJECT_BINARY_DIR}/dotnet/${TEST_NAME})
-  message(STATUS "build path: ${DOTNET_TEST_PATH}")
-  file(MAKE_DIRECTORY ${DOTNET_TEST_PATH})
+  set(DOTNET_TEST_DIR ${PROJECT_BINARY_DIR}/dotnet/${TEST_NAME})
+  message(STATUS "build path: ${DOTNET_TEST_DIR}")
+  file(MAKE_DIRECTORY ${DOTNET_TEST_DIR})
 
-  file(COPY ${FILE_NAME} DESTINATION ${DOTNET_TEST_PATH})
+  file(COPY ${FILE_NAME} DESTINATION ${DOTNET_TEST_DIR})
 
   set(DOTNET_PACKAGES_DIR "${PROJECT_BINARY_DIR}/dotnet/packages")
   configure_file(
     ${PROJECT_SOURCE_DIR}/dotnet/Test.csproj.in
-    ${DOTNET_TEST_PATH}/${TEST_NAME}.csproj
+    ${DOTNET_TEST_DIR}/${TEST_NAME}.csproj
     @ONLY)
 
   add_custom_target(dotnet_${COMPONENT_NAME}_${TEST_NAME} ALL
-    DEPENDS ${DOTNET_TEST_PATH}/${TEST_NAME}.csproj
+    DEPENDS ${DOTNET_TEST_DIR}/${TEST_NAME}.csproj
     COMMAND ${DOTNET_EXECUTABLE} build -c Release
     BYPRODUCTS
-      ${DOTNET_TEST_PATH}/bin
-      ${DOTNET_TEST_PATH}/obj
-    WORKING_DIRECTORY ${DOTNET_TEST_PATH})
+      ${DOTNET_TEST_DIR}/bin
+      ${DOTNET_TEST_DIR}/obj
+    WORKING_DIRECTORY ${DOTNET_TEST_DIR})
   add_dependencies(dotnet_${COMPONENT_NAME}_${TEST_NAME} dotnet_package)
 
   if(BUILD_TESTING)
     add_test(
       NAME dotnet_${COMPONENT_NAME}_${TEST_NAME}
       COMMAND ${DOTNET_EXECUTABLE} test --no-build -c Release
-      WORKING_DIRECTORY ${DOTNET_TEST_PATH})
+      WORKING_DIRECTORY ${DOTNET_TEST_DIR})
   endif()
 
   message(STATUS "Configuring test ${FILE_NAME}: ...DONE")
@@ -198,33 +197,33 @@ function(add_dotnet_example FILE_NAME)
   get_filename_component(COMPONENT_DIR ${FILE_NAME} DIRECTORY)
   get_filename_component(COMPONENT_NAME ${COMPONENT_DIR} NAME)
 
-  set(DOTNET_EXAMPLE_PATH ${PROJECT_BINARY_DIR}/dotnet/${EXAMPLE_NAME})
-  message(STATUS "build path: ${DOTNET_EXAMPLE_PATH}")
-  file(MAKE_DIRECTORY ${DOTNET_EXAMPLE_PATH})
+  set(DOTNET_EXAMPLE_DIR ${PROJECT_BINARY_DIR}/dotnet/${EXAMPLE_NAME})
+  message(STATUS "build path: ${DOTNET_EXAMPLE_DIR}")
+  file(MAKE_DIRECTORY ${DOTNET_EXAMPLE_DIR})
 
-  file(COPY ${FILE_NAME} DESTINATION ${DOTNET_EXAMPLE_PATH})
+  file(COPY ${FILE_NAME} DESTINATION ${DOTNET_EXAMPLE_DIR})
 
   set(DOTNET_PACKAGES_DIR "${PROJECT_BINARY_DIR}/dotnet/packages")
   configure_file(
     ${PROJECT_SOURCE_DIR}/dotnet/Example.csproj.in
-    ${DOTNET_EXAMPLE_PATH}/${EXAMPLE_NAME}.csproj
+    ${DOTNET_EXAMPLE_DIR}/${EXAMPLE_NAME}.csproj
     @ONLY)
 
   add_custom_target(dotnet_sample_${EXAMPLE_NAME} ALL
-    DEPENDS ${DOTNET_EXAMPLE_PATH}/${EXAMPLE_NAME}.csproj
+    DEPENDS ${DOTNET_EXAMPLE_DIR}/${EXAMPLE_NAME}.csproj
     COMMAND ${DOTNET_EXECUTABLE} build -c Release
     COMMAND ${DOTNET_EXECUTABLE} pack -c Release
     BYPRODUCTS
-      ${DOTNET_EXAMPLE_PATH}/bin
-      ${DOTNET_EXAMPLE_PATH}/obj
-    WORKING_DIRECTORY ${DOTNET_EXAMPLE_PATH})
+      ${DOTNET_EXAMPLE_DIR}/bin
+      ${DOTNET_EXAMPLE_DIR}/obj
+    WORKING_DIRECTORY ${DOTNET_EXAMPLE_DIR})
   add_dependencies(dotnet_sample_${EXAMPLE_NAME} dotnet_package)
 
   if(BUILD_TESTING)
     add_test(
       NAME dotnet_${COMPONENT_NAME}_${EXAMPLE_NAME}
       COMMAND ${DOTNET_EXECUTABLE} run --no-build -c Release
-      WORKING_DIRECTORY ${DOTNET_EXAMPLE_PATH})
+      WORKING_DIRECTORY ${DOTNET_EXAMPLE_DIR})
   endif()
 
   message(STATUS "Configuring example ${FILE_NAME}: ...DONE")
