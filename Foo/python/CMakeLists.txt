@@ -3,7 +3,7 @@ set_property(SOURCE foo.i PROPERTY SWIG_MODULE_NAME pyFoo)
 swig_add_library(pyFoo
   TYPE SHARED
   LANGUAGE python
-  OUTPUT_DIR ${CMAKE_BINARY_DIR}/python/${PYTHON_PROJECT}/foo
+  OUTPUT_DIR ${PYTHON_PROJECT_DIR}/foo
   SOURCES foo.i)
 add_library(${PROJECT_NAMESPACE}::pyFoo ALIAS pyFoo)
 

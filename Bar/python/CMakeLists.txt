@@ -3,7 +3,7 @@ set_property(SOURCE bar.i PROPERTY SWIG_MODULE_NAME pyBar)
 swig_add_library(pyBar
   TYPE SHARED
   LANGUAGE python
-  OUTPUT_DIR ${CMAKE_BINARY_DIR}/python/${PYTHON_PROJECT}/bar
+  OUTPUT_DIR ${PYTHON_PROJECT_DIR}/bar
   SOURCES bar.i)
 add_library(${PROJECT_NAMESPACE}::pyBar ALIAS pyBar)
 

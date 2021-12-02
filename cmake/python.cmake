@@ -108,6 +108,8 @@ endfunction()
 
 set(PYTHON_PROJECT cmakeswig)
 message(STATUS "Python project: ${PYTHON_PROJECT}")
+set(PYTHON_PROJECT_DIR ${PROJECT_BINARY_DIR}/python/${PYTHON_PROJECT})
+message(STATUS "Python project build path: ${PYTHON_PROJECT_DIR}")
 
 # Swig wrap all libraries
 foreach(SUBPROJECT IN ITEMS Foo Bar FooBar)
@@ -117,14 +119,11 @@ endforeach()
 #######################
 ## Python Packaging  ##
 #######################
-set(PYTHON_PROJECT_PATH ${PROJECT_BINARY_DIR}/python/${PYTHON_PROJECT})
-message(STATUS "Python project build path: ${PYTHON_PROJECT_PATH}")
-
 #file(MAKE_DIRECTORY python/${PYTHON_PROJECT})
-file(GENERATE OUTPUT ${PYTHON_PROJECT_PATH}/__init__.py CONTENT "__version__ = \"${PROJECT_VERSION}\"\n")
-file(GENERATE OUTPUT ${PYTHON_PROJECT_PATH}/foo/__init__.py CONTENT "")
-file(GENERATE OUTPUT ${PYTHON_PROJECT_PATH}/bar/__init__.py CONTENT "")
-file(GENERATE OUTPUT ${PYTHON_PROJECT_PATH}/foobar/__init__.py CONTENT "")
+file(GENERATE OUTPUT ${PYTHON_PROJECT_DIR}/__init__.py CONTENT "__version__ = \"${PROJECT_VERSION}\"\n")
+file(GENERATE OUTPUT ${PYTHON_PROJECT_DIR}/foo/__init__.py CONTENT "")
+file(GENERATE OUTPUT ${PYTHON_PROJECT_DIR}/bar/__init__.py CONTENT "")
+file(GENERATE OUTPUT ${PYTHON_PROJECT_DIR}/foobar/__init__.py CONTENT "")
 
 # setup.py.in contains cmake variable e.g. @PYTHON_PROJECT@ and
 # generator expression e.g. $<TARGET_FILE_NAME:pyFoo>
