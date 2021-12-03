@@ -1,13 +1,13 @@
 | Linux | macOS | Windows |
 |-------|-------|---------|
-| [![Status][java_linux_svg]][java_linux_link] | [![Status][java_osx_svg]][java_osx_link] | [![Status][java_win_svg]][java_win_link] |
+| [![Status][java_linux_svg]][java_linux_link] | [![Status][java_macos_svg]][java_macos_link] | [![Status][java_windows_svg]][java_windows_link] |
 
-[java_linux_svg]: https://github.com/Mizux/cmake-swig/workflows/Java%20Linux%20CI/badge.svg?branch=master
-[java_linux_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"Java+Linux+CI"
-[java_osx_svg]: https://github.com/Mizux/cmake-swig/workflows/Java%20MacOS%20CI/badge.svg?branch=master
-[java_osx_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"Java+MacOS+CI"
-[java_win_svg]: https://github.com/Mizux/cmake-swig/workflows/Java%20Windows%20CI/badge.svg?branch=master
-[java_win_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"Java+Windows+CI"
+[java_linux_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_java.yml/badge.svg
+[java_linux_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_java.yml
+[java_macos_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_java.yml/badge.svg
+[java_macos_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_java.yml
+[java_windows_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_java.yml/badge.svg
+[java_windows_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_java.yml
 
 
 # Java Wrapper Status

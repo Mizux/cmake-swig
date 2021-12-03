@@ -1,14 +1,14 @@
 | Linux | macOS | Windows |
 |-------|-------|---------|
-| [![Status][cpp_linux_svg]][cpp_linux_link] | [![Status][cpp_osx_svg]][cpp_osx_link] | [![Status][cpp_win_svg]][cpp_win_link] |
+| [![Status][cpp_linux_svg]][cpp_linux_link] | [![Status][cpp_macos_svg]][cpp_macos_link] | [![Status][cpp_windows_svg]][cpp_windows_link] |
 
 
-[cpp_linux_svg]: https://github.com/Mizux/cmake-swig/workflows/C++%20Linux%20CI/badge.svg?branch=master
-[cpp_linux_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"C%2B%2B+Linux+CI"
-[cpp_osx_svg]: https://github.com/Mizux/cmake-swig/workflows/C++%20MacOS%20CI/badge.svg?branch=master
-[cpp_osx_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"C%2B%2B+MacOS+CI"
-[cpp_win_svg]: https://github.com/Mizux/cmake-swig/workflows/C++%20Windows%20CI/badge.svg?branch=master
-[cpp_win_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"C%2B%2B+Windows+CI"
+[cpp_linux_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_cpp.yml/badge.svg
+[cpp_linux_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_cpp.yml
+[cpp_macos_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_cpp.yml/badge.svg
+[cpp_macos_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_cpp.yml
+[cpp_windows_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_cpp.yml/badge.svg
+[cpp_windows_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_cpp.yml
 
 
 # C++ Status

@@ -1,13 +1,13 @@
 | Linux | macOS | Windows |
 |-------|-------|---------|
-| [![Status][dotnet_linux_svg]][dotnet_linux_link] | [![Status][dotnet_osx_svg]][dotnet_osx_link] | [![Status][dotnet_win_svg]][dotnet_win_link] |
+| [![Status][dotnet_linux_svg]][dotnet_linux_link] | [![Status][dotnet_macos_svg]][dotnet_macos_link] | [![Status][dotnet_windows_svg]][dotnet_windows_link] |
 
-[dotnet_linux_svg]: https://github.com/Mizux/cmake-swig/workflows/.Net%20Linux%20CI/badge.svg?branch=master
-[dotnet_linux_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"net+Linux+CI"
-[dotnet_osx_svg]: https://github.com/Mizux/cmake-swig/workflows/.Net%20MacOS%20CI/badge.svg?branch=master
-[dotnet_osx_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"net+MacOS+CI"
-[dotnet_win_svg]: https://github.com/Mizux/cmake-swig/workflows/.Net%20Windows%20CI/badge.svg?branch=master
-[dotnet_win_link]: https://github.com/Mizux/cmake-swig/actions?query=workflow%3A"net+Windows+CI"
+[dotnet_linux_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_dotnet.yml/badge.svg
+[dotnet_linux_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_dotnet.yml
+[dotnet_macos_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_dotnet.yml/badge.svg
+[dotnet_macos_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_dotnet.yml
+[dotnet_windows_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_dotnet.yml/badge.svg
+[dotnet_windows_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_dotnet.yml
 
 
 # .Net Wrapper Status
