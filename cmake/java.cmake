@@ -162,8 +162,8 @@ add_custom_command(
   COMMAND ${MAVEN_EXECUTABLE} install -B $<$<BOOL:${SKIP_GPG}>:-Dgpg.skip=true>
   COMMAND ${CMAKE_COMMAND} -E touch ${JAVA_PROJECT_DIR}/timestamp
   DEPENDS
-  ${JAVA_PROJECT_DIR}/pom.xml
-  ${JAVA_SRCS}
+    ${JAVA_PROJECT_DIR}/pom.xml
+    ${JAVA_SRCS}
   java_native_package
   BYPRODUCTS
     ${JAVA_PROJECT_DIR}/target
