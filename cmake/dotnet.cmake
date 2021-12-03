@@ -23,27 +23,6 @@ else()
   message(STATUS "Found dotnet Program: ${DOTNET_EXECUTABLE}")
 endif()
 
-# Create the native library
-add_library(mizux-cmakeswig-native SHARED "")
-set_target_properties(mizux-cmakeswig-native PROPERTIES
-  PREFIX ""
-  POSITION_INDEPENDENT_CODE ON)
-# note: macOS is APPLE and also UNIX !
-if(APPLE)
-  set_target_properties(mizux-cmakeswig-native PROPERTIES INSTALL_RPATH "@loader_path")
-  # Xcode fails to build if library doesn't contains at least one source file.
-  if(XCODE)
-    file(GENERATE
-      OUTPUT ${PROJECT_BINARY_DIR}/mizux-cmakeswig-native/version.cpp
-      CONTENT "namespace {char* version = \"${PROJECT_VERSION}\";}")
-    target_sources(mizux-cmakeswig-native PRIVATE ${PROJECT_BINARY_DIR}/mizux-cmakeswig-native/version.cpp)
-  endif()
-elseif(UNIX)
-  set_target_properties(mizux-cmakeswig-native PROPERTIES INSTALL_RPATH "$ORIGIN")
-endif()
-
-list(APPEND CMAKE_SWIG_FLAGS ${FLAGS} "-I${PROJECT_SOURCE_DIR}")
-
 # Needed by dotnet/CMakeLists.txt
 set(DOTNET_PACKAGE Mizux.CMakeSwig)
 set(DOTNET_PACKAGES_DIR "${PROJECT_BINARY_DIR}/dotnet/packages")
@@ -65,6 +44,27 @@ set(DOTNET_PROJECT ${DOTNET_PACKAGE})
 message(STATUS ".Net project: ${DOTNET_PROJECT}")
 set(DOTNET_PROJECT_DIR ${PROJECT_BINARY_DIR}/dotnet/${DOTNET_PROJECT})
 message(STATUS ".Net project build path: ${DOTNET_PROJECT_DIR}")
+
+# Create the native library
+add_library(mizux-cmakeswig-native SHARED "")
+set_target_properties(mizux-cmakeswig-native PROPERTIES
+  PREFIX ""
+  POSITION_INDEPENDENT_CODE ON)
+# note: macOS is APPLE and also UNIX !
+if(APPLE)
+  set_target_properties(mizux-cmakeswig-native PROPERTIES INSTALL_RPATH "@loader_path")
+  # Xcode fails to build if library doesn't contains at least one source file.
+  if(XCODE)
+    file(GENERATE
+      OUTPUT ${PROJECT_BINARY_DIR}/mizux-cmakeswig-native/version.cpp
+      CONTENT "namespace {char* version = \"${PROJECT_VERSION}\";}")
+    target_sources(mizux-cmakeswig-native PRIVATE ${PROJECT_BINARY_DIR}/mizux-cmakeswig-native/version.cpp)
+  endif()
+elseif(UNIX)
+  set_target_properties(mizux-cmakeswig-native PROPERTIES INSTALL_RPATH "$ORIGIN")
+endif()
+
+list(APPEND CMAKE_SWIG_FLAGS ${FLAGS} "-I${PROJECT_SOURCE_DIR}")
 
 # Swig wrap all libraries
 foreach(SUBPROJECT IN ITEMS Foo Bar FooBar)
