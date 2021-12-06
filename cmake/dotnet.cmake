@@ -93,10 +93,10 @@ file(GENERATE
 
 add_custom_command(
   OUTPUT ${DOTNET_NATIVE_PROJECT_DIR}/${DOTNET_NATIVE_PROJECT}.csproj
-  DEPENDS ${DOTNET_NATIVE_PROJECT_DIR}/$<CONFIG>/${DOTNET_NATIVE_PROJECT}.csproj.in
   COMMAND ${CMAKE_COMMAND} -E copy ./$<CONFIG>/${DOTNET_NATIVE_PROJECT}.csproj.in ${DOTNET_NATIVE_PROJECT}.csproj
-  WORKING_DIRECTORY ${DOTNET_NATIVE_PROJECT_DIR}
-  )
+  DEPENDS
+    ${DOTNET_NATIVE_PROJECT_DIR}/$<CONFIG>/${DOTNET_NATIVE_PROJECT}.csproj.in
+  WORKING_DIRECTORY ${DOTNET_NATIVE_PROJECT_DIR})
 
 add_custom_command(
   OUTPUT ${DOTNET_NATIVE_PROJECT_DIR}/timestamp
@@ -110,13 +110,12 @@ add_custom_command(
     ${DOTNET_NATIVE_PROJECT_DIR}/bin
     ${DOTNET_NATIVE_PROJECT_DIR}/obj
   COMMENT "Generate .Net native package ${DOTNET_NATIVE_PROJECT} (${DOTNET_NATIVE_PROJECT_DIR}/timestamp)"
-  WORKING_DIRECTORY ${DOTNET_NATIVE_PROJECT_DIR}
-  )
+  WORKING_DIRECTORY ${DOTNET_NATIVE_PROJECT_DIR})
 
 add_custom_target(dotnet_native_package
   DEPENDS
     ${DOTNET_NATIVE_PROJECT_DIR}/timestamp
-  WORKING_DIRECTORY dotnet)
+  WORKING_DIRECTORY ${DOTNET_NATIVE_PROJECT_DIR})
 
 ####################
 ##  .Net Package  ##
@@ -128,10 +127,10 @@ configure_file(
 
 add_custom_command(
   OUTPUT ${DOTNET_PROJECT_DIR}/${DOTNET_PROJECT}.csproj
-  DEPENDS ${DOTNET_PROJECT_DIR}/${DOTNET_PROJECT}.csproj.in
   COMMAND ${CMAKE_COMMAND} -E copy ${DOTNET_PROJECT}.csproj.in ${DOTNET_PROJECT}.csproj
-  WORKING_DIRECTORY ${DOTNET_PROJECT_DIR}
-  )
+  DEPENDS
+    ${DOTNET_PROJECT_DIR}/${DOTNET_PROJECT}.csproj.in
+  WORKING_DIRECTORY ${DOTNET_PROJECT_DIR})
 
 add_custom_command(
   OUTPUT ${DOTNET_PROJECT_DIR}/timestamp
@@ -145,13 +144,12 @@ add_custom_command(
     ${DOTNET_PROJECT_DIR}/bin
     ${DOTNET_PROJECT_DIR}/obj
   COMMENT "Generate .Net package ${DOTNET_PROJECT} (${DOTNET_PROJECT_DIR}/timestamp)"
-  WORKING_DIRECTORY ${DOTNET_PROJECT_DIR}
-  )
+  WORKING_DIRECTORY ${DOTNET_PROJECT_DIR})
 
 add_custom_target(dotnet_package ALL
   DEPENDS
     ${DOTNET_PROJECT_DIR}/timestamp
-  WORKING_DIRECTORY dotnet)
+  WORKING_DIRECTORY ${DOTNET_PROJECT_DIR})
 
 #################
 ##  .Net Test  ##
@@ -170,19 +168,21 @@ function(add_dotnet_test FILE_NAME)
 
   set(DOTNET_TEST_DIR ${PROJECT_BINARY_DIR}/dotnet/${COMPONENT_NAME}/${TEST_NAME})
   message(STATUS "build path: ${DOTNET_TEST_DIR}")
-  file(MAKE_DIRECTORY ${DOTNET_TEST_DIR})
-
-  add_custom_command(
-    OUTPUT ${DOTNET_TEST_DIR}/${TEST_NAME}.cs
-    COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME} ${DOTNET_TEST_DIR}/
-    MAIN_DEPENDENCY ${FILE_NAME}
-    VERBATIM
-  )
 
   configure_file(
     ${PROJECT_SOURCE_DIR}/dotnet/Test.csproj.in
     ${DOTNET_TEST_DIR}/${TEST_NAME}.csproj
     @ONLY)
+
+  add_custom_command(
+    OUTPUT ${DOTNET_TEST_DIR}/${TEST_NAME}.cs
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOTNET_TEST_DIR}
+    COMMAND ${CMAKE_COMMAND} -E copy
+      ${FILE_NAME}
+      ${DOTNET_TEST_DIR}/
+    MAIN_DEPENDENCY ${FILE_NAME}
+    VERBATIM
+    WORKING_DIRECTORY ${DOTNET_TEST_DIR})
 
   add_custom_command(
     OUTPUT ${DOTNET_TEST_DIR}/timestamp
@@ -201,7 +201,7 @@ function(add_dotnet_test FILE_NAME)
   add_custom_target(dotnet_${COMPONENT_NAME}_${TEST_NAME} ALL
     DEPENDS
       ${DOTNET_TEST_DIR}/timestamp
-    WORKING_DIRECTORY dotnet)
+    WORKING_DIRECTORY ${DOTNET_TEST_DIR})
 
   if(BUILD_TESTING)
     add_test(
@@ -229,19 +229,21 @@ function(add_dotnet_example FILE_NAME)
 
   set(DOTNET_EXAMPLE_DIR ${PROJECT_BINARY_DIR}/dotnet/${COMPONENT_NAME}/${EXAMPLE_NAME})
   message(STATUS "build path: ${DOTNET_EXAMPLE_DIR}")
-  file(MAKE_DIRECTORY ${DOTNET_EXAMPLE_DIR})
-
-  add_custom_command(
-    OUTPUT ${DOTNET_EXAMPLE_DIR}/${EXAMPLE_NAME}.cs
-    COMMAND ${CMAKE_COMMAND} -E copy ${FILE_NAME} ${DOTNET_EXAMPLE_DIR}/
-    MAIN_DEPENDENCY ${FILE_NAME}
-    VERBATIM
-  )
 
   configure_file(
     ${PROJECT_SOURCE_DIR}/dotnet/Example.csproj.in
     ${DOTNET_EXAMPLE_DIR}/${EXAMPLE_NAME}.csproj
     @ONLY)
+
+  add_custom_command(
+    OUTPUT ${DOTNET_EXAMPLE_DIR}/${EXAMPLE_NAME}.cs
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOTNET_EXAMPLE_DIR}
+    COMMAND ${CMAKE_COMMAND} -E copy
+      ${FILE_NAME}
+      ${DOTNET_EXAMPLE_DIR}/
+    MAIN_DEPENDENCY ${FILE_NAME}
+    VERBATIM
+    WORKING_DIRECTORY ${DOTNET_EXAMPLE_DIR})
 
   add_custom_command(
     OUTPUT ${DOTNET_EXAMPLE_DIR}/timestamp
@@ -261,12 +263,12 @@ function(add_dotnet_example FILE_NAME)
   add_custom_target(dotnet_${COMPONENT_NAME}_${EXAMPLE_NAME} ALL
     DEPENDS
       ${DOTNET_EXAMPLE_DIR}/timestamp
-    WORKING_DIRECTORY dotnet)
+    WORKING_DIRECTORY ${DOTNET_EXAMPLE_DIR})
 
   if(BUILD_TESTING)
     add_test(
       NAME dotnet_${COMPONENT_NAME}_${EXAMPLE_NAME}
-      COMMAND ${DOTNET_EXECUTABLE} run --no-build -c Release
+      COMMAND ${DOTNET_EXECUTABLE} run --no-build --framework net6.0 -c Release
       WORKING_DIRECTORY ${DOTNET_EXAMPLE_DIR})
   endif()
   message(STATUS "Configuring example ${FILE_NAME}: ...DONE")
