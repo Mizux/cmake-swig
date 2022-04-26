@@ -1,7 +1,7 @@
 set_property(SOURCE bar.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE bar.i PROPERTY SWIG_MODULE_NAME pyBar)
 swig_add_library(pyBar
-  TYPE SHARED
+  TYPE MODULE
   LANGUAGE python
   OUTPUT_DIR ${PYTHON_PROJECT_DIR}/bar
   SOURCES bar.i)

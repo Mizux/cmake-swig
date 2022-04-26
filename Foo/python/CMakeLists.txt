@@ -1,7 +1,7 @@
 set_property(SOURCE foo.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE foo.i PROPERTY SWIG_MODULE_NAME pyFoo)
 swig_add_library(pyFoo
-  TYPE SHARED
+  TYPE MODULE
   LANGUAGE python
   OUTPUT_DIR ${PYTHON_PROJECT_DIR}/foo
   SOURCES foo.i)
