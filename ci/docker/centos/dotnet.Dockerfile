@@ -1,8 +1,14 @@
 FROM cmake-swig:centos_swig AS env
 # Install dotnet
-# see https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-centos8
+# see https://docs.microsoft.com/en-us/dotnet/core/install/linux-rhel#supported-distributions
+
+# Microsoft/RHEL fail the net6.0 release, need this 2 lines
+# ref: https://docs.microsoft.com/en-us/dotnet/core/install/linux-rhel#supported-distributions
+RUN rpm -Uvh https://packages.microsoft.com/config/centos/8/packages-microsoft-prod.rpm
+RUN echo 'priority=50' | tee -a /etc/yum.repos.d/microsoft-prod.repo
+
 RUN dnf -y update \
-&& dnf -y install dotnet-sdk-3.1 dotnet-sdk-6.0 \
+&& dnf -y install dotnet-sdk-3.1 dotnet-sdk-6.0 dotnet-runtime-6.0 \
 && dnf clean all \
 && rm -rf /var/cache/dnf
 # Trigger first run experience by running arbitrary cmd
