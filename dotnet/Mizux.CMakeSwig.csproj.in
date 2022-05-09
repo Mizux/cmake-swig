@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
-    <RuntimeIdentifiers>win-x64;osx-x64;linux-x64</RuntimeIdentifiers>
+    <LangVersion>9.0</LangVersion>
+    @DOTNET_TFM@
+    <RuntimeIdentifier>@RUNTIME_IDENTIFIER@</RuntimeIdentifier>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyName>@DOTNET_PROJECT@</AssemblyName>
     <Version>@PROJECT_VERSION@</Version>
 
