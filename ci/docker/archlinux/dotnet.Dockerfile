@@ -8,7 +8,7 @@ WORKDIR /home/project
 COPY . .
 
 FROM devel AS build
-RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON -DUSE_DOTNET_CORE_31=OFF
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 
