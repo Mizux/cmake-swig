@@ -19,7 +19,7 @@ for PYROOT in /opt/python/*; do
 
   # Create and activate virtualenv
   PYBIN="${PYROOT}/bin"
-  "${PYBIN}/pip" install virtualenv
+  "${PYBIN}/pip" install virtualenv auditwheel
   "${PYBIN}/virtualenv" -p "${PYBIN}/python" "venv_${PYTAG}"
   # shellcheck source=/dev/null
   source "venv_${PYTAG}/bin/activate"
@@ -37,6 +37,9 @@ for PYROOT in /opt/python/*; do
     -DPython_LIBRARY="${LIB}"
 
   cmake --build "${BUILD_DIR}" -v
+  
+  # Make wheel portable across Linux distros if external libs used
+  auditwheel repair ${BUILD_DIR}/python/dist/*.whl
 
   # Restore environment
   deactivate
