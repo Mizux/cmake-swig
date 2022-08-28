@@ -22,8 +22,13 @@
 
   <ItemGroup>
     <!-- Native library must be in native directory... -->
-    <!-- If built as a STATIC_LIBRARY (e.g. Windows) then we don't have to include it -->
-    <Content Include="$<TARGET_FILE:mizux-cmakeswig-native>$<$<STREQUAL:$<TARGET_PROPERTY:Bar,TYPE>,SHARED_LIBRARY>:;$<TARGET_SONAME_FILE:Bar>>$<$<STREQUAL:$<TARGET_PROPERTY:Foo,TYPE>,SHARED_LIBRARY>:;$<TARGET_SONAME_FILE:Foo>>$<$<STREQUAL:$<TARGET_PROPERTY:FooBar,TYPE>,SHARED_LIBRARY>:;$<TARGET_SONAME_FILE:FooBar>>">
+    <!-- If project is built as a STATIC_LIBRARY (e.g. Windows) then we don't have to include it -->
+    <Content Include="
+      $<TARGET_FILE:mizux-cmakeswig-native>
+      $<$<STREQUAL:$<TARGET_PROPERTY:Bar,TYPE>,SHARED_LIBRARY>:;$<TARGET_SONAME_FILE:Bar>>
+      $<$<STREQUAL:$<TARGET_PROPERTY:Foo,TYPE>,SHARED_LIBRARY>:;$<TARGET_SONAME_FILE:Foo>>
+      $<$<STREQUAL:$<TARGET_PROPERTY:FooBar,TYPE>,SHARED_LIBRARY>:;$<TARGET_SONAME_FILE:FooBar>>
+    ">
       <PackagePath>runtimes/@RUNTIME_IDENTIFIER@/native/%(Filename)%(Extension)</PackagePath>
       <Pack>true</Pack>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

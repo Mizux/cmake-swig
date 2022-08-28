@@ -100,9 +100,9 @@ foreach(SUBPROJECT IN ITEMS Foo Bar FooBar)
   target_link_libraries(mizux-cmakeswig-native PRIVATE dotnet_${SUBPROJECT})
 endforeach()
 
-file(COPY ${PROJECT_SOURCE_DIR}/dotnet/logo.png DESTINATION dotnet)
+file(COPY ${PROJECT_SOURCE_DIR}/dotnet/logo.png DESTINATION ${PROJECT_BINARY_DIR}/dotnet)
 set(DOTNET_LOGO_DIR "${PROJECT_BINARY_DIR}/dotnet")
-configure_file(${PROJECT_SOURCE_DIR}/dotnet/Directory.Build.props.in dotnet/Directory.Build.props)
+configure_file(${PROJECT_SOURCE_DIR}/dotnet/Directory.Build.props.in ${PROJECT_BINARY_DIR}/dotnet/Directory.Build.props)
 
 file(MAKE_DIRECTORY ${DOTNET_PACKAGES_DIR})
 ############################
@@ -128,15 +128,17 @@ add_custom_command(
 
 add_custom_command(
   OUTPUT ${DOTNET_NATIVE_PROJECT_DIR}/timestamp
-  COMMAND ${DOTNET_EXECUTABLE} build -c Release /p:Platform=${DOTNET_PLATFORM} ${DOTNET_NATIVE_PROJECT}.csproj
-  COMMAND ${DOTNET_EXECUTABLE} pack -c Release ${DOTNET_NATIVE_PROJECT}.csproj
+  COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME ${DOTNET_EXECUTABLE} build -c Release /p:Platform=${DOTNET_PLATFORM} ${DOTNET_NATIVE_PROJECT}.csproj
+  COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME ${DOTNET_EXECUTABLE} pack -c Release ${DOTNET_NATIVE_PROJECT}.csproj
   COMMAND ${CMAKE_COMMAND} -E touch ${DOTNET_NATIVE_PROJECT_DIR}/timestamp
   DEPENDS
+    ${PROJECT_BINARY_DIR}/dotnet/Directory.Build.props
    ${DOTNET_NATIVE_PROJECT_DIR}/${DOTNET_NATIVE_PROJECT}.csproj
    mizux-cmakeswig-native
   BYPRODUCTS
     ${DOTNET_NATIVE_PROJECT_DIR}/bin
     ${DOTNET_NATIVE_PROJECT_DIR}/obj
+  VERBATIM
   COMMENT "Generate .Net native package ${DOTNET_NATIVE_PROJECT} (${DOTNET_NATIVE_PROJECT_DIR}/timestamp)"
   WORKING_DIRECTORY ${DOTNET_NATIVE_PROJECT_DIR})
 
@@ -162,8 +164,8 @@ add_custom_command(
 
 add_custom_command(
   OUTPUT ${DOTNET_PROJECT_DIR}/timestamp
-  COMMAND ${DOTNET_EXECUTABLE} build -c Release /p:Platform=${DOTNET_PLATFORM} ${DOTNET_PROJECT}.csproj
-  COMMAND ${DOTNET_EXECUTABLE} pack -c Release ${DOTNET_PROJECT}.csproj
+  COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME ${DOTNET_EXECUTABLE} build -c Release /p:Platform=${DOTNET_PLATFORM} ${DOTNET_PROJECT}.csproj
+  COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME ${DOTNET_EXECUTABLE} pack -c Release ${DOTNET_PROJECT}.csproj
   COMMAND ${CMAKE_COMMAND} -E touch ${DOTNET_PROJECT_DIR}/timestamp
   DEPENDS
     ${DOTNET_PROJECT_DIR}/${DOTNET_PROJECT}.csproj
@@ -171,6 +173,7 @@ add_custom_command(
   BYPRODUCTS
     ${DOTNET_PROJECT_DIR}/bin
     ${DOTNET_PROJECT_DIR}/obj
+  VERBATIM
   COMMENT "Generate .Net package ${DOTNET_PROJECT} (${DOTNET_PROJECT_DIR}/timestamp)"
   WORKING_DIRECTORY ${DOTNET_PROJECT_DIR})
 
@@ -214,7 +217,7 @@ function(add_dotnet_test FILE_NAME)
 
   add_custom_command(
     OUTPUT ${DOTNET_TEST_DIR}/timestamp
-    COMMAND ${DOTNET_EXECUTABLE} build -c Release
+    COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME ${DOTNET_EXECUTABLE} build -c Release ${TEST_NAME}.csproj
     COMMAND ${CMAKE_COMMAND} -E touch ${DOTNET_TEST_DIR}/timestamp
     DEPENDS
       ${DOTNET_TEST_DIR}/${TEST_NAME}.csproj
@@ -223,7 +226,8 @@ function(add_dotnet_test FILE_NAME)
     BYPRODUCTS
       ${DOTNET_TEST_DIR}/bin
       ${DOTNET_TEST_DIR}/obj
-      COMMENT "Compiling .Net ${COMPONENT_NAME}/${TEST_NAME}.cs (${DOTNET_TEST_DIR}/timestamp)"
+    VERBATIM
+    COMMENT "Compiling .Net ${COMPONENT_NAME}/${TEST_NAME}.cs (${DOTNET_TEST_DIR}/timestamp)"
     WORKING_DIRECTORY ${DOTNET_TEST_DIR})
 
   add_custom_target(dotnet_${COMPONENT_NAME}_${TEST_NAME} ALL
@@ -234,7 +238,7 @@ function(add_dotnet_test FILE_NAME)
   if(BUILD_TESTING)
     add_test(
       NAME dotnet_${COMPONENT_NAME}_${TEST_NAME}
-      COMMAND ${DOTNET_EXECUTABLE} test --no-build -c Release
+      COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME ${DOTNET_EXECUTABLE} test --no-build -c Release ${TEST_NAME}.csproj
       WORKING_DIRECTORY ${DOTNET_TEST_DIR})
   endif()
   message(STATUS "Configuring test ${FILE_NAME} done")
@@ -275,8 +279,8 @@ function(add_dotnet_example FILE_NAME)
 
   add_custom_command(
     OUTPUT ${DOTNET_EXAMPLE_DIR}/timestamp
-    COMMAND ${DOTNET_EXECUTABLE} build -c Release
-    COMMAND ${DOTNET_EXECUTABLE} pack -c Release
+    COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME ${DOTNET_EXECUTABLE} build -c Release ${EXAMPLE_NAME}.csproj
+    COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME ${DOTNET_EXECUTABLE} pack -c Release ${EXAMPLE_NAME}.csproj
     COMMAND ${CMAKE_COMMAND} -E touch ${DOTNET_EXAMPLE_DIR}/timestamp
     DEPENDS
       ${DOTNET_EXAMPLE_DIR}/${EXAMPLE_NAME}.csproj
@@ -285,7 +289,8 @@ function(add_dotnet_example FILE_NAME)
     BYPRODUCTS
       ${DOTNET_EXAMPLE_DIR}/bin
       ${DOTNET_EXAMPLE_DIR}/obj
-      COMMENT "Compiling .Net ${COMPONENT_NAME}/${EXAMPLE_NAME}.cs (${DOTNET_EXAMPLE_DIR}/timestamp)"
+    VERBATIM
+    COMMENT "Compiling .Net ${COMPONENT_NAME}/${EXAMPLE_NAME}.cs (${DOTNET_EXAMPLE_DIR}/timestamp)"
     WORKING_DIRECTORY ${DOTNET_EXAMPLE_DIR})
 
   add_custom_target(dotnet_${COMPONENT_NAME}_${EXAMPLE_NAME} ALL
@@ -297,13 +302,13 @@ function(add_dotnet_example FILE_NAME)
     if(USE_DOTNET_CORE_31)
       add_test(
         NAME dotnet_${COMPONENT_NAME}_${EXAMPLE_NAME}_netcoreapp31
-        COMMAND ${DOTNET_EXECUTABLE} run --no-build --framework netcoreapp3.1 -c Release
+        COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME ${DOTNET_EXECUTABLE} run --no-build --framework netcoreapp3.1 -c Release ${EXAMPLE_NAME}.csproj
         WORKING_DIRECTORY ${DOTNET_EXAMPLE_DIR})
     endif()
     if(USE_DOTNET_6)
       add_test(
         NAME dotnet_${COMPONENT_NAME}_${EXAMPLE_NAME}_net60
-        COMMAND ${DOTNET_EXECUTABLE} run --no-build --framework net6.0 -c Release
+        COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME ${DOTNET_EXECUTABLE} run --no-build --framework net6.0 -c Release ${EXAMPLE_NAME}.csproj
         WORKING_DIRECTORY ${DOTNET_EXAMPLE_DIR})
     endif()
   endif()
