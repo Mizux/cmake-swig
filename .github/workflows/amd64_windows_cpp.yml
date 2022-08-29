@@ -1,11 +1,6 @@
 name: amd64 Windows C++
 
-on:
-  push:
-  pull_request:
-  schedule:
-    # min hours day(month) month day(week)
-    - cron: '0 0 7,22 * *'
+on: [push, pull_request]
 
 jobs:
   # Building using the github runner environement directly.
