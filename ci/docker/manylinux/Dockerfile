@@ -1,6 +1,6 @@
 # Create a virtual environment with all tools installed
 FROM quay.io/pypa/manylinux2010_x86_64:latest AS env
-LABEL maintainer="mizux.dev@gmail.com"
+
 # Install system build dependencies
 ENV PATH=/usr/local/bin:$PATH
 

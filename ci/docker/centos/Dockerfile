@@ -1,7 +1,7 @@
 # Create a virtual environment with all tools installed
 # ref: https://quay.io/repository/centos/centos
 FROM quay.io/centos/centos:stream AS base
-LABEL maintainer="mizux.dev@gmail.com"
+
 # Install system build dependencies
 ENV PATH=/usr/local/bin:$PATH
 RUN dnf -y update \
