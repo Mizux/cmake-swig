@@ -7,7 +7,7 @@ jobs:
   visual-studio:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Check cmake
       run: cmake --version
     - name: Configure
