@@ -1,8 +1,11 @@
-FROM cmake-swig:centos_swig AS env
+FROM cmake-swig:almalinux_swig AS env
+ENV PATH=/root/.local/bin:$PATH
 RUN dnf -y update \
-&& dnf -y install python36-devel \
+&& dnf -y install python3-devel python3-pip python3-numpy \
 && dnf clean all \
 && rm -rf /var/cache/dnf
+RUN python3 -m pip install \
+ mypy pandas
 
 FROM env AS devel
 WORKDIR /home/project
@@ -14,7 +17,7 @@ RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 
 FROM build AS test
-RUN cmake --build build --target test
+RUN CTEST_OUTPUT_ON_FAILURE=1 cmake --build build --target test
 
 FROM env AS install_env
 WORKDIR /home/sample

@@ -1,39 +1,35 @@
 FROM cmake-swig:alpine_swig AS env
-RUN apk add --no-cache wget icu-libs	libintl
-# .NET install
-RUN dotnet_sdk_version=3.1.101 \
-&& wget -O dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/$dotnet_sdk_version/dotnet-sdk-$dotnet_sdk_version-linux-musl-x64.tar.gz \
-&& dotnet_sha512='ce386da8bc07033957fd404909fc230e8ab9e29929675478b90f400a1838223379595a4459056c6c2251ab5c722f80858b9ca536db1a2f6d1670a97094d0fe55' \
-&& echo "$dotnet_sha512  dotnet.tar.gz" | sha512sum -c - \
-&& mkdir -p /usr/share/dotnet \
-&& tar -C /usr/share/dotnet -oxzf dotnet.tar.gz \
-&& ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet \
-&& rm dotnet.tar.gz
-# Trigger first run experience by running arbitrary cmd
-RUN dotnet --info
 
-# see: https://dotnet.microsoft.com/download/dotnet-core/6.0
-RUN dotnet_sdk_version=6.0.100 \
+# .NET install
+RUN apk add --no-cache wget icu-libs libintl \
+&& mkdir -p /usr/share/dotnet \
+&& ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+
+## .Net 6.0
+## see: https://dotnet.microsoft.com/download/dotnet-core/6.0
+RUN dotnet_sdk_version=6.0.405 \
 && wget -qO dotnet.tar.gz \
 "https://dotnetcli.azureedge.net/dotnet/Sdk/$dotnet_sdk_version/dotnet-sdk-${dotnet_sdk_version}-linux-musl-x64.tar.gz" \
-&& dotnet_sha512='428082c31fd588b12fd34aeae965a58bf1c26b0282184ae5267a85cdadc503f667c7c00e8641892c97fbd5ef26a38a605b683b45a0fef2da302ec7f921cf64fe' \
+&& dotnet_sha512='ca98ebc5858339c5ce4164f5f5932a5bf8aae9f13d54adf382a41f5e6d1302df278bd7e218ecc2f651dcf67e705c40c43347cd33956732c6bd88d3b3d2881b84' \
 && echo "$dotnet_sha512  dotnet.tar.gz" | sha512sum -c - \
 && tar -C /usr/share/dotnet -oxzf dotnet.tar.gz \
 && rm dotnet.tar.gz
 # Trigger first run experience by running arbitrary cmd
 RUN dotnet --info
 
+# Add the library src to our build env
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
 
 FROM devel AS build
+RUN cmake -version
 RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
 RUN cmake --build build --target all -v
-RUN cmake --build build --target install
+RUN cmake --build build --target install -v
 
 FROM build AS test
-RUN cmake --build build --target test
+RUN CTEST_OUTPUT_ON_FAILURE=1 cmake --build build --target test
 
 FROM env AS install_env
 WORKDIR /home/sample

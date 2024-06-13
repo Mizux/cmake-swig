@@ -1,4 +1,4 @@
-FROM cmake-swig:ubuntu_base AS env
+FROM cmake-swig:almalinux_base AS env
 RUN cmake -version
 
 FROM env AS devel

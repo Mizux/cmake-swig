@@ -14,12 +14,12 @@ RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 
 FROM build AS test
-RUN cmake --build build --target test
+RUN CTEST_OUTPUT_ON_FAILURE=1 cmake --build build --target test
 
 FROM env AS install_env
 WORKDIR /home/sample
 COPY --from=build /home/project/build/python/dist/*.whl .
-RUN python3 -m pip install *.whl
+RUN python3 -m pip install --break-system-packages *.whl
 
 FROM install_env AS install_devel
 COPY ci/samples/python .

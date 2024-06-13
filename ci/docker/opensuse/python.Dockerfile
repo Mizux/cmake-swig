@@ -1,7 +1,10 @@
 FROM cmake-swig:opensuse_swig AS env
-RUN zypper update -y \
+RUN zypper refresh \
 && zypper install -y python3 python3-pip python3-devel \
+ python3-pip python3-wheel python3-virtualenv python3-setuptools \
 && zypper clean -a
+RUN python3 -m pip install --break-system-packages \
+ mypy
 
 FROM env AS devel
 WORKDIR /home/project
@@ -13,12 +16,12 @@ RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 
 FROM build AS test
-RUN cmake --build build --target test
+RUN CTEST_OUTPUT_ON_FAILURE=1 cmake --build build --target test
 
 FROM env AS install_env
 WORKDIR /home/sample
 COPY --from=build /home/project/build/python/dist/*.whl .
-RUN python3 -m pip install *.whl
+RUN python3 -m pip install --break-system-packages *.whl
 
 FROM install_env AS install_devel
 COPY ci/samples/python .

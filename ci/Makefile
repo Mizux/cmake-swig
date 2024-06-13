@@ -33,13 +33,14 @@ help:
 	@echo -e "\t${BOLD}save_<distro>_<lang>_<stage>${RESET}: Save the <stage> docker image for a specific distro for a specific language."
 	@echo -e "\t${BOLD}sh_<distro>_<lang>_<stage>${RESET}: run a container using the <stage> docker image specified (debug purpose)."
 	@echo
-	@echo -e "\t${BOLD}<distro>${RESET}:"
+	@echo -e "\tWith ${BOLD}<distro>${RESET}:"
+	@echo -e "\t\t${BOLD}almalinux${RESET} (latest)"
 	@echo -e "\t\t${BOLD}alpine${RESET} (edge)"
 	@echo -e "\t\t${BOLD}archlinux${RESET} (latest)"
-	@echo -e "\t\t${BOLD}centos${RESET} (latest)"
 	@echo -e "\t\t${BOLD}debian${RESET} (latest)"
 	@echo -e "\t\t${BOLD}fedora${RESET} (latest)"
 	@echo -e "\t\t${BOLD}opensuse${RESET} (tumbleweed)"
+	@echo -e "\t\t${BOLD}rockylinux${RESET} (9)"
 	@echo -e "\t\t${BOLD}ubuntu${RESET} (rolling)"
 	@echo
 	@echo -e "\tWith ${BOLD}<prestage>${RESET}:"
@@ -70,6 +71,7 @@ help:
 	@echo -e "\t${BOLD}clean_<distro>${RESET}: Remove cache and docker image for the specified distro."
 	@echo
 	@echo -e "\t${BOLD}NOCACHE=1${RESET}: use 'docker build --no-cache' when building container (default use cache)."
+	@echo -e "\t${BOLD}VERBOSE=1${RESET}: use 'docker build --progress=plain' when building container."
 	@echo
 	@echo -e "branch: $(BRANCH)"
 	@echo -e "sha1: $(SHA1)"
@@ -83,7 +85,7 @@ all: build
 MAKEFLAGS += --no-builtin-rules
 .SUFFIXES:
 # Remove some rules from gmake that .SUFFIXES does not remove.
-SUFFIXES =
+SUFFIXES :=
 # Keep all intermediate files
 # ToDo: try to remove it later
 .SECONDARY:
@@ -91,12 +93,15 @@ SUFFIXES =
 # Docker image name prefix.
 IMAGE := ${PROJECT}
 
-ifdef NOCACHE
-DOCKER_BUILD_CMD := docker build --no-cache
-DOCKER_BUILDX_CMD := docker buildx build --no-cache
-else
 DOCKER_BUILD_CMD := docker build
 DOCKER_BUILDX_CMD := docker buildx build
+ifdef NOCACHE
+DOCKER_BUILD_CMD := ${DOCKER_BUILD_CMD} --no-cache
+DOCKER_BUILDX_CMD := ${DOCKER_BUILDX_CMD} --no-cache
+endif
+ifdef VERBOSE
+DOCKER_BUILD_CMD := ${DOCKER_BUILD_CMD} --progress=plain
+DOCKER_BUILDX_CMD := ${DOCKER_BUILDX_CMD} --progress=plain
 endif
 DOCKER_RUN_CMD := docker run --rm --init --net=host
 
@@ -108,9 +113,10 @@ DOCKER_RUN_CMD := docker run --rm --init --net=host
 ## PRESTAGES ##
 ###############
 # Currently supported distro
-DISTROS = alpine archlinux centos debian fedora opensuse ubuntu
-PRESTAGES = base swig
-define make-prestage-target
+DISTROS := almalinux alpine archlinux debian fedora opensuse rockylinux ubuntu
+PRESTAGES := base swig
+
+define make-prestage-target =
 #$$(info STAGE: $1)
 #$$(info Create targets: $1 $(addsuffix _$1, $(DISTROS)).)
 targets_$1 = $(addsuffix _$1, $(DISTROS))
@@ -150,9 +156,10 @@ $(foreach stage,$(PRESTAGES),$(eval $(call make-prestage-target,$(stage))))
 ############
 ## STAGES ##
 ############
-LANGUAGES = cpp python java dotnet
-STAGES = env devel build test install_env install_devel install_build install_test
-define make-stage-target
+LANGUAGES := cpp python java dotnet
+STAGES := env devel build test install_env install_devel install_build install_test
+
+define make-stage-target =
 #$$(info STAGE: $1)
 #$$(info Create targets: $1 $(addsuffix _$1, $(DISTROS)).)
 targets_$1 = $(addsuffix _$1, $(DISTROS))

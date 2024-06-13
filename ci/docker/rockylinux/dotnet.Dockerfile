@@ -1,19 +1,20 @@
-FROM cmake-swig:fedora_swig AS env
-
-# see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-fedora
+FROM cmake-swig:rockylinux_swig AS env
+# see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-centos8
 RUN dnf -y update \
 && dnf -y install dotnet-sdk-6.0 \
-&& dnf clean all
+&& dnf clean all \
+&& rm -rf /var/cache/dnf
 # Trigger first run experience by running arbitrary cmd
 RUN dotnet --info
 
+# Add the library src to our build env
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
 
 FROM devel AS build
 RUN cmake -version
-RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON -DBUILD_CXX_SAMPLES=OFF -DBUILD_CXX_EXAMPLES=OFF
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install -v
 
@@ -25,10 +26,10 @@ WORKDIR /home/sample
 COPY --from=build /home/project/build/dotnet/packages/*.nupkg ./
 
 FROM install_env AS install_devel
-COPY ci/samples/dotnet .
+COPY cmake/samples/dotnet .
 
 FROM install_devel AS install_build
 RUN dotnet build
 
 FROM install_build AS install_test
-RUN dotnet run
+RUN dotnet test

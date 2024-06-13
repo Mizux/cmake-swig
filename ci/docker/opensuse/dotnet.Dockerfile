@@ -19,12 +19,13 @@ WORKDIR /home/project
 COPY . .
 
 FROM devel AS build
+RUN cmake -version
 RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
 RUN cmake --build build --target all -v
-RUN cmake --build build --target install
+RUN cmake --build build --target install -v
 
 FROM build AS test
-RUN cmake --build build --target test
+RUN CTEST_OUTPUT_ON_FAILURE=1 cmake --build build --target test -v
 
 FROM env AS install_env
 WORKDIR /home/sample

@@ -1,12 +1,15 @@
-FROM cmake-swig:ubuntu_base AS env
-RUN cmake -version
+FROM cmake-swig:almalinux_swig AS env
+RUN dnf -y update \
+&& dnf -y install java-1.8.0-openjdk  java-1.8.0-openjdk-devel maven \
+&& dnf clean all \
+&& rm -rf /var/cache/dnf
 
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
 
 FROM devel AS build
-RUN cmake -S. -Bbuild
+RUN cmake -S. -Bbuild -DBUILD_JAVA=ON
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 
@@ -18,12 +21,10 @@ COPY --from=build /usr/local /usr/local/
 
 FROM install_env AS install_devel
 WORKDIR /home/sample
-COPY ci/samples/cpp .
+COPY ci/samples/java .
 
 FROM install_devel AS install_build
-RUN cmake -S. -Bbuild
-RUN cmake --build build --target all -v
-RUN cmake --build build --target install
+RUN mvn compile
 
 FROM install_build AS install_test
-RUN cmake --build build --target test
+RUN mvn test

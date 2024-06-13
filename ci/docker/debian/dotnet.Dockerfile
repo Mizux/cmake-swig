@@ -7,7 +7,7 @@ RUN apt-get update -qq \
 && dpkg -i packages-microsoft-prod.deb \
 && rm packages-microsoft-prod.deb \
 && apt-get update -qq \
-&& apt-get install -yq dotnet-sdk-3.1 dotnet-sdk-6.0 \
+&& apt-get install -yq dotnet-sdk-6.0 \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Trigger first run experience by running arbitrary cmd
@@ -18,12 +18,13 @@ WORKDIR /home/project
 COPY . .
 
 FROM devel AS build
+RUN cmake -version
 RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
-RUN cmake --build build --target all
-RUN cmake --build build --target install
+RUN cmake --build build --target all -v
+RUN cmake --build build --target install -v
 
 FROM build AS test
-RUN cmake --build build --target test
+RUN CTEST_OUTPUT_ON_FAILURE=1 cmake --build build --target test
 
 FROM env AS install_env
 WORKDIR /home/sample
