@@ -4,12 +4,12 @@ SHA1 := $(shell git rev-parse --verify HEAD)
 
 # General commands
 .PHONY: help
-BOLD=\e[1m
-RESET=\e[0m
+BOLD:=\e[1m
+RESET:=\e[0m
 
 help:
 	@echo -e "${BOLD}SYNOPSIS${RESET}"
-	@echo -e "\tmake <target> [NOCACHE=1]"
+	@echo -e "\tmake <target> [NOCACHE=1] [VERBOSE=1]"
 	@echo
 	@echo -e "${BOLD}DESCRIPTION${RESET}"
 	@echo -e "\ttest build inside docker container to have a reproductible build."
@@ -105,6 +105,17 @@ DOCKER_BUILDX_CMD := ${DOCKER_BUILDX_CMD} --progress=plain
 endif
 DOCKER_RUN_CMD := docker run --rm --init --net=host
 
+# Currently supported distro
+DISTROS := \
+ almalinux \
+ alpine \
+ archlinux \
+ debian \
+ fedora \
+ opensuse \
+ rockylinux \
+ ubuntu
+
 # $* stem
 # $< first prerequist
 # $@ target name
@@ -112,8 +123,6 @@ DOCKER_RUN_CMD := docker run --rm --init --net=host
 ###############
 ## PRESTAGES ##
 ###############
-# Currently supported distro
-DISTROS := almalinux alpine archlinux debian fedora opensuse rockylinux ubuntu
 PRESTAGES := base swig
 
 define make-prestage-target =
