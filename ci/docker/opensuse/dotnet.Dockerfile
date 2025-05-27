@@ -1,16 +1,15 @@
 FROM cmake-swig:opensuse_swig AS env
-# see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-opensuse
-RUN zypper update -y \
-&& zypper install -y wget tar gzip libicu
 
 # .NET install
-RUN wget https://packages.microsoft.com/keys/microsoft.asc \
-&& rpm --import microsoft.asc \
-&& rm microsoft.asc
-RUN wget https://packages.microsoft.com/config/opensuse/15/prod.repo \
-&& mv prod.repo /etc/zypp/repos.d/microsoft-prod.repo \
-&& chown root:root /etc/zypp/repos.d/microsoft-prod.repo
-RUN zypper install -y dotnet-sdk-3.1 dotnet-sdk-6.0
+# see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-opensuse
+RUN zypper refresh \
+&& zypper install -y wget tar awk gzip libicu-devel findutils
+
+## .Net 8.0
+# see: https://learn.microsoft.com/en-us/dotnet/core/install/linux-scripted-manual#scripted-install
+RUN wget -q "https://dot.net/v1/dotnet-install.sh" \
+&& chmod a+x dotnet-install.sh \
+&& ./dotnet-install.sh -c 8.0 -i /usr/local/bin
 # Trigger first run experience by running arbitrary cmd
 RUN dotnet --info
 

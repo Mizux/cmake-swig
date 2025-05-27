@@ -1,4 +1,5 @@
 FROM cmake-swig:alpine_base AS env
+
 RUN cmake -version
 
 FROM env AS devel

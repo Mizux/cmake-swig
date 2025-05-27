@@ -1,4 +1,5 @@
 FROM cmake-swig:archlinux_swig AS env
+
 RUN pacman -Syu --noconfirm jdk-openjdk maven
 ENV JAVA_HOME=/usr/lib/jvm/default
 

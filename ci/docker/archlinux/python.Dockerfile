@@ -1,5 +1,8 @@
 FROM cmake-swig:archlinux_swig AS env
-RUN pacman -Syu --noconfirm python python-pip
+
+ENV PATH=/root/.local/bin:$PATH
+RUN pacman -Syu --noconfirm python python-pip \
+ python-wheel python-virtualenv python-setuptools
 
 FROM env AS devel
 WORKDIR /home/project
@@ -16,7 +19,7 @@ RUN CTEST_OUTPUT_ON_FAILURE=1 cmake --build build --target test
 FROM env AS install_env
 WORKDIR /home/sample
 COPY --from=build /home/project/build/python/dist/*.whl .
-RUN python -m pip install *.whl
+RUN python -m pip install --break-system-packages *.whl
 
 FROM install_env AS install_devel
 COPY ci/samples/python .

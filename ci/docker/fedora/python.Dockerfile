@@ -1,4 +1,5 @@
 FROM cmake-swig:fedora_swig AS env
+
 RUN dnf -y update \
 && dnf -y install python3 python3-devel python3-pip \
 && dnf clean all

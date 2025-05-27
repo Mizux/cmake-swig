@@ -1,6 +1,7 @@
 FROM cmake-swig:opensuse_swig AS env
+
 RUN zypper refresh \
-&& zypper install -y python3 python3-pip python3-devel \
+&& zypper install -y python3 python3-devel \
  python3-pip python3-wheel python3-virtualenv python3-setuptools \
 && zypper clean -a
 RUN python3 -m pip install --break-system-packages \
