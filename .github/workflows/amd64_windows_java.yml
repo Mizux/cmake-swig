@@ -15,11 +15,35 @@ jobs:
         cmake: [
           {name: "VS22", generator: "Visual Studio 17 2022", config: "Release", build_target: ALL_BUILD, test_target: RUN_TESTS, install_target: INSTALL},
         ]
+        java: [
+          # see https://endoflife.date/azul-zulu
+          {distrib: 'zulu', version: '11'}, # 2026/09
+          {distrib: 'zulu', version: '17'}, # 2029/09
+          {distrib: 'zulu', version: '21'}, # 2031/09
+          # see https://endoflife.date/eclipse-temurin
+          {distrib: 'temurin', version: '11'}, # 2027/10
+          {distrib: 'temurin', version: '17'}, # 2027/10
+          {distrib: 'temurin', version: '21'}, # 2029/12
+        ]
       fail-fast: false
-    name: amd64•Windows•CMake(${{matrix.cmake.name}})•Java
+    name: amd64•Windows•CMake(${{matrix.cmake.name}})•${{matrix.java.distrib}}-${{matrix.java.version}}
     runs-on: windows-latest
+    env:
+      CTEST_OUTPUT_ON_FAILURE: 1
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: ${{matrix.java.distrib}}
+          java-version: ${{matrix.java.version}}
+      - name: Update maven
+        run: |
+          choco upgrade maven
+          echo "C:\ProgramData\chocolatey\lib\maven\apache-maven-3.9.9\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Check java
+        run: |
+          java -version
+          mvn --version
       - name: Install SWIG
         run: |
           (New-Object System.Net.WebClient).DownloadFile("http://prdownloads.sourceforge.net/swig/swigwin-4.3.0.zip","swigwin-4.3.0.zip");
@@ -27,10 +51,6 @@ jobs:
           echo "$((Get-Item .).FullName)/swigwin-4.3.0" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: Check swig
         run: swig -version
-      - name: Check Java
-        run: |
-          java -version
-          mvn.cmd --version
       - name: Check CMake
         run: cmake --version
       - name: Configure
