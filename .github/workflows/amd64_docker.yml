@@ -3,17 +3,23 @@ name: amd64 Docker
 
 on: [push, pull_request, workflow_dispatch]
 
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
+# Building using the github runner environement directly.
 jobs:
-  Distros:
-    runs-on: ubuntu-latest
+  docker:
     strategy:
       matrix:
         distro: [almalinux, alpine, archlinux, debian, fedora, opensuse, rockylinux, ubuntu]
         lang: [cpp, python, dotnet, java]
       fail-fast: false
+    name: amd64•${{matrix.distro}}•${{matrix.lang}}
+    runs-on: ubuntu-latest
     env:
-      DISTRO: ${{ matrix.distro }}
-      LANG: ${{ matrix.lang }}
+      DISTRO: ${{matrix.distro}}
+      LANG: ${{matrix.lang}}
     steps:
     - uses: actions/checkout@v4
     - name: Check docker
@@ -39,3 +45,9 @@ jobs:
       run: make --directory=ci ${DISTRO}_${LANG}_install_build
     - name: Test install project
       run: make --directory=ci ${DISTRO}_${LANG}_install_test
+
+  amd64_docker:
+    runs-on: ubuntu-latest
+    needs: docker
+    steps:
+      - uses: actions/checkout@v4
