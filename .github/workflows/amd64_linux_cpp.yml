@@ -11,13 +11,13 @@ concurrency:
 jobs:
   native:
     strategy:
-       matrix:
-         cmake: [
-           [name: "Make", generator: "Unix Makefiles", config: "Release"],
-           [name: "Ninja", generator: "Ninja", config: "Release"],
-           [name: "NinjaMulti", generator: "Ninja Multi-Config", config: "Release"]
-         ]
-       fail-fast: false
+      matrix:
+        cmake: [
+          {name: "Make", generator: "Unix Makefiles", config: "Release", build_target: all, test_target: test, install_target: install},
+          {name: "Ninja", generator: "Ninja", config: "Release", build_target: all, test_target: test, install_target: install},
+          {name: "NinjaMulti", generator: "Ninja Multi-Config", config: "Release", build_target: all, test_target: test, install_target: install},
+        ]
+      fail-fast: false
     name: amd64•Linux•CMake(${{matrix.cmake.name}})•C++
     runs-on: ubuntu-latest
     steps:
@@ -38,20 +38,20 @@ jobs:
         run: >
           cmake --build build
           --config ${{matrix.cmake.config}}
-          --target all
+          --target ${{matrix.cmake.build_target}}
           -v -j2
       - name: Test
         run: >
           CTEST_OUTPUT_ON_FAILURE=1
           cmake --build build
           --config ${{matrix.cmake.config}}
-          --target test
+          --target ${{matrix.cmake.test_target}}
           -v
       - name: Install
         run: >
           cmake --build build
           --config ${{matrix.cmake.config}}
-          --target install
+          --target ${{matrix.cmake.install_target}}
           -v
 
   amd64_linux_cpp:
