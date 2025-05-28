@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>@DOTNET_LANG@</LangVersion>
     @DOTNET_TFM@
     <EnableDefaultItems>false</EnableDefaultItems>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -32,10 +32,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="@FILE_NAME@" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+    <Compile Include="@TEST_FILE_NAME@" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.8.2" />
+    <PackageReference Include="xunit.runner.console" Version="2.8.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageReference Include="@DOTNET_PROJECT@" Version="@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.*" />
   </ItemGroup>
 </Project>

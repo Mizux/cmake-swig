@@ -13,14 +13,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-/** Load native libraries needed for using javanative-java.*/
+/** Load native libraries needed for using javanative-java. */
 public class Loader {
   private static final String RESOURCE_PATH = "cmakeswig-" + Platform.RESOURCE_PREFIX + "/";
 
-  /** Try to locate the native libraries directory.*/
+  /** Try to locate the native libraries directory. */
   private static URI getNativeResourceURI() throws IOException {
     ClassLoader loader = Loader.class.getClassLoader();
     URL resourceURL = loader.getResource(RESOURCE_PATH);
@@ -84,21 +88,69 @@ public class Loader {
     return tempPath;
   }
 
-  /** Unpack and Load the native libraries needed for using ortools-java.*/
+  /** Unpack and Load the native libraries needed for using ortools-java. */
   private static boolean loaded = false;
 
   public static synchronized void loadNativeLibraries() {
-    if (!loaded) {
+    // prints the name of the Operating System
+    // System.out.println("OS: " + System.getProperty("os.name"));
+    if (loaded) {
+      return;
+    }
+    try {
+      // System.out.println("System.loadLibrary(\"jniortools\")");
+      System.loadLibrary("jnicmakeswig");
+      loaded = true;
+      return;
+    } catch (UnsatisfiedLinkError e) {
+      // Do nothing.
+      // System.out.println("Can't System.loadLibrary(jniortools)");
+    }
+    try {
+      URI resourceURI = getNativeResourceURI();
+      Path tempPath = unpackNativeResources(resourceURI);
+      // Load the native library
+      // System.out.println("System.load(" + System.mapLibraryName("jniortools") + ")");
+      System.load(tempPath.resolve(RESOURCE_PATH)
+              .resolve(System.mapLibraryName("jnicmakeswig"))
+              .toAbsolutePath()
+              .toString());
+      loaded = true;
+      return;
+    } catch (IOException | UnsatisfiedLinkError e) {
+      // Do nothing.
+      // System.out.println("Can't System.load(jnicmakeswig)");
+    }
+
+    // On windows, try to load each libraries one by one.
+    // System.out.println("Prefix: " + Platform.RESOURCE_PREFIX);
+    if (Platform.RESOURCE_PREFIX.equals("win32-x86-64")) {
       try {
         URI resourceURI = getNativeResourceURI();
         Path tempPath = unpackNativeResources(resourceURI);
-        // Load the native library
-        System.load(tempPath.resolve(RESOURCE_PATH)
-            .resolve(System.mapLibraryName("jnicmakeswig"))
-            .toString());
+        // libraries order does matter <LibraryName, isMandatory> !
+        List<Map.Entry<String, Boolean>> dlls =
+            Arrays.asList((new AbstractMap.SimpleEntry("jnicmakeswig", true)));
+
+        for (Map.Entry<String, Boolean> dll : dlls) {
+          try {
+            // System.out.println("System.load(" + dll.getKey() + ")");
+            System.load(tempPath.resolve(RESOURCE_PATH)
+                    .resolve(System.mapLibraryName(dll.getKey()))
+                    .toAbsolutePath()
+                    .toString());
+          } catch (UnsatisfiedLinkError e) {
+            System.out.println("System.load(" + dll.getKey() + ") failed!");
+            if (dll.getValue()) {
+              throw new RuntimeException(e);
+            }
+          }
+        }
         loaded = true;
+        return;
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        // Do nothing.
+        // System.out.println("unpack failed");
       }
     }
   }
