@@ -6,14 +6,14 @@ RUN dnf -y update \
 && dnf clean all \
 && rm -rf /var/cache/dnf
 RUN python3 -m pip install \
- absl-py mypy mypy-protobuf pandas
+ mypy pandas
 
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
 
 FROM devel AS build
-RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON -DBUILD_CXX_SAMPLES=OFF -DBUILD_CXX_EXAMPLES=OFF
+RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 
@@ -26,7 +26,7 @@ COPY --from=build /home/project/build/python/dist/*.whl .
 RUN python3 -m pip install *.whl
 
 FROM install_env AS install_devel
-COPY cmake/samples/python .
+COPY ci/samples/python .
 
 FROM install_devel AS install_build
 RUN python3 -m compileall .

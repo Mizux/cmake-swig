@@ -7,7 +7,7 @@ WORKDIR /home/project
 COPY . .
 
 FROM devel AS build
-RUN cmake -S. -Bbuild -DBUILD_DEPS=ON
+RUN cmake -S. -Bbuild
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 
@@ -19,7 +19,7 @@ COPY --from=build /usr/local /usr/local/
 
 FROM install_env AS install_devel
 WORKDIR /home/sample
-COPY cmake/samples/cpp .
+COPY ci/samples/cpp .
 
 FROM install_devel AS install_build
 RUN cmake -S. -Bbuild

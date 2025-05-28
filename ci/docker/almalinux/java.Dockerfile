@@ -1,7 +1,7 @@
 FROM cmake-swig:almalinux_swig AS env
 
 RUN dnf -y update \
-&& dnf -y install java-11-openjdk  java-11-openjdk-devel maven \
+&& dnf -y install java-11-openjdk java-11-openjdk-devel maven \
 && dnf clean all \
 && rm -rf /var/cache/dnf
 RUN alternatives --set java /usr/lib/jvm/java-11-openjdk*.x86_64/bin/java

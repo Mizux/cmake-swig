@@ -16,7 +16,7 @@ COPY . .
 
 FROM devel AS build
 RUN cmake -version
-RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON -DBUILD_CXX_SAMPLES=OFF -DBUILD_CXX_EXAMPLES=OFF
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install -v
 
@@ -28,10 +28,10 @@ WORKDIR /home/sample
 COPY --from=build /home/project/build/dotnet/packages/*.nupkg ./
 
 FROM install_env AS install_devel
-COPY cmake/samples/dotnet .
+COPY ci/samples/dotnet .
 
 FROM install_devel AS install_build
 RUN dotnet build
 
 FROM install_build AS install_test
-RUN dotnet test
+RUN dotnet run
