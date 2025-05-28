@@ -24,6 +24,15 @@
 [amd64_macos_python_svg]: ./../../actions/workflows/amd64_macos_python.yml/badge.svg
 [amd64_macos_python_link]: ./../../actions/workflows/amd64_macos_python.yml
 
+[arm64_macos_cpp_svg]: ./../../actions/workflows/arm64_macos_cpp.yml/badge.svg
+[arm64_macos_cpp_link]: ./../../actions/workflows/arm64_macos_cpp.yml
+[arm64_macos_dotnet_svg]: ./../../actions/workflows/arm64_macos_dotnet.yml/badge.svg
+[arm64_macos_dotnet_link]: ./../../actions/workflows/arm64_macos_dotnet.yml
+[arm64_macos_java_svg]: ./../../actions/workflows/arm64_macos_java.yml/badge.svg
+[arm64_macos_java_link]: ./../../actions/workflows/arm64_macos_java.yml
+[arm64_macos_python_svg]: ./../../actions/workflows/arm64_macos_python.yml/badge.svg
+[arm64_macos_python_link]: ./../../actions/workflows/arm64_macos_python.yml
+
 [windows_cpp_svg]: ./../../actions/workflows/amd64_windows_cpp.yml/badge.svg
 [windows_cpp_link]: ./../../actions/workflows/amd64_windows_cpp.yml
 [windows_dotnet_svg]: ./../../actions/workflows/amd64_windows_dotnet.yml/badge.svg
