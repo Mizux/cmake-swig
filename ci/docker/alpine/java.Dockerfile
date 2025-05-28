@@ -1,7 +1,7 @@
 FROM cmake-swig:alpine_swig AS env
 
-ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
-RUN apk add --no-cache openjdk8 maven
+RUN apk add --no-cache openjdk11 maven
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 
 FROM env AS devel
 WORKDIR /home/project

@@ -2,8 +2,9 @@ FROM cmake-swig:opensuse_swig AS env
 
 # Install Java JDK and Maven
 RUN zypper refresh \
-&& zypper install -y java-17-openjdk-devel maven \
+&& zypper install -y java-17-openjdk-devel java-17-openjdk-javadoc maven \
 && zypper clean -a
+ENV JAVA_HOME=/etc/alternatives/java_sdk
 ENV PATH=/usr/share/maven/bin:$PATH
 
 FROM env AS devel
