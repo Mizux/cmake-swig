@@ -3,19 +3,46 @@ name: amd64 Windows C++
 
 on: [push, pull_request, workflow_dispatch]
 
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
+# Building using the github runner environement directly.
 jobs:
-  # Building using the github runner environement directly.
-  visual-studio:
+  native:
+    name: amd64•windows•CMake(VS22)•C++
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Check cmake
-      run: cmake --version
-    - name: Configure
-      run: cmake -S. -Bbuild -G "Visual Studio 17 2022" -DCMAKE_CONFIGURATION_TYPES=Release -DCMAKE_INSTALL_PREFIX=install
-    - name: Build
-      run: cmake --build build --config Release --target ALL_BUILD -v
-    - name: Test
-      run: cmake --build build --config Release --target RUN_TESTS -v
-    - name: Install
-      run: cmake --build build --config Release --target INSTALL -v
+      - uses: actions/checkout@v4
+      - name: Check CMake
+        run: cmake --version
+      - name: Configure
+        run: >
+          cmake -S. -Bbuild
+          -G "Visual Studio 17 2022"
+          -DCMAKE_CONFIGURATION_TYPES=Release
+          -DCMAKE_INSTALL_PREFIX=install
+      - name: Build
+        run: >
+          cmake --build build
+          --config Release
+          --target ALL_BUILD
+          -v -j2
+      - name: Test
+        run: >
+          cmake --build build
+          --config Release
+          --target RUN_TESTS
+          -v
+      - name: Install
+        run: >
+          cmake --build build
+          --config Release
+          --target INSTALL
+          -v
+
+  amd64_windows_cpp:
+    runs-on: ubuntu-latest
+    needs: native
+    steps:
+      - uses: actions/checkout@v4

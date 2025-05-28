@@ -3,51 +3,84 @@ name: amd64 Linux Python
 
 on: [push, pull_request, workflow_dispatch]
 
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
+# Building using the github runner environement directly.
 jobs:
-  # Building using the github runner environement directly.
-  linux:
-    runs-on: ubuntu-latest
+  native:
     strategy:
-       matrix:
-         build: [
-           ["Unix Makefiles", "Release"],
-           ["Ninja", "Release"],
-           ["Ninja Multi-Config", "Release"]
-         ]
-       fail-fast: false
-    env:
-      GENERATOR: ${{ matrix.build[0] }}
-      BUILD_TYPE: ${{ matrix.build[1] }}
+      matrix:
+        cmake: [
+          {name: "Make", generator: "Unix Makefiles", config: "Release", build_target: all, test_target: test, install_target: install},
+          {name: "Ninja", generator: "Ninja", config: "Release", build_target: all, test_target: test, install_target: install},
+          {name: "NinjaMulti", generator: "Ninja Multi-Config", config: "Release", build_target: all, test_target: test, install_target: install},
+        ]
+        python: [
+          {version: "3.9"},
+          #{version: "3.10"},
+          #{version: "3.11"},
+          {version: "3.12"},
+          {version: "3.13"},
+        ]
+      fail-fast: false
+    name: amd64•Linux•CMake(${{matrix.cmake.name}})•Py${{matrix.python.version}}
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Install Ninja
-      run: |
-        sudo apt-get update
-        sudo apt-get install ninja-build
-    - name: Uninstall preinstalled swig3.0
-      run: |
-        swig -version;
-        sudo apt remove -y swig swig3.0
-    - name: Install SWIG 4.3.0
-      run: |
-        wget -q "https://downloads.sourceforge.net/project/swig/swig/swig-4.3.0/swig-4.3.0.tar.gz";
-        tar xvf swig-4.3.0.tar.gz;
-        rm swig-4.3.0.tar.gz;
-        cd swig-4.3.0;
-        ./configure --prefix=/usr;
-        make -j8;
-        sudo make install;
-        cd ..;
-        rm -rf swig-4.3.0;
-    - name: Check swig
-      run: swig -version
-    - name: Check cmake
-      run: cmake --version
-    - name: Configure
-      run: cmake -S. -Bbuild -G "$GENERATOR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=ON
-    - name: Build
-      run: cmake --build build --config "$BUILD_TYPE" --target all -v
-    - name: Test
-      run: CTEST_OUTPUT_ON_FAILURE=1 cmake --build build --config "$BUILD_TYPE" --target test -v
-    - name: Install
-      run: cmake --build build --config "$BUILD_TYPE" --target install -v
+      - uses: actions/checkout@v4
+      - name: Install Ninja
+        run: |
+          sudo apt-get update
+          sudo apt-get install ninja-build
+      - name: Uninstall preinstalled swig3.0
+        run: |
+          swig -version;
+          sudo apt remove -y swig swig3.0
+      - name: Install SWIG
+        run: |
+          wget -q "https://downloads.sourceforge.net/project/swig/swig/swig-4.3.0/swig-4.3.0.tar.gz";
+          tar xvf swig-4.3.0.tar.gz;
+          rm swig-4.3.0.tar.gz;
+          cd swig-4.3.0;
+          ./configure --prefix=/usr;
+          make -j8;
+          sudo make install;
+          cd ..;
+          rm -rf swig-4.3.0;
+      - name: Check swig
+        run: swig -version
+      - name: Check CMake
+        run: cmake --version
+      - name: Configure
+        run: >
+          cmake -S. -Bbuild
+          -G "${{matrix.cmake.generator}}"
+          -DCMAKE_BUILD_TYPE=${{matrix.cmake.config}}
+          -DBUILD_PYTHON=ON
+          -DCMAKE_INSTALL_PREFIX=install
+      - name: Build
+        run: >
+          cmake --build build
+          --config ${{matrix.cmake.config}}
+          --target ${{matrix.cmake.build_target}}
+          -v -j2
+      - name: Test
+        run: >
+          CTEST_OUTPUT_ON_FAILURE=1
+          cmake --build build
+          --config ${{matrix.cmake.config}}
+          --target ${{matrix.cmake.test_target}}
+          -v
+      - name: Install
+        run: >
+          cmake --build build
+          --config ${{matrix.cmake.config}}
+          --target ${{matrix.cmake.install_target}}
+          -v
+
+  amd64_linux_python:
+    runs-on: ubuntu-latest
+    needs: native
+    steps:
+      - uses: actions/checkout@v4

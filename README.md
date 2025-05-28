@@ -1,41 +1,42 @@
 | OS     | C++ | Python | Java | .NET |
 |:-------|-----|--------|------|------|
-| Linux  | [![Status][cpp_linux_svg]][cpp_linux_link] | [![Status][python_linux_svg]][python_linux_link] | [![Status][java_linux_svg]][java_linux_link] | [![Status][dotnet_linux_svg]][dotnet_linux_link] |
-| macOS  | [![Status][cpp_macos_svg]][cpp_macos_link] | [![Status][python_macos_svg]][python_macos_link] | [![Status][java_macos_svg]][java_macos_link] | [![Status][dotnet_macos_svg]][dotnet_macos_link] |
-| Windows | [![Status][cpp_windows_svg]][cpp_windows_link] | [![Status][python_windows_svg]][python_windows_link] | [![Status][java_windows_svg]][java_windows_link] | [![Status][dotnet_windows_svg]][dotnet_windows_link] |
+| amd64 Linux  | [![Status][linux_cpp_svg]][linux_cpp_link] | [![Status][linux_python_svg]][linux_python_link] | [![Status][linux_java_svg]][linux_java_link] | [![Status][linux_dotnet_svg]][linux_dotnet_link] |
+| amd64 macOS  | [![Status][amd64_macos_cpp_svg]][amd64_macos_cpp_link] | [![Status][amd64_macos_python_svg]][amd64_macos_python_link] | [![Status][amd64_macos_java_svg]][amd64_macos_java_link] | [![Status][amd64_macos_dotnet_svg]][amd64_macos_dotnet_link] |
+| arm64 macOS  | [![Status][arm64_macos_cpp_svg]][arm64_macos_cpp_link] | [![Status][arm64_macos_python_svg]][arm64_macos_python_link] | [![Status][arm64_macos_java_svg]][arm64_macos_java_link] | [![Status][arm64_macos_dotnet_svg]][arm64_macos_dotnet_link] |
+| amd64 Windows | [![Status][windows_cpp_svg]][windows_cpp_link] | [![Status][windows_python_svg]][windows_python_link] | [![Status][windows_java_svg]][windows_java_link] | [![Status][windows_dotnet_svg]][windows_dotnet_link] |
 
 
-[cpp_linux_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_cpp.yml/badge.svg
-[cpp_linux_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_cpp.yml
-[dotnet_linux_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_dotnet.yml/badge.svg
-[dotnet_linux_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_dotnet.yml
-[java_linux_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_java.yml/badge.svg
-[java_linux_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_java.yml
-[python_linux_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_python.yml/badge.svg
-[python_linux_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_linux_python.yml
+[linux_cpp_svg]: ./../../actions/workflows/amd64_linux_cpp.yml/badge.svg
+[linux_cpp_link]: ./../../actions/workflows/amd64_linux_cpp.yml
+[linux_dotnet_svg]: ./../../actions/workflows/amd64_linux_dotnet.yml/badge.svg
+[linux_dotnet_link]: ./../../actions/workflows/amd64_linux_dotnet.yml
+[linux_java_svg]: ./../../actions/workflows/amd64_linux_java.yml/badge.svg
+[linux_java_link]: ./../../actions/workflows/amd64_linux_java.yml
+[linux_python_svg]: ./../../actions/workflows/amd64_linux_python.yml/badge.svg
+[linux_python_link]: ./../../actions/workflows/amd64_linux_python.yml
 
-[cpp_macos_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_cpp.yml/badge.svg
-[cpp_macos_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_cpp.yml
-[dotnet_macos_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_dotnet.yml/badge.svg
-[dotnet_macos_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_dotnet.yml
-[java_macos_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_java.yml/badge.svg
-[java_macos_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_java.yml
-[python_macos_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_python.yml/badge.svg
-[python_macos_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_macos_python.yml
+[amd64_macos_cpp_svg]: ./../../actions/workflows/amd64_macos_cpp.yml/badge.svg
+[amd64_macos_cpp_link]: ./../../actions/workflows/amd64_macos_cpp.yml
+[amd64_macos_dotnet_svg]: ./../../actions/workflows/amd64_macos_dotnet.yml/badge.svg
+[amd64_macos_dotnet_link]: ./../../actions/workflows/amd64_macos_dotnet.yml
+[amd64_macos_java_svg]: ./../../actions/workflows/amd64_macos_java.yml/badge.svg
+[amd64_macos_java_link]: ./../../actions/workflows/amd64_macos_java.yml
+[amd64_macos_python_svg]: ./../../actions/workflows/amd64_macos_python.yml/badge.svg
+[amd64_macos_python_link]: ./../../actions/workflows/amd64_macos_python.yml
 
-[cpp_windows_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_cpp.yml/badge.svg
-[cpp_windows_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_cpp.yml
-[dotnet_windows_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_dotnet.yml/badge.svg
-[dotnet_windows_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_dotnet.yml
-[java_windows_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_java.yml/badge.svg
-[java_windows_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_java.yml
-[python_windows_svg]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_python.yml/badge.svg
-[python_windows_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_windows_python.yml
+[windows_cpp_svg]: ./../../actions/workflows/amd64_windows_cpp.yml/badge.svg
+[windows_cpp_link]: ./../../actions/workflows/amd64_windows_cpp.yml
+[windows_dotnet_svg]: ./../../actions/workflows/amd64_windows_dotnet.yml/badge.svg
+[windows_dotnet_link]: ./../../actions/workflows/amd64_windows_dotnet.yml
+[windows_java_svg]: ./../../actions/workflows/amd64_windows_java.yml/badge.svg
+[windows_java_link]: ./../../actions/workflows/amd64_windows_java.yml
+[windows_python_svg]: ./../../actions/workflows/amd64_windows_python.yml/badge.svg
+[windows_python_link]: ./../../actions/workflows/amd64_windows_python.yml
 
 [![Build Status][amd64_docker_status]][amd64_docker_link]
 
-[amd64_docker_status]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_docker.yml/badge.svg
-[amd64_docker_link]: https://github.com/Mizux/cmake-swig/actions/workflows/amd64_docker.yml
+[amd64_docker_status]: ./../../actions/workflows/amd64_docker.yml/badge.svg
+[amd64_docker_link]: ./../../actions/workflows/amd64_docker.yml
 
 # Introduction
 <nav for="project"> |
