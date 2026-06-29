@@ -10,7 +10,7 @@ concurrency:
 # Building using the github runner environement directly.
 jobs:
   native:
-    name: amd64•windows•CMake(VS22)•C++
+    name: amd64•windows•CMake(VS26)•C++
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +19,7 @@ jobs:
       - name: Configure
         run: >
           cmake -S. -Bbuild
-          -G "Visual Studio 17 2022"
+          -G "Visual Studio 18 2026"
           -DCMAKE_CONFIGURATION_TYPES=Release
           -DCMAKE_INSTALL_PREFIX=install
       - name: Build

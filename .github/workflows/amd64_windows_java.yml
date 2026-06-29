@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         cmake: [
-          {name: "VS22", generator: "Visual Studio 17 2022", config: "Release", build_target: ALL_BUILD, test_target: RUN_TESTS, install_target: INSTALL},
+          {name: "VS26", generator: "Visual Studio 18 2026", config: "Release", build_target: ALL_BUILD, test_target: RUN_TESTS, install_target: INSTALL},
         ]
         java: [
           # see https://endoflife.date/azul-zulu
