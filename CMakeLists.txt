@@ -1,5 +1,5 @@
 # This file is just an orchestration
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.24)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Enable output of compile commands during generation.
@@ -11,6 +11,13 @@ message(STATUS "${PROJECT_NAME} version: ${PROJECT_VERSION}")
 #message(STATUS "major: ${PROJECT_VERSION_MAJOR}")
 #message(STATUS "minor: ${PROJECT_VERSION_MINOR}")
 #message(STATUS "patch: ${PROJECT_VERSION_PATCH}")
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Set max os target version.
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
 
 # Default Build Type to be Release
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -119,13 +126,11 @@ if(BUILD_DOTNET)
   option(USE_DOTNET_9 "Use .Net 9.0 support" OFF)
   message(STATUS ".Net: Use .Net 9.0 support: ${USE_DOTNET_9}")
 endif()
-include(dotnet)
 
 if(BUILD_JAVA)
   option(SKIP_GPG "Disable GPG sign" ON)
   message(STATUS "Java: Disable gpg:sign: ${SKIP_GPG}")
 endif()
-include(java)
 
 if(BUILD_PYTHON)
   CMAKE_DEPENDENT_OPTION(BUILD_VENV "Create Python venv in BINARY_DIR/python/venv" OFF
@@ -139,6 +144,9 @@ if(BUILD_PYTHON)
   option(FETCH_PYTHON_DEPS "Install python required modules if not available" ON)
   message(STATUS "Python: Fetch dependencies: ${FETCH_PYTHON_DEPS}")
 endif()
+
+include(dotnet)
+include(java)
 include(python)
 
 add_subdirectory(tests)
