@@ -1,4 +1,5 @@
-FROM cmake-swig:archlinux_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}archlinux_swig AS env
 
 RUN pacman -Syu --noconfirm dotnet-sdk
 # Trigger first run experience by running arbitrary cmd
@@ -8,8 +9,11 @@ FROM env AS devel
 WORKDIR /home/project
 COPY . .
 
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
+
 FROM devel AS build
-RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON -DUSE_DOTNET_CORE_31=OFF
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 

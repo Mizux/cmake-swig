@@ -1,5 +1,7 @@
-FROM cmake-swig:opensuse_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}opensuse_swig AS env
 
+ENV PATH=/root/.local/bin:$PATH
 RUN zypper refresh \
 && zypper install -y python3 python3-devel \
  python3-pip python3-wheel python3-virtualenv python3-setuptools \
@@ -10,6 +12,9 @@ RUN python3 -m pip install --break-system-packages \
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
+
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
 
 FROM devel AS build
 RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON

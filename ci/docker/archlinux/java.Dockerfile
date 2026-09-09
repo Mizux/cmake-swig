@@ -1,4 +1,5 @@
-FROM cmake-swig:archlinux_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}archlinux_swig AS env
 
 RUN pacman -Syu --noconfirm jdk-openjdk maven
 ENV JAVA_HOME=/usr/lib/jvm/default
@@ -7,8 +8,11 @@ FROM env AS devel
 WORKDIR /home/project
 COPY . .
 
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
+
 FROM devel AS build
-RUN cmake -S. -Bbuild -DBUILD_JAVA=ON
+RUN cmake -S. -Bbuild -DBUILD_JAVA=ON -DSKIP_GPG=ON
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 

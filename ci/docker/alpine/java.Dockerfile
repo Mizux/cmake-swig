@@ -1,11 +1,15 @@
-FROM cmake-swig:alpine_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}alpine_swig AS env
 
-RUN apk add --no-cache openjdk11 maven
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+RUN apk add --no-cache openjdk21 maven
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
+
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
 
 FROM devel AS build
 RUN cmake -S. -Bbuild -DBUILD_JAVA=ON -DSKIP_GPG=ON

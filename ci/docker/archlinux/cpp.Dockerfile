@@ -1,10 +1,14 @@
-FROM cmake-swig:archlinux_base AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}archlinux_base AS env
 
 RUN cmake -version
 
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
+
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
 
 FROM devel AS build
 RUN cmake -S. -Bbuild

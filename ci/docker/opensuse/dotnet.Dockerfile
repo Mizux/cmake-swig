@@ -1,9 +1,10 @@
-FROM cmake-swig:opensuse_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}opensuse_swig AS env
 
 # .NET install
 # see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-opensuse
 RUN zypper refresh \
-&& zypper install -y wget tar awk gzip libicu-devel findutils
+&& zypper install -y wget findutils libicu-devel
 
 ## .Net 8.0
 # see: https://learn.microsoft.com/en-us/dotnet/core/install/linux-scripted-manual#scripted-install
@@ -16,6 +17,9 @@ RUN dotnet --info
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
+
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
 
 FROM devel AS build
 RUN cmake -version

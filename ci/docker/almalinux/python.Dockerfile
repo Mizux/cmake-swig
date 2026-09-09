@@ -1,4 +1,5 @@
-FROM cmake-swig:almalinux_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}almalinux_swig AS env
 
 ENV PATH=/root/.local/bin:$PATH
 RUN dnf -y update \
@@ -11,6 +12,9 @@ RUN python3 -m pip install \
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
+
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
 
 FROM devel AS build
 RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON

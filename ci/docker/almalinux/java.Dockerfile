@@ -1,18 +1,22 @@
-FROM cmake-swig:almalinux_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}almalinux_swig AS env
 
 RUN dnf -y update \
-&& dnf -y install java-11-openjdk java-11-openjdk-devel maven \
+&& dnf -y install java-21-openjdk java-21-openjdk-devel maven \
 && dnf clean all \
 && rm -rf /var/cache/dnf
-RUN alternatives --set java /usr/lib/jvm/java-11-openjdk*.x86_64/bin/java
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+RUN alternatives --set java /usr/lib/jvm/java-21-openjdk/bin/java
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
 
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
+
 FROM devel AS build
-RUN cmake -S. -Bbuild -DBUILD_JAVA=ON
+RUN cmake -S. -Bbuild -DBUILD_JAVA=ON -DSKIP_GPG=ON
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 

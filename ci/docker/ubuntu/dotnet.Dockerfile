@@ -1,11 +1,10 @@
-FROM cmake-swig:ubuntu_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}ubuntu_swig AS env
 
 # Install .NET SDK
 # see: https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu
-# note: Ubuntu 22.04+ won't support .Net SDK 3.1 since it doesn't use OpenSSL 3
-# see: https://github.com/dotnet/core/issues/7038#issuecomment-1110377345
 RUN apt-get update -qq \
-&& apt-get install -yq dotnet-sdk-8.0 \
+&& apt-get install -yq dotnet-sdk-10.0 \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Trigger first run experience by running arbitrary cmd
@@ -15,9 +14,12 @@ FROM env AS devel
 WORKDIR /home/project
 COPY . .
 
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
+
 FROM devel AS build
 RUN cmake -version
-RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON -DUSE_DOTNET_CORE_31=OFF
+RUN cmake -S. -Bbuild -DBUILD_DOTNET=ON
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install -v
 

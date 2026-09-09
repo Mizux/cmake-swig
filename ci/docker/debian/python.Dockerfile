@@ -1,16 +1,24 @@
-FROM cmake-swig:debian_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}debian_swig AS env
 
+ENV PATH=/root/.local/bin:$PATH
 RUN apt-get update -qq \
 && apt-get install -yq \
  python3-dev python3-pip \
- python3-wheel python3-venv python3-virtualenv \
+ python3-setuptools python3-wheel \
+ python3-venv python3-virtualenv \
  python3-numpy python3-pandas \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN python3 -m pip install --break-system-package \
+ mypy
 
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
+
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
 
 FROM devel AS build
 RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON

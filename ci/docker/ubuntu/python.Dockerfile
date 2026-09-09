@@ -1,5 +1,7 @@
-FROM cmake-swig:ubuntu_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}ubuntu_swig AS env
 
+ENV PATH=/root/.local/bin:$PATH
 RUN apt-get update -qq \
 && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
  python3-dev python3-pip \
@@ -14,6 +16,9 @@ RUN python3 -m pip install --break-system-package \
 FROM env AS devel
 WORKDIR /home/project
 COPY . .
+
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
 
 FROM devel AS build
 RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON

@@ -1,4 +1,5 @@
-FROM cmake-swig:alpine_swig AS env
+ARG TARGETARCH
+FROM cmake-swig:${TARGETARCH:+${TARGETARCH}_}alpine_swig AS env
 
 ENV PATH=/root/.local/bin:$PATH
 RUN apk add --no-cache python3-dev py3-pip py3-wheel \
@@ -10,8 +11,11 @@ FROM env AS devel
 WORKDIR /home/project
 COPY . .
 
+ARG CMAKE_BUILD_PARALLEL_LEVEL
+ENV CMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL:-4}
+
 FROM devel AS build
-RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON
+RUN cmake -S. -Bbuild -DBUILD_PYTHON=ON -DVENV_USE_SYSTEM_SITE_PACKAGES=ON
 RUN cmake --build build --target all -v
 RUN cmake --build build --target install
 
